@@ -1,0 +1,35 @@
+.search {
+
+    display: flex;
+    align-items: center;
+    width: 300px;
+    height: 35px;
+
+}
+
+.search input {
+    height: 100%;
+    width: 100%;
+
+}
+
+.searchIcon {
+    transition: .3s;
+    width: 30px;
+    height: 20px;
+    position: relative;
+
+}
+
+[data-lang='English'] .searchIcon {
+    left: -40px;
+}
+
+[data-lang='Arabic'] .searchIcon {
+    right: -34px;
+    ;
+}
+
+.search input:focus+.searchIcon {
+    display: none;
+}

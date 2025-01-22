@@ -1,0 +1,33 @@
+.inputStyle {
+    display: block;
+    height: 50px;
+    width: 331px;
+    background-color: transparent;
+    font-weight: bold;
+    color: var(--color);
+    text-align: center;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--color);
+}
+
+[data-lang='English'] .inputStyle {
+    font-family: BinkoEng;
+    padding-left: 10px;
+}
+
+[data-lang='Arabic'] .inputStyle {
+    font-family: BinkoAra;
+    padding-right: 10px;
+
+}
+
+[data-lang='English'] input[type='submit'].inputStyle {
+    font-family: Binko2Eng;
+    font-size: 20px;
+}
+
+[data-lang='Arabic'] input[type='submit'].inputStyle {
+    font-family: BinkoAra;
+    font-size: 20px;
+}

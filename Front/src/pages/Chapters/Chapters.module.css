@@ -1,0 +1,24 @@
+.chapterCont {
+    position: relative;
+}
+
+.chapterCont .down {
+    padding: 100px 0;
+    text-align: center;
+}
+
+.chapterCont .down .buttn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+.chapterCont .down .text h1 {
+    color: var(--secondary-color);
+}
+
+.chapterCont .down .text p {
+    font-size: 22px;
+}

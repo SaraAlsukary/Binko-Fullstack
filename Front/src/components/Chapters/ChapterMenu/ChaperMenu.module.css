@@ -1,0 +1,194 @@
+.up {
+    width: 100%;
+    position: relative;
+    height: 50px;
+    display: fixed;
+    border-bottom: 1px solid var(--main-color);
+}
+
+.up .bookUp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.up .book {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 1px solid var(--main-color);
+}
+
+[data-lang='English'] .up .book {
+    border-right: 1px solid var(--main-color);
+    border-left: none;
+}
+
+[data-lang='English'] .ups .book .photo {
+    width: 30px;
+    height: 40px;
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+.up .book .photo {
+    margin-left: 10px;
+    width: 30px;
+    height: 40px;
+}
+
+.up .book .photo,
+.up .book .text {
+    cursor: pointer;
+}
+
+.up .book .text .title {
+    color: var(--main-color);
+}
+
+.up .book .text span {
+    color: var(--secondary-color);
+}
+
+.up .book .arrow {
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.up .book .photo img {
+    width: 100%;
+    height: 100%;
+}
+
+.chapterList {
+    display: none;
+    position: absolute;
+    transition: .3s;
+    transform: translateY(-10px);
+    width: 30%;
+    padding: 0;
+}
+
+.chapterList.active {
+    display: block;
+    transform: translateY(10px);
+}
+
+.chapterList li {
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
+    background-color: #353b19;
+    padding: 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.chapterList li:hover,
+.chapterList li.active {
+    border: 1px solid #fff;
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.up .listMenu {
+    width: 40%;
+    position: absolute;
+    bottom: -17px;
+    left: 0;
+}
+
+[data-lang='English'] .up .listMenu {
+    right: 0;
+    left: initial;
+}
+
+.up .listMenu ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.up .listMenu ul li {
+    border: 1px solid var(--main-color);
+    width: calc(100% / 2);
+    color: var(--main-color);
+    transition: .3s;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.up .listMenu ul li .activeIcon {
+    display: none;
+}
+
+.up .listMenu ul li.active .activeIcon {
+    display: block;
+    z-index: 2;
+}
+
+.up .listMenu ul li.active {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.up .listMenu ul li .icons {
+    display: flex;
+    position: relative;
+    align-items: center;
+    left: 40px;
+
+
+}
+
+.up .listMenu ul li .icons {
+    right: -30px;
+    left: initial;
+}
+
+[data-lang='English'] .up .listMenu ul li .icons {
+    right: -3px;
+    left: initial;
+}
+
+.up .listMenu ul li p {
+    margin: 0;
+
+
+}
+
+.up .listMenu ul li .icons .icon,
+.up .listMenu ul li .icons .activeIcon {
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.up .listMenu .up ul li .icons .icon,
+.up .listMenu.up ul li .icons .activeIcon {
+    right: 30px;
+}
+
+@media (max-width:392px) {
+    .up .bookUp {
+        flex-direction: column;
+        justify-content: initial;
+        align-items: initial;
+    }
+
+    .up .listMenu {
+        position: absolute;
+        bottom: -62px;
+        left: 0;
+        width: 100%;
+    }
+
+    .chapterList {
+        width: 93%;
+    }
+}

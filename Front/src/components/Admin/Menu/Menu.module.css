@@ -1,0 +1,38 @@
+.item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 12px;
+    font-weight: 200;
+    color: var(--main-color);
+    text-transform: uppercase;
+}
+
+@media screen and (max-width:1024px) {
+    .title {
+        display: none;
+    }
+}
+
+
+.listItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.listItem:hover {
+    background-color: var(--main-color);
+}
+
+@media screen and (max-width:1024px) {
+    .listItemTitle {
+        display: none;
+    }
+}

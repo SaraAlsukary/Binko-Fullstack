@@ -1,0 +1,13 @@
+.buttonStyle {
+    background-color: var(--main-color);
+    border-radius: 10px;
+    padding: 3px 8px;
+}
+
+[data-lang='Arabic'] .buttonStyle {
+    font-family: BinkoAra;
+}
+
+[data-lang='English'] .buttonStyle {
+    font-family: Binko2Eng;
+}

@@ -1,0 +1,88 @@
+ .pic {
+     margin: 0 20px;
+     cursor: pointer;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .pic .img {
+     position: relative;
+     width: 200px;
+     outline: none;
+     border-radius: 50%;
+     height: 200px;
+     border: 1px solid var(--color);
+ }
+
+
+
+ .pic .img img {
+     transition: .3s;
+     width: 100%;
+     border-radius: 50%;
+     height: 100%;
+     outline: none;
+ }
+
+ .pic label {
+     cursor: pointer;
+ }
+
+ .pic .img img:hover {
+     box-shadow: 0 0 12px 4px var(--main-color);
+ }
+
+ .pic .img span {
+     font-size: 33px;
+     padding: initial;
+     cursor: pointer;
+     text-align: center;
+     width: 30px;
+     transition: .3s;
+     height: 30px;
+     color: var(--color);
+     border: 2px solid var(--color);
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     border-radius: 50%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .pic .img .btn {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     width: 100px;
+     transform: translate(-50%, -50%);
+ }
+
+
+
+ .pic .img:hover span {
+
+     color: var(--main-color);
+     border: 2px solid var(--main-color);
+
+ }
+
+ .pic .img img:not([src=''])+label span {
+     opacity: 0;
+ }
+
+ .pic .img:hover img:not([src=''])+label span {
+     opacity: 1;
+     border-color: var(--secondary-color);
+     color: var(--secondary-color);
+ }
+
+ .pic input {
+     display: none;
+ }

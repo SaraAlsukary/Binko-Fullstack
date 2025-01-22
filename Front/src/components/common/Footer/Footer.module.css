@@ -1,0 +1,18 @@
+.footerContainer {
+    height: 100px;
+    margin-top: 100px;
+    text-align: center;
+    border-top: 1px solid #000;
+    padding: 20px 10px 0 10px;
+
+}
+
+[data-theme='Dark'] .footerContainer {
+    border-top: 1px solid #fff;
+}
+
+.footerContainer span {
+    font-family: BinkoEng;
+    font-size: 22px;
+    color: var(--main-color);
+}

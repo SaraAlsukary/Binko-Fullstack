@@ -1,0 +1,28 @@
+.buttn {
+    background-color: var(--main-color);
+    border-radius: 10px;
+    padding: 3px 8px;
+}
+
+[data-lang='Arabic'] .buttn {
+    font-family: BinkoAra;
+}
+
+[data-lang='English'] .buttn {
+    font-family: Binko2Eng;
+}
+
+.buttn {
+    width: 80%;
+    background-color: transparent;
+    color: var(--main-color);
+    font-weight: bold;
+    transition: .3s;
+    border: 2px solid var(--main-color);
+}
+
+.buttn:hover {
+    background-color: var(--main-color);
+    color: #fff;
+    border: 2px solid #fff;
+}

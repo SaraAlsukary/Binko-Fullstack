@@ -1,0 +1,31 @@
+.booCard {
+    left: 8%;
+    width: 80%;
+    height: 354px;
+    position: relative;
+    padding: 0;
+    border-radius: 12px;
+    border: 2px solid var(--main-color);
+}
+
+
+.booCard img {
+    border-radius: 12px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+
+}
+
+@media (max-width:767px) {
+    .booCard {
+        left: 8%;
+        width: 85%;
+        height: 220px;
+        position: relative;
+        padding: 0;
+        border-radius: 12px;
+        border: 2px solid var(--main-color);
+    }
+}

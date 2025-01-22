@@ -1,0 +1,189 @@
+.booCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 270px;
+    height: 470px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 12px;
+    border: 2px solid var(--main-color);
+}
+
+[data-lang='Arabic'] .booCard {
+    direction: rtl;
+    font-family: binkoAra;
+}
+
+
+
+.booCard .pic {
+    position: absolute;
+    height: 300px;
+    width: 200px;
+    padding: 10px;
+    top: 9px;
+    left: 21px;
+}
+
+[data-lang='Arabic'] .booCard .pic {
+    right: 21px;
+}
+
+.booCard .pic img {
+    position: absolute;
+    width: 100%;
+    border: 2px solid var(--secondary-color);
+    height: 100%;
+}
+
+.booCard .text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+}
+
+.booCard .text button,
+.booCard .info button {
+    color: #000;
+}
+
+.booCard .text .paraga {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 12px;
+    position: absolute;
+    left: 45%;
+    transition: .3s;
+    top: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+}
+
+[data-theme='Dark'] .booCard .text .paraga {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+}
+
+[data-theme='Light'] .booCard .text .paraga {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+}
+
+.booCard:hover .text .paraga {
+    opacity: 1;
+    left: 50%;
+}
+
+.booCard:hover .text .paraga .btnCard {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booCard:hover .text .paraga+.info {
+    display: none;
+
+}
+
+.booCard .text .info {
+    display: block;
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transition: .3s;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+}
+
+
+.booCard .text .info .btnCard {
+    margin-top: 20px;
+}
+
+.booCard .text button {
+    width: 70%;
+}
+
+.booCard .text .paraga p {
+    width: 196px;
+}
+
+.booCard .text h3 {
+    color: var(--main-color);
+}
+
+.booCard .text span {
+    color: var(--secondary-color);
+}
+
+
+@media (min-width:768px) and (max-width:991px) {
+    .booCard {
+        width: 250px;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+
+}
+
+@media (max-width:767px) {
+    .booCard {
+        width: 100%;
+        height: 520px;
+        position: relative;
+    }
+
+    .booCard .pic {
+        width: 250px;
+        position: absolute;
+        right: 50%;
+        height: 325px;
+        left: initial;
+        transform: translateX(50%);
+    }
+
+    [data-lang='Arabic'] .booCard .pic {
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .booCard .text {
+        padding: 0;
+        bottom: 9px;
+        position: absolute;
+        text-align: center;
+    }
+
+    .booCard .btnCard {
+        position: relative;
+        width: 100%;
+        height: 43px;
+    }
+
+    .booCard .text button {
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+    }
+
+
+
+    [data-lang='Arabic'] .booCard .text {
+        right: 8px;
+        position: absolute;
+        top: 0;
+    }
+}

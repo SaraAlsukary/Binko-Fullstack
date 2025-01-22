@@ -1,0 +1,88 @@
+.landing {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-family: BinkoEng;
+    margin-top: 30px;
+
+}
+
+.landing .left {
+    width: 500px;
+
+}
+
+
+.landing .left button {
+    font-size: 22px;
+    text-align: center;
+    cursor: pointer;
+    transform: translateX(-50%);
+}
+
+[data-lang='Arabic'] .landing .left button {
+    margin-right: 50%;
+}
+
+[data-lang='English'] .landing .left button {
+    font-family: Binko2Eng;
+    margin-left: 50%;
+}
+
+.landing p {
+    font-size: 21px;
+
+}
+
+
+
+.landing .left h2 {
+    font-size: 40px;
+    color: var(--main-color);
+}
+
+.landing .right {
+    width: 400px;
+}
+
+@media (max-width:767px) {
+    .landing {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .landing .right {
+        width: 390px;
+    }
+
+    .landing .left {
+        width: 300px;
+        position: relative;
+    }
+
+    .landing .left p {
+        text-align: center;
+        margin-top: 40px;
+        width: 100%;
+    }
+
+
+
+    [data-lang='Arabic'] .landing .left button,
+    [data-lang='English'] .landing .left button {
+        margin: 0;
+        left: 50%;
+        position: absolute;
+    }
+}
+
+.landing p {
+    font-family: BinkoEng;
+}
+
+[data-lang='Arabic'] .landing p {
+    font-size: 25px;
+    font-family: BinkoAra;
+}

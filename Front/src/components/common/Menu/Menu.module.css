@@ -1,0 +1,78 @@
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 70px;
+    position: relative;
+    left: -56px;
+}
+
+[data-lang='Arabic'] .icons {
+    left: 66px;
+}
+
+.settings {
+    height: 200px;
+    width: 100px;
+    height: 274px;
+    border-radius: 8px;
+    position: fixed;
+    left: -18px;
+    top: 100px;
+    z-index: 100;
+}
+
+@media (min-width:801px) and (max-width:991px) {
+    .settings {
+        left: -31px;
+    }
+
+}
+
+@media (max-width:800px) {
+    .settings {
+        left: 50%;
+        transform: translateX(-50%) rotate(-90deg);
+        top: 70%;
+        position: fixed;
+        background: var(--main-color);
+        height: 323px;
+        border-radius: 16px;
+    }
+
+    .icons {
+        width: 153px;
+        height: 81px;
+    }
+
+    .icon {
+        transform: rotate(90deg);
+    }
+}
+
+@media (max-width:392px) {
+    .settings {
+        left: 50%;
+        transform: translateX(-50%) rotate(-90deg);
+        top: 75%;
+        position: fixed;
+        background: var(--main-color);
+        height: 323px;
+        border-radius: 16px;
+    }
+
+    .icons {
+        width: 153px;
+        height: 81px;
+    }
+
+    .icon {
+        transform: rotate(90deg);
+    }
+}

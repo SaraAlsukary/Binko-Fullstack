@@ -1,0 +1,7 @@
+[data-lang='Arabic'] .log {
+    right: 0;
+}
+
+[data-lang='English'] .log {
+    left: 0;
+}

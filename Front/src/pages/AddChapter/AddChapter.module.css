@@ -1,0 +1,104 @@
+.addBooksContainer {
+    padding: 0 0 200px 0;
+    position: relative;
+    top: 28px;
+}
+
+.addBooksContainer .cont {
+    position: relative;
+    width: 100%;
+    height: 500px;
+
+}
+
+.addBooksContainer .cont .rows {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+
+}
+
+.addBooksContainer .cont .rows .editors {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.addBooksContainer .cont .rows .editors .editorInput {
+    width: 100%;
+    height: 100%;
+}
+
+.editorInput span {
+    background-color: var(--secondary-color);
+    color: black;
+    font-family: var(--lang);
+    font-weight: bold;
+}
+
+/* 
+.editorInput .ql-picker-label:hover,
+.editorInput svg:hover {
+    color: var(--main-color);
+} */
+.controlBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+@media (max-width:767px) {
+    .controlBtn {
+        margin-top: 80px;
+    }
+}
+
+.controlBtn button {
+    width: 100px;
+    margin: 0 20px;
+    cursor: pointer;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.audio {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0;
+
+}
+
+.audio button {
+    margin: 10px 10px;
+}
+
+
+.audio input {
+    display: none;
+}
+
+.audio .audioInput {
+    display: flex;
+    align-items: center;
+}
+
+.audio .audioInput button {
+    background-color: var(--secondary-color);
+}
+
+.audio .audioInput button label {
+    cursor: pointer;
+}
