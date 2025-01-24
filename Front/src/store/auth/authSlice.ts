@@ -6,20 +6,16 @@ import { isString } from "@customtypes/isString";
 
 interface IAuthState {
     user: {
-        id?: number,
-        image?: string,
-        name: string;
-        username: string;
-        password: string;
-        // confirm_password: string;
+        name: string,
+        username: string,
+        is_admin: boolean,
+        is_supervisor: boolean
     } | null;
-    accessToken: string | null;
     loading: TLoading;
     error: string | null;
 }
 const initialState: IAuthState = {
     user: null,
-    accessToken: null,
     loading: "idle",
     error: null,
 }
@@ -29,7 +25,6 @@ const authSlice = createSlice({
     reducers: {
         authLogout: (state) => {
             state.user = null;
-            state.accessToken = null;
         },
     }
     ,
@@ -41,7 +36,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actCreateAccount.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.accessToken = action.payload.token;
+            state.user = action.payload;
 
         });
         builder.addCase(actCreateAccount.rejected, (state, action) => {
@@ -58,8 +53,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actLogin.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.accessToken = action.payload.token;
-            state.user = action.payload.user;
+            state.user = action.payload;
         });
         builder.addCase(actLogin.rejected, (state, action) => {
             state.loading = "failed";

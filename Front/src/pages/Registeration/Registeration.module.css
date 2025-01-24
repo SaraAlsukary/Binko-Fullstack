@@ -1,4 +1,4 @@
-.register {
+.registers {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -13,9 +13,7 @@
     align-items: center;
 }
 
-.regInput {
-    margin-top: 25px;
-}
+
 
 .bottom {
     position: relative;
@@ -23,4 +21,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.bottom input {
+    margin-top: 25px;
+}
+
+.registers button {
+    background-color: var(--secondary-color);
+    border-radius: 16px;
+    width: 100%;
+    transition: .3s;
+    height: 50px;
+}
+
+.registers .regInput button:hover {
+    background-color: #a3a305;
 }

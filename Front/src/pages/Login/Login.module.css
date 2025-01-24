@@ -1,4 +1,4 @@
-.register {
+.registers {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,6 +6,12 @@
 }
 
 
+.alert {
+    background: transparent;
+    border: none;
+    height: 10px;
+    color: var(--secondary-color);
+}
 
 .book {
     display: flex;
@@ -13,9 +19,6 @@
     align-items: center;
 }
 
-.regInput {
-    margin-top: 25px;
-}
 
 .bottom {
     position: relative;
@@ -25,20 +28,40 @@
     align-items: center;
 }
 
-.register .forgot {
-    position: absolute;
-    right: 10px;
-    bottom: 38px;
+.bottom input {
+    margin-top: 25px;
+}
+
+.registers .forgot {
+    position: relative;
+    right: 8px;
+    bottom: 0;
     font-size: 14px;
     cursor: pointer;
 
 }
 
-.register .account {
+[data-lang='English'] .registers .forgot {
+    right: -11px;
+}
+
+.registers .account {
     text-decoration: underline;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     bottom: -46px;
     cursor: pointer;
+}
+
+.registers button {
+    background-color: var(--secondary-color);
+    border-radius: 16px;
+    width: 100%;
+    height: 50px;
+    transition: .3s;
+}
+
+.registers button:hover {
+    background-color: #a3a305;
 }

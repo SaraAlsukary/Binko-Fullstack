@@ -3,9 +3,9 @@ import Style from './Button.module.css';
 const { buttonStyle } = Style;
 
 
-const Button = ({ children, style, className, onClick, disabled }: TButton) => {
+const Button = ({ children, style, className, onClick, disabled, onSubmit, type }: TButton) => {
     return (
-        <button disabled={disabled} onClick={onClick} style={style} className={` ${buttonStyle} ${className}`}>{children}</button>
+        <button type={type} onSubmit={onSubmit} disabled={disabled} onClick={onClick} style={style} className={` ${buttonStyle} ${className}`}>{children}</button>
     )
 }
 

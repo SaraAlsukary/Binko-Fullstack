@@ -106,3 +106,52 @@ a .mark {
   background-color: var(--main-color);
   color: var(--color);
 }
+
+.alert {
+  background: transparent;
+  border: none;
+  height: 10px;
+  color: var(--secondary-color);
+}
+
+.form input {
+  display: block;
+  height: 50px;
+  border: none;
+  width: 331px;
+  background-color: var(--main-color);
+  border-radius: 16px;
+  font-weight: bold;
+}
+
+.form input::placeholder {
+  color: #000;
+}
+
+.form input:focus {
+  border: none;
+  border-color: var(--secondary-color);
+  background-color: var(--main-color);
+  box-shadow: 0 0 0 0 transparent;
+}
+
+[data-lang='English'] .form input {
+  font-family: BinkoEng;
+  padding-left: 10px;
+}
+
+[data-lang='Arabic'] .form input {
+  font-family: BinkoAra;
+  padding-right: 10px;
+
+}
+
+[data-lang='English'] input[type='submit'] {
+  font-family: Binko2Eng;
+  font-size: 20px;
+}
+
+[data-lang='Arabic'] input[type='submit'] {
+  font-family: BinkoAra;
+  font-size: 20px;
+}

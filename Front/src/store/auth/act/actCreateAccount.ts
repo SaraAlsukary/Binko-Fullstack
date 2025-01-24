@@ -7,15 +7,20 @@ type TFormData = {
     password: string;
     confirm_password: string;
 };
+type TResponse = {
+    name: string,
+    username: string,
+    is_admin: boolean,
+    is_supervisor: boolean
+};
 const actCreateAccount = createAsyncThunk(
     "auth/actCreateAccount",
     async (formData: TFormData, thunk) => {
         const { rejectWithValue } = thunk;
 
         try {
-            const res = await axios.post("create-user/", JSON.stringify(formData), {
+            const res = await axios.post<TResponse>("create-user/", JSON.stringify(formData), {
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: true
             });
             return res.data;
 

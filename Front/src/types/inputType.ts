@@ -1,9 +1,11 @@
 export type TInput = {
-    onClick?: () => void,
+    onClick?: any,
     type: string,
+    name?: string,
     placeholder?: string,
     style?: React.CSSProperties,
     value?: string
     onFocus?: () => void
-    onChange?: (e: any) => void
+    onChange?: (e: any) => void,
+    register?: object
 }

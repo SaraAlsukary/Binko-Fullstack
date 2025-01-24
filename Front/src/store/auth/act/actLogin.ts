@@ -8,12 +8,10 @@ type TFormData = {
 };
 
 type TResponse = {
-    user: {
-        name: string;
-        username: string;
-        password: string;
-    };
-    token: string;
+    name: string,
+    username: string,
+    is_admin: boolean,
+    is_supervisor: boolean
 };
 
 const actLogin = createAsyncThunk(
@@ -24,7 +22,6 @@ const actLogin = createAsyncThunk(
         try {
             const res = await axios.post<TResponse>("login/", JSON.stringify(formData), {
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: true
             }
             );
             return res.data;

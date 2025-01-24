@@ -20,7 +20,7 @@ const Header = () => {
     const dispatch = useAppDispatch();
     const { theme } = useAppSelector(state => state.theme);
     const { language } = useAppSelector(state => state.language);
-    const { accessToken } = useAppSelector(state => state.auth)
+    const { user } = useAppSelector(state => state.auth)
     const location: any = useLocation();
 
     const showToggleHandler = () => {
@@ -81,7 +81,7 @@ const Header = () => {
                                 <option value="English" onClick={changeToEnglish}>{language === 'English' ? 'English' : 'الانجليزية'} </option>
                             </select>
                         </li>
-                        {accessToken ?
+                        {user ?
                             <li><NavLink to='profile' ><div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}></div></NavLink></li>
 
                             : <li><Button ><NavLink to='Login' style={{ color: 'black' }}>{language === 'Arabic' ? 'تسجبل الدخول' : "login"}</NavLink></Button></li>
