@@ -8,10 +8,10 @@ type TFormData = {
 };
 
 type TResponse = {
-    name: string,
-    username: string,
-    is_admin: boolean,
-    is_supervisor: boolean
+    message: string,
+    token: string,
+    username: boolean,
+    user_type: string
 };
 
 const actLogin = createAsyncThunk(

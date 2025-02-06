@@ -19,6 +19,7 @@ import chapters from "./chaptersSlice/chaptersSlice";
 import comments from "./commentsSlice/commentsSlice";
 import addChapter from "./addChapterSlice/addChapterSlice";
 import addBook from "./addBookSlice/addBookSlice";
+import categories from "./categorySlice/categorySlice";
 
 // const rootPersistConfig = {
 //     key: "root",
@@ -55,6 +56,7 @@ const authPersistConfig = {
 const rootReducer = combineReducers({
     language: language,
     theme: theme,
+    categories: categories,
     addChapter: addChapter,
     addBook: addBook,
     auth: persistReducer(authPersistConfig, auth),

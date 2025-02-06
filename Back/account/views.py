@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
 from .models import CustomUser
-from .serializers import UserSerializer , LoginSerializer ,LogoutSerializer
+from .serializers import UserSerializer , LoginSerializer ,LogoutSerializer ,CustomUserSerializer
 from django.contrib.auth import login
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
@@ -27,7 +28,7 @@ def login_user(request):
         token, created = Token.objects.get_or_create(user=user)
         user_type = 'regular'
         if user.is_supervisor:
-            user_type = 'superuser'
+            user_type = 'supervisor'
         elif user.is_admin:
             user_type = 'admin'
         
@@ -35,6 +36,7 @@ def login_user(request):
             'message': f'تم تسجيل الدخول بنجاح كـ {user_type}.',
             'user_type': user_type,
             'token': token.key,
+            'user_id': user.id,
             'username': user.username
         }, status=status.HTTP_200_OK)
     
@@ -49,3 +51,25 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+@api_view(['PUT'])
+def update_custom_user(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        serializer = CustomUserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['GET'])
+def get_non_supervisor_users(request):
+    users = CustomUser.objects.filter(is_supervisor=False)
+    serializer = CustomUserSerializer(users, many=True)
+    return Response(serializer.data)    

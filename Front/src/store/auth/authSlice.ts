@@ -3,6 +3,7 @@ import actCreateAccount from './act/actCreateAccount';
 import { TLoading } from "@customtypes/loadingType";
 import actLogin from "./act/actLogin";
 import { isString } from "@customtypes/isString";
+import actLogout from "./act/actLogout";
 
 interface IAuthState {
     user: {
@@ -61,9 +62,24 @@ const authSlice = createSlice({
                 state.error = action.payload;
             }
         });
+        //logout
+        builder.addCase(actLogout.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actLogout.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.user = action.payload;
+        });
+        builder.addCase(actLogout.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
     },
 })
 
-export { actCreateAccount, actLogin };
+export { actCreateAccount, actLogin, actLogout };
 export const { authLogout } = authSlice.actions;
 export default authSlice.reducer

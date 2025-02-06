@@ -6,7 +6,7 @@ from rest_framework import status
 from .models import Book_Fav , Book ,Book_Category
 from account.models import CustomUser
 from account.models import CustomUser
-from .serializers import BookSerializer , FavoriteBookSerializer , BookCatSerializer
+from .serializers import BookSerializer , FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
 from categories.models import Category
 @api_view(['GET'])
@@ -78,3 +78,11 @@ def get_my_book(request , user_id):
     return JsonResponse(serializer.data, safe=False)
 
 
+@api_view(['GET'])
+def gets_all_books(request):
+    # استعلام للحصول على جميع الكتب
+    books = Book.objects.select_related('user').all()
+
+    # تسلسل البيانات باستخدام السيريالايزر
+    serializer = BookDetailsSerializer(books, many=True)
+    return JsonResponse(serializer.data, safe=False, status=200)

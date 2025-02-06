@@ -22,7 +22,8 @@ const Settings = lazy(() => import('@pages/Settings/Settings'));
 const Chapters = lazy(() => import('@pages/Chapters/Chapters'));
 const BooksSearch = lazy(() => import('@pages/BooksSearch/BooksSearch'));
 const Home = lazy(() => import('@pages/Home/Home'));
-
+const Supervisor = lazy(() => import('@pages/Supervisor/Supervisor'))
+const Admin = lazy(() => import('@pages/Admin/Admin'))
 
 const AppRouter = () => {
     const { theme } = useAppSelector(state => state.theme);
@@ -108,7 +109,14 @@ const AppRouter = () => {
                 path: ':id',
                 element: <SuspendPage><Messages /></SuspendPage>
             }]
-    }])
+    }, {
+        path: '/Binko/supervisor',
+        element: <SuspendPage><Supervisor /></SuspendPage>
+    }, {
+        path: '/Binko/admin',
+        element: <SuspendPage><Admin /></SuspendPage>
+    },
+    ])
     return <RouterProvider router={router} />
 }
 

@@ -52,3 +52,10 @@ class LoginSerializer(serializers.Serializer):
     
 class LogoutSerializer(serializers.Serializer):
     token = serializers.CharField()         
+
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'name', 'image', 'discriptions']

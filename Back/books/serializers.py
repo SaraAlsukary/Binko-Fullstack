@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Book_Fav ,Book
+from account.models import CustomUser
 from categories.models import Category
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,8 +28,22 @@ class BookCatSerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         categories = Category.objects.filter(bookcategory__book=obj)
-        return CategorySerializer(categories, many=True).data        
-    
+        return CategorySerializer(categories, many=True).data      
+
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [ 'name', 'username', 'image']
+
+class BookDetailsSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # تضمين بيانات المستخدم الذي أضاف الكتاب
+
+    class Meta:
+        model = Book
+        fields = [ 'name',  'user', 'publication_date']    
 
 
     

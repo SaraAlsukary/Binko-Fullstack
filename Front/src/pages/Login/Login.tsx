@@ -50,17 +50,21 @@ const Login = () => {
             dispatch(actLogin(userData))
                 .unwrap()
                 .then((res) => {
-                    if (res.is_admin) {
+                    if (res.user_type === 'admin') {
                         console.log('admin')
-                    } else if (res.is_supervisor) {
+                        navigate('/Binko/admin')
+                    } else if (res.user_type === 'supervisor') {
                         console.log('supervisor')
+                        navigate('/Binko/supervisor')
                     } else {
+                        // console.log(res.id)
+                        // console.log(res.data.id)
                         console.log(res)
+                        console.log('superuser')
                         navigate('/Binko/')
                     }
                 })
                 .catch(err => err)
-            console.log(userData)
             setUsername('')
             setPassword('')
 

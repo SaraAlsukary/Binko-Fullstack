@@ -1,0 +1,101 @@
+.headerSuper {
+    padding: 20px 0;
+    font-family: BinkoEng;
+}
+
+[data-lang='Arabic'] .headerSuper {
+    font-family: BinkoAra;
+
+}
+
+.headerSuper .content .logo a {
+    text-decoration: none;
+    font-size: 22px;
+    color: var(--main-color);
+}
+
+.headerSuper .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerSuper .content ul.list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.headerSuper .content ul.list li {
+    margin-left: 10px;
+}
+
+.headerSuper .prof {
+    color: #000;
+    font-family: binkoeng;
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+}
+
+.headerSuper .pro {
+    cursor: pointer;
+}
+
+.headerSuper .prof i {
+    color: var(--main-color);
+    margin-left: 4px;
+    font-size: 15px;
+    position: relative;
+    top: 0px;
+}
+
+
+.headerSuper a {
+    text-decoration: none;
+}
+
+.headerSuper .prof.dark {
+    color: #fff;
+}
+
+.headerSuper select {
+    color: var(--color);
+    background: var(--background);
+    border-color: var(--main-color);
+}
+
+.headerSuper .list2 {
+    opacity: 0;
+    transition: .3s;
+    position: absolute;
+    top: 53px;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding: 0 20px 0 13px;
+    justify-content: center;
+    flex-direction: column;
+    right: 42px;
+    text-align: center;
+    border: 2px solid var(--main-color);
+}
+
+.headerSuper a {
+    color: var(--color);
+}
+
+.headerSuper li .show {
+    opacity: 1;
+
+}
+
+/* .headerSuper .pro:hover+li .list2 {
+    opacity: 1;
+
+} */
+
+[data-lang='Arabic'] .headerSuper .list2 {
+    left: 97px;
+    right: initial;
+}

@@ -1,0 +1,21 @@
+.tabCont .nav-link {
+    color: var(--main-color);
+}
+
+[data-lang='Arabic'] .tabCont {
+    font-family: BinkoAra;
+    padding-left: 10px;
+}
+
+.tabCont h5 {
+    margin: 10px 20px;
+    color: var(--secondary-color);
+}
+
+.tabCont h5 i {
+    color: var(--secondary-color);
+}
+
+.tabCont .nav-link.active {
+    background-color: var(--main-color);
+}

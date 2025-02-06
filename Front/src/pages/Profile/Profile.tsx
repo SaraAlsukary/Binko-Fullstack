@@ -7,8 +7,11 @@ import { Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
-import { Input } from '@components/feedback';
+import { Button, Input } from '@components/feedback';
 import Picture from '@components/common/Picture/Picture';
+import SecondaryButton from '@components/feedback/SecondaryButton/SecondaryButton';
+import { actLogout, authLogout } from '@store/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const { profileContainer, settings, userName, inputs, info } = styles;
 function Profile() {
@@ -18,6 +21,27 @@ function Profile() {
         setFile(URL.createObjectURL(e.target.files[0]));
         setImageFile(e.target.files[0]);
         console.log(file)
+    }
+    const navigate = useNavigate();
+
+    const logoutHandler = async () => {
+        // dispatch(actLogout())
+        //     .unwrap()
+        //     .then(
+        //         () => {
+        //             navigate('/Binko/');
+
+        //         }
+        //     )
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            dispatch(authLogout())
+            navigate('/Binko/');
+
+        } catch (error) {
+            console.log(error)
+        }
     }
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
@@ -64,6 +88,7 @@ function Profile() {
                                 <Input type='email' value={auth.user?.username} placeholder={language === 'Arabic' ? 'email' : 'ايميل'} />
                                 <Input type='password' value={auth.user?.password} placeholder={language === 'Arabic' ? 'password' : 'كلمة المرور'} />
                                 <Input type='submit' value={language === 'Arabic' ? 'تغيير' : 'Change'} />
+                                <SecondaryButton onClick={logoutHandler} style={{ height: '50px', width: '100px', marginTop: "10px" }}>{language === 'Arabic' ? ' تسجيل الخروج ' : 'Logout'} </SecondaryButton>
                             </div>
                         </Tab>
                         <Tab eventKey="profile" title=
