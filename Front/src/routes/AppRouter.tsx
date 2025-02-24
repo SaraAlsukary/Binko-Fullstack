@@ -15,6 +15,7 @@ const Registeration = lazy(() => import('@pages/Registeration/Registeration'));
 const Books = lazy(() => import('@pages/Books/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
 const AddBook = lazy(() => import('@pages/AddBook/AddBook'));
+const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
 const AddChapter = lazy(() => import('@pages/AddChapter/AddChapter'));
 const Favorite = lazy(() => import('@pages/Favorite/Favorite'));
 const Profile = lazy(() => import('@pages/Profile/Profile'));
@@ -38,6 +39,9 @@ const AppRouter = () => {
         }, {
             path: '/Binko/home',
             element: <SuspendPage> <Home /></SuspendPage>
+        }, {
+            path: 'profile/:id',
+            element: <SuspendPage><UpdateBook /></SuspendPage>
         },
         {
             path: 'booksSearch',
@@ -71,10 +75,7 @@ const AppRouter = () => {
             path: 'addBook',
             element: <SuspendPage><AddBook /></SuspendPage>
         },
-        {
-            path: 'addChapter',
-            element: <SuspendPage><AddChapter /></SuspendPage>
-        },
+
         {
             path: 'favorite',
             element: <SuspendPage><Favorite /></SuspendPage>
@@ -85,6 +86,7 @@ const AppRouter = () => {
         {
             path: 'books/:id',
             element: <SuspendPage><BooksInfo /></SuspendPage>,
+
         },
         {
             path: 'books/:id/:idChapter',
@@ -92,7 +94,7 @@ const AppRouter = () => {
         }
             , {
 
-            path: 'userInfo',
+            path: 'userInfo/:id',
             element: <SuspendPage><UserInfo /></SuspendPage>,
         }
 
@@ -115,7 +117,14 @@ const AppRouter = () => {
     }, {
         path: '/Binko/admin',
         element: <SuspendPage><Admin /></SuspendPage>
+    }, {
+        path: '/Binko/books/:id/addChapter',
+        element: <SuspendPage><AddChapter /></SuspendPage>
     },
+        // {
+        //     path: '/Binko/profile/:id',
+        //     element: <SuspendPage><UpdateBook /></SuspendPage>
+        // },
     ])
     return <RouterProvider router={router} />
 }

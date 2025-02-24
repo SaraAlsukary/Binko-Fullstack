@@ -22,19 +22,21 @@
     position: absolute;
     height: 300px;
     width: 200px;
-    padding: 10px;
+    /* padding: 10px; */
     top: 9px;
-    left: 21px;
+    /* left: 21px; */
 }
 
+/* 
 [data-lang='Arabic'] .booCard .pic {
     right: 21px;
-}
+} */
 
 .booCard .pic img {
     position: absolute;
     width: 100%;
     border: 2px solid var(--secondary-color);
+    border-radius: 6px;
     height: 100%;
 }
 
@@ -116,6 +118,7 @@
 
 .booCard .text .paraga p {
     width: 196px;
+    text-align: center;
 }
 
 .booCard .text h3 {

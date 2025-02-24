@@ -5,15 +5,15 @@ import { TBooks } from "@customtypes/booksTypes";
 
 type TResponse = TBooks[];
 const actGetfavorite = createAsyncThunk(
-    "books/actGetBooks",
-    async (accessToken, thunkAPI) => {
+    "favorite/actGetBooks",
+    async (id, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.get<TResponse>(
-                `favorite-books/`,
+                `favorite-books/${id}`,
                 {
                     signal,
-                    headers: { Authorization: `Bearer ${accessToken}` }
+                    // headers: { Authorization: `Bearer ${accessToken}` }
                 }
             );
             console.log(response.data)

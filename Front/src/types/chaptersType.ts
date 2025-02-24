@@ -1,5 +1,6 @@
 export type TChapters = {
+    id: number,
     title: string,
-    content_text: [],
+    content_text: string,
     audio: string
 }

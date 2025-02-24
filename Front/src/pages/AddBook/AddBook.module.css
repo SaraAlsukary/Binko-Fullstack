@@ -6,6 +6,21 @@
     position: relative;
 }
 
+.mul {
+    display: flex;
+    flex-direction: column;
+}
+
+.mul label {
+    cursor: pointer;
+}
+
+.mul input[type="checkbox"] {
+    accent-color: var(--main-color);
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .bookInfo {
     display: flex;
     justify-content: center;

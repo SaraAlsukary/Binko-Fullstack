@@ -11,68 +11,80 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import './Book.css'
-import { useAppSelector } from '@hooks/app';
+import { useAppDispatch, useAppSelector } from '@hooks/app';
+import actGetBooks from '@store/booksSlice/act/actGetBooks';
+import { useNavigate } from 'react-router-dom';
+import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
+import { TBooks } from '@customtypes/booksTypes';
 type TCategory = {
-    name: string,
+    id: Number,
+    name: string | null,
     Image: React.ReactNode,
-    author: string
+    author: string | null
 }
 type TCategoryAra = {
-    الاسم: string,
+    id: Number,
+    الاسم: string | null,
     الصورة: React.ReactNode,
-    الكاتب: string
+    الكاتب: string | null
 }
-function Book() {
+function Book({ rend }: { rend: boolean }) {
+    const [show, setShow] = useState(false);
     const { language } = useAppSelector(state => state.language);
-    const [users, setUsersList] = useState([]);
+    const { books, acceptedBooks } = useAppSelector(state => state.books);
+    const booksUser = useAppSelector(state => state.users.users);
+    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
     const [showAddMode, setShowAddMode] = useState(false);
     const [showEditMode, setShowEditMode] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null)
-
+    const dispatch = useAppDispatch();
+    let booksData: TBooks[] = books;
+    const navigate = useNavigate();
     useEffect(() => {
+        dispatch(actGetBooksToAccept())
+        dispatch(actGetBooks())
+    }, [])
+    useEffect(() => {
+        console.log(booksData);
+        // booksData.push(...acceptedBooks);
+        console.log(booksData);
+
+        // console.log(booksData)
+        const getAllUsers = async () => {
+            const category: TCategory[] = acceptedBooks.map((book) => {
+                return ({
+                    id: book.id,
+                    name: book.name,
+                    author: booksUser.find((user) => user.id === book.user)?.name,
+                    Image: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+
+                })
+            })
+            const categoryAra: TCategoryAra[] = books.map((book) => {
+                return ({
+                    id: book.id,
+                    الاسم: book.name,
+                    الكاتب: booksUser.find((user) => user.id === book.user)?.name,
+                    الصورة: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+
+                })
+            })
+            const data = language === 'Arabic' ? categoryAra : category
+            setUsersList(data);
+        }
+
         getAllUsers();
-    }, [language]);
+    }, [language, rend]);
 
-
-    const getAllUsers = async () => {
-        // try {
-        //     const response = await axios.get('http://localhost:4000/users');
-        //     if (response) {
-        //         setUsersList(response.data);
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
-        const category: TCategory = [{
-            name: 'Les Misarables',
-            author: 'Victor Hugo',
-            Image: <img src={img} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            name: 'Crime and Punchment',
-            author: 'Fydore Destoyvesky',
-            Image: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
-        }]
-        const categoryAra: TCategoryAra = [{
-            الاسم: 'Les Misarables',
-            الكاتب: 'Victor Hugo',
-            الصورة: <img src={img} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            الاسم: 'Crime and Punchment',
-            الكاتب: 'Fydore Destoyvesky',
-            الصورة: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
-        }]
-        const data = language === 'Arabic' ? categoryAra : category
-        setUsersList(data);
-    }
 
     const actionsTemplate = (rowDate: object) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
-                    setShowViewMode(true)
+                    navigate(`/Binko/books/${rowDate.id}`)
+                    // setSelectedUserId(rowDate?.id)
+                    // setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
@@ -96,20 +108,23 @@ function Book() {
             icon: 'pi pi-trash',
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
-            accept: () => deleteUser(userId),
+            accept: () => {
+                setShow(true)
+                deleteUser(userId)
+            },
         });
     }
 
     const deleteUser = async (userId: number) => {
-        try {
-            const response = await axios.delete('http://localhost:4000/users/' + userId);
-            if (response) {
-                getAllUsers();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
+        // try {
+        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
+        //     if (response) {
+        //         getAllUsers();
+        //     }
+        // }
+        // catch (e) {
+        //     console.log(e)
+        // }
     }
 
     return (
@@ -174,8 +189,10 @@ function Book() {
                     }} />
                 </Dialog> */}
 
-                <ConfirmDialog />
-
+                {show ?
+                    <ConfirmDialog />
+                    : ""
+                }
             </div>
         </>
     )

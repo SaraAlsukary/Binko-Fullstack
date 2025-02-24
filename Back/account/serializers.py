@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['name', 'username', 'password', 'confirm_password','is_admin', 'is_supervisor']
+        fields = ['id','name', 'username', 'password', 'confirm_password','is_admin', 'is_supervisor']
         extra_kwargs = {'password': {'write_only': True}}
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -59,3 +59,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'name', 'image', 'discriptions']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__' 

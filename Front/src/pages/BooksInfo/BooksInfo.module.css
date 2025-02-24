@@ -356,6 +356,11 @@
     display: block;
 }
 
+.commentBtns {
+    display: flex;
+    justify-content: flex-end;
+}
+
 @media (min-width:768px) and (max-width:991px) {
     .bookCont .left {
         width: 46%;

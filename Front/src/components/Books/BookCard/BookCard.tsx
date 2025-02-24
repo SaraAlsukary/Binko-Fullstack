@@ -4,17 +4,17 @@ import { TBooks } from '@customtypes/booksTypes';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@hooks/app';
 const { pic, text, paraga, info, btnCard, booCard } = styles;
-const BookCard = ({ image, description, user, name, file, id }: TBooks) => {
+const BookCard = ({ image, description, user, name, id }: TBooks) => {
     const navigate = useNavigate();
     const { language } = useAppSelector(state => state.language);
 
     return (
-        <div className={booCard} >
+        <div className={booCard} key={id} >
             <div className={pic}>
-                <img src={file ? file : image} alt="" crossOrigin='anonymous' />
+                <img src={`http://127.0.0.1:8000${image}`} alt="" crossOrigin='anonymous' />
             </div>
             <div className={text}>
-                <div onClick={() => navigate(`${id}`)} className={paraga}>
+                <div onClick={() => navigate(`/Binko/books/${id}`)} className={paraga}>
                     <h3>{name}</h3>
                     <span>{user}</span>
                     <p>{description}</p>

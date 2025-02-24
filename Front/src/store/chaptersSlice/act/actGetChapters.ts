@@ -6,12 +6,12 @@ import { TChapters } from "@customtypes/chaptersType";
 type TResponse = TChapters[];
 
 const actGetChapters = createAsyncThunk(
-    "books/actGetChapters",
+    "chapters/actGetChapters",
     async (id, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.get<TResponse>(
-                `chapters?book_id=${id}/`,
+                `books/${id}/chapters/`,
                 {
                     signal,
                 }

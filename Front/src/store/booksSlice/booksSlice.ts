@@ -63,14 +63,21 @@ import actGetBooks from "./act/actGetBooks";
 import { TBooks } from "@customtypes/booksTypes";
 import { TLoading } from "@customtypes/loadingType";
 import { isString } from "@customtypes/isString";
+import actAddBooks from "./act/actAddBooks";
+import actGetMyBooks from "./act/actGetMyBooks";
+import actGetBooksToAccept from "./act/actGetBooksToAccept";
 interface IBooksState {
     books: TBooks[];
+    acceptedBooks: TBooks[];
+    myBooks: TBooks[];
     loading: TLoading;
     error: string | null;
 }
 
 const initialState: IBooksState = {
     books: [],
+    acceptedBooks: [],
+    myBooks: [],
     loading: "idle",
     error: null,
 };
@@ -79,8 +86,14 @@ const books = createSlice({
     name: "books",
     initialState,
     reducers: {
+        actClearBook: (state) => {
+            state.books = [];
+        }, actClearMyBook: (state) => {
+            state.myBooks = [];
+        },
     },
     extraReducers: (builder) => {
+        // get books
         builder.addCase(actGetBooks.pending, (state) => {
             state.loading = "pending";
             state.error = null;
@@ -95,7 +108,53 @@ const books = createSlice({
                 state.error = action.payload;
             }
         });
+
+        // add books
+        builder.addCase(actAddBooks.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAddBooks.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.myBooks = action.payload;
+        });
+        builder.addCase(actAddBooks.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // get my books
+        builder.addCase(actGetMyBooks.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetMyBooks.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.myBooks = action.payload;
+        });
+        builder.addCase(actGetMyBooks.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // get Books to accept
+        builder.addCase(actGetBooksToAccept.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetBooksToAccept.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.acceptedBooks = action.payload;
+        });
+        builder.addCase(actGetBooksToAccept.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
     },
 });
-
+export const { actClearBook, actClearMyBook } = books.actions
 export default books.reducer

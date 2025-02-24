@@ -15,10 +15,13 @@ const initialState: IBooksState = {
     error: null,
 };
 
-const category = createSlice({
+const categories = createSlice({
     name: "categories",
     initialState,
     reducers: {
+        actClearCategories: (state) => {
+            state.categories = [];
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(actGetCategories.pending, (state) => {
@@ -37,5 +40,5 @@ const category = createSlice({
         });
     },
 });
-
-export default category.reducer
+export const { actClearCategories } = categories.actions
+export default categories.reducer

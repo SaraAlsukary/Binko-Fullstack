@@ -11,7 +11,8 @@ type TResponse = {
     message: string,
     token: string,
     username: boolean,
-    user_type: string
+    user_type: string,
+    id: number
 };
 
 const actLogin = createAsyncThunk(

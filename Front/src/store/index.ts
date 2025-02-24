@@ -17,10 +17,9 @@ import favorite from "./Favorite/favoriteSlice";
 import theme from "./themeSlice/themeSlice";
 import chapters from "./chaptersSlice/chaptersSlice";
 import comments from "./commentsSlice/commentsSlice";
-import addChapter from "./addChapterSlice/addChapterSlice";
-import addBook from "./addBookSlice/addBookSlice";
 import categories from "./categorySlice/categorySlice";
-
+import users from './usersSlice/userSlice';
+import supervisors from './supervisorSlice/supervisorSlice';
 // const rootPersistConfig = {
 //     key: "root",
 //     storage,
@@ -56,14 +55,14 @@ const authPersistConfig = {
 const rootReducer = combineReducers({
     language: language,
     theme: theme,
-    categories: categories,
-    addChapter: addChapter,
-    addBook: addBook,
+    categories,
     auth: persistReducer(authPersistConfig, auth),
     books,
     favorite,
     chapters,
-    comments
+    comments,
+    supervisors,
+    users
 });
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 

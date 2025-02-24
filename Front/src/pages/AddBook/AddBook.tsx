@@ -1,32 +1,31 @@
 import { Container } from "react-bootstrap"
 import Styles from './AddBook.module.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@hooks/app";
 import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButton";
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
-import { addBook } from "@store/addBookSlice/addBookSlice";
+import actAddBooks from "@store/booksSlice/act/actAddBooks";
+import actGetCategories from "@store/categorySlice/act/actGetCategories";
 
-const { addBooksContainer, cont, controlBtn, input, pic, img, bookInfo, } = Styles;
+const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
 const AddBook = () => {
-    const formData = new FormData;
-    const formDataInfo = new FormData;
-    const [imageFile, setImageFile] = useState(formData);
+    const dataForm = new FormData();
     const [image, setImage] = useState('');
+    const [imageFile, setImageFile] = useState('');
+    const [category, setCategory] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
-    const { books } = useAppSelector(state => state.addBook);
-    // const data = {
-    //     id: Math.floor(Math.random()),
-    //     image: imageFile,
-    //     user: 'name',
-    //     name,
-    //     description
-    // }
+    // const { user } = useAppSelector(state => state.auth);
+    const { books } = useAppSelector(state => state.books);
+    const { categories } = useAppSelector(state => state.categories);
 
-    console.log(books);
-
+    var cate: any = [];
+    const categoryHandler = (e: any) => {
+        const value = parseInt(e.target.value);
+        cate.push(value);
+    }
     const titleHandler = (e: any) => {
         setName(e.target.value);
     }
@@ -35,17 +34,38 @@ const AddBook = () => {
     }
     const imageHandler = (e: any) => {
         setImage(URL.createObjectURL(e.target.files[0]));
-        formDataInfo.append('image', e.target.files[0]);
-    }
-    const addBookToMem = (data: Object) => {
-        formDataInfo.append('name', name);
-        formDataInfo.append('description', description);
+        // dataForm.append('image', e.target.files[0])
+        setImageFile(e.target.files[0])
+        // console.log(e.target.files[0])
 
-        dispatch(addBook(formDataInfo));
+    }
+    const addBookHandler = () => {
+        setCategory(cate);
+        dataForm.append('image', imageFile)
+        dataForm.append('name', name);
+        dataForm.append('description', description);
+        dataForm.append('categories', category as any);
+        // dataForm.append('user_id', user?.user_id);
+        // console.log(dataForm)
+        // console.log(imageFile)
+        dispatch(actAddBooks(dataForm))
+            .unwrap()
+            .then(() => alert(language === 'English' ? 'Your Book published successfully!' : "تم نشر كتابك بنجاح!"))
         setDescription('');
         setImage('');
         setName('');
+        setImageFile('')
+        setCategory([])
+        console.log(books)
     }
+    const CategoriesSelects = categories.map((cate) =>
+        <div key={cate.id} className={mulch}>
+            <input onClick={categoryHandler} type="checkbox" value={cate.id} id={cate.name} />
+            <label htmlFor={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</label>
+        </div>)
+    useEffect(() => {
+        dispatch(actGetCategories())
+    }, [])
     return (
         <div className={addBooksContainer}>
             <Container className={cont}>
@@ -66,18 +86,31 @@ const AddBook = () => {
                     <div className={input}>
                         <SecondaryInput onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
                         <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
-                        <select name="" id="">
-                            <option value="">Horror</option>
-                            <option value="">Action</option>
-                            <option value="">Advanture</option>
-                            <option value="">Romance</option>
-                            <option value="">Fantasy</option>
-                        </select>
+                        <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
+                        <div className={mul}>
+                            {CategoriesSelects}
+                            {/* <div className={mulch}>
+                                <input onClick={categoryHandler} type="checkbox" value={1} id="Action" />
+                                <label htmlFor="Action" >Action</label>
+                            </div>
+                            <div className={mulch}>
+                                <input type="checkbox" onClick={categoryHandler} value={2} id="Advanture" />
+                                <label htmlFor="Advanture" >Advanture</label>
+                            </div>
+                            <div className={mulch}>
+                                <input type="checkbox" onClick={categoryHandler} value={3} id="Romance" />
+                                <label htmlFor="Romance" >Romance</label>
+                            </div>
+                            <div className={mulch}>
+                                <input type="checkbox" onClick={categoryHandler} value={4} id="Fantasy" />
+                                <label htmlFor="Fantasy" >Fantasy</label>
+                            </div> */}
+                        </div>
+
                     </div>
                 </div>
                 <div className={controlBtn}>
-                    <SecondaryButton onClick={() => addBookToMem(formData)}>{language === 'English' ? 'Save' : 'حفظ'}</SecondaryButton>
-                    <SecondaryButton>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
+                    <SecondaryButton onClick={() => addBookHandler()}>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
                 </div>
             </Container>
         </div >

@@ -11,7 +11,7 @@ const BookCardSquare = ({ image, description, user, name, id }: TBooks) => {
     return (
         <div onClick={() => navigate(`${id}`)} className={booCard} >
             <div className={pic}>
-                <img src={image} alt="" crossOrigin='anonymous' />
+                <img src={`http://127.0.0.1:8000${image}`} alt="" crossOrigin='anonymous' />
             </div>
             <div className={text}>
                 <h3>{name}</h3>

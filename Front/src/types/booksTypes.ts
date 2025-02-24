@@ -1,9 +1,10 @@
 export type TBooks = {
-    id?: number
+    id?: number,
+    is_accept?: boolean,
     user?: string,
     name?: string,
     image?: string,
     description?: string,
-    file?: string,
+    category?: number,
     publication_date?: string
 }

@@ -51,16 +51,10 @@ const Login = () => {
                 .unwrap()
                 .then((res) => {
                     if (res.user_type === 'admin') {
-                        console.log('admin')
                         navigate('/Binko/admin')
                     } else if (res.user_type === 'supervisor') {
-                        console.log('supervisor')
                         navigate('/Binko/supervisor')
                     } else {
-                        // console.log(res.id)
-                        // console.log(res.data.id)
-                        console.log(res)
-                        console.log('superuser')
                         navigate('/Binko/')
                     }
                 })

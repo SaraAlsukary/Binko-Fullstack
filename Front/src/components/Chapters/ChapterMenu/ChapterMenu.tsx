@@ -13,9 +13,9 @@ const ChapterMenu = () => {
     const navigate = useNavigate();
     const param: any = useParams();
     const { chapters, books } = useAppSelector(state => state);
-    const bookInfo = books.find(book => book.id == param.id);
+    const bookInfo = books.books.find(book => book.id == param.id);
     const chapterIndex = parseInt(param.idChapter);
-    const chaptersList = chapters.map((chapter, idx) => <li className={idx === chapterIndex ? `${active}` : ""} key={chapter.id} onClick={() => navigate(`/Binko/books/${param.id}/${idx}`)}>{chapter.title}</li>)
+    const chaptersList = chapters.chapters.map((chapter, idx) => <li className={chapter.id === chapterIndex ? `${active}` : ""} key={chapter.id} onClick={() => navigate(`/Binko/books/${param.id}/${chapter.id}`)}>{chapter.title}</li>)
     const activeHandler = () => {
         var el = document.getElementById('list');
         el?.classList.toggle(active);

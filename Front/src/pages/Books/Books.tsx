@@ -21,7 +21,7 @@ const Books = () => {
     const { language } = useAppSelector(state => state.language);
     const booksCards = books.map(((book: TBooks) => <BookCard key={book.id} {...book} />))
     const booksCardsSquare = books.map(((book: TBooks) => <BookCardSquare key={book.id} {...book} />));
-    const booksCardsBackground = books.map(((book: TBooks) => <BooksBackground key={book.id} img={image} />));
+    // const booksCardsBackground = books.map(((book: TBooks) => <BooksBackground key={book.id} img={image} />));
     useEffect(() => {
         dispatch(actGetBooks())
     }, [])
@@ -29,17 +29,17 @@ const Books = () => {
 
         <div className={bookContainer}>
             <Container>
-
+                {/* 
                 <BookCardList settings={settingsBackground} type={square}>
                     {booksCardsBackground}
-                </BookCardList>
+                </BookCardList> */}
                 <HeadingTitle>{language === 'English' ? 'Fantasy' : 'فنتازيا'}</HeadingTitle>
                 <BookCardList settings={settingsBox} type={box}>
                     {booksCards}
                 </BookCardList>
-                <BookCardList settings={settingsBackground} type={square}>
+                {/* <BookCardList settings={settingsBackground} type={square}>
                     {booksCardsBackground}
-                </BookCardList>
+                </BookCardList> */}
                 <HeadingTitle>{language === 'English' ? 'Action' : 'أكشن'}</HeadingTitle>
 
                 <BookCardList settings={settingsSquare} type={square}>

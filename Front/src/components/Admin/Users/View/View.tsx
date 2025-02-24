@@ -1,32 +1,26 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
+import { useAppSelector } from '@hooks/app';
+import { TUser } from '@customtypes/userType';
 
-const initialUserInfo = {
+const initialUserInfo: TUser = {
     name: '',
-    comment: '',
-    profile: '',
-
+    id: 0,
+    image: '',
+    discriptions: ''
 }
 
-function View(props) {
+function View({ userId }: { userId: number }) {
     const [userInfo, setUserInfo] = useState(initialUserInfo);
-
+    const { users } = useAppSelector(state => state.users);
+    const { language } = useAppSelector(state => state.language);
+    const user = users.find((user) => user.id == userId)
     useEffect(() => {
         fetchUserData()
     }, []);
 
-    const fetchUserData = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/users/' + props.userId);
-            if (response) {
-                console.log(response.data);
-                setUserInfo(response.data);
-            }
-            return
-        }
-        catch (e) {
-            console.log(e)
-        }
+    const fetchUserData = () => {
+        setUserInfo(user as TUser);
+
     }
 
 
@@ -37,20 +31,20 @@ function View(props) {
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Profile:</span>
-                            <img src={userInfo.profile} />
+                            <span>{language === 'English' ? 'Profile:' : "الصورة"}</span>
+                            <img src={`http://127.0.0.1:8000${userInfo.image}`} />
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Name:</span>
+                            <span>{language === 'English' ? 'Name:' : "الاسم"}</span>
                             <span>{userInfo.name}</span>
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Comment:</span>
-                            <span>{userInfo.comment}</span>
+                            <span>{language === 'English' ? 'Bio:' : "الوصف"}</span>
+                            <span>{userInfo.discriptions}</span>
                         </p>
                     </div>
 

@@ -11,12 +11,11 @@ const actGetBooks = createAsyncThunk(
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.get<TResponse>(
-                'books/',
+                'allbooks/',
                 {
                     signal,
                 }
             );
-            console.log(response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

@@ -36,7 +36,7 @@ def login_user(request):
             'message': f'تم تسجيل الدخول بنجاح كـ {user_type}.',
             'user_type': user_type,
             'token': token.key,
-            'user_id': user.id,
+            'id': user.id,
             'username': user.username
         }, status=status.HTTP_200_OK)
     
@@ -73,3 +73,19 @@ def get_non_supervisor_users(request):
     users = CustomUser.objects.filter(is_supervisor=False)
     serializer = CustomUserSerializer(users, many=True)
     return Response(serializer.data)    
+
+@api_view(['GET'])
+def get_supervisor_users(request):
+    users = CustomUser.objects.filter(is_supervisor=True)
+    serializer = CustomUserSerializer(users, many=True)
+    return Response(serializer.data)    
+
+
+@api_view(['DELETE'])
+def delete_user(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)  # استجابة بنجاح بدون محتوى
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

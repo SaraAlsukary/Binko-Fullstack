@@ -1,86 +1,70 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
-import axios from 'axios';
-import img from '@assets/imgs/night-adventure-with-fairy-glowing-object-generative-ai_188544-12605.avif'
-import img2 from '@assets/imgs/thought-you-guys-might-like-these-ghibli-inspired-library-v0-byeryvq215wb1.webp'
-import img3 from '@assets/imgs/illustration-bookshelf-with-books_961004-3667.avif'
 import ViewUser from './View/View';
-import AddUser from './Add/Add';
-import EditUser from './Edit/Edit';
-import { ConfirmDialog } from 'primereact/confirmdialog';
-import { confirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog as ConfirmUser } from 'primereact/confirmdialog';
+import { confirmDialog as confirm } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import './Users.css'
-import { useAppSelector } from '@hooks/app';
+import { useAppDispatch, useAppSelector } from '@hooks/app';
+import actGetUsers from '@store/usersSlice/act/actGetUsers';
+import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 type TCategory = {
-    name: string,
+    name: string | null,
     profile: React.ReactNode,
-    bio: string
-}
+    bio: string | null
+};
 type TCategoryAra = {
-    الاسم: string,
+    الاسم: string | null,
     الصورة: React.ReactNode,
-    الوصف: string
-}
-function Comment() {
+    الوصف: string | null
+};
+function Comment({ rend }: { rend: boolean }) {
     const { language } = useAppSelector(state => state.language);
-
-    const [users, setUsersList] = useState([]);
+    const userss = useAppSelector(state => state.users);
+    const dispatch = useAppDispatch();
+    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
-    const [showAddMode, setShowAddMode] = useState(false);
-    const [showEditMode, setShowEditMode] = useState(false);
+    const [show, setShow] = useState(false);
+    // const [showAddMode, setShowAddMode] = useState(false);
+    // const [showEditMode, setShowEditMode] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null)
-
     useEffect(() => {
+        dispatch(actGetUsers())
+
+    }, [])
+    useEffect(() => {
+        const getAllUsers = () => {
+            const category: TCategory[] = userss.users.map((user) => {
+                return ({
+                    id: user.id,
+                    name: user.name,
+                    bio: user.discriptions,
+                    profile: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+
+                })
+
+            })
+            const categoryAra: TCategoryAra[] = userss.users.map((user) => {
+                return ({
+                    id: user.id,
+                    الاسم: user.name,
+                    الوصف: user.discriptions,
+                    الصورة: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+
+                })
+            })
+            const data = language === 'Arabic' ? categoryAra : category
+            setUsersList(data);
+
+
+
+        }
         getAllUsers();
-    }, [language]);
+    }, [language, rend]);
 
 
-    const getAllUsers = async () => {
-        // try {
-        //     const response = await axios.get('http://localhost:4000/users');
-        //     if (response) {
-        //         setUsersList(response.data);
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
-        const category: TCategory = [{
-            name: 'Alaa',
-            bio: ' Reading is my life!',
-            profile: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
-        }, {
-            name: 'Noor',
-            bio: 'To hold a pen is to be at war!',
-            profile: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
 
-        }, {
-            name: 'سارة',
-            bio: 'ذو العقل يشقى بالنعيم بعقله وأخو الجهالة في الشقاوة ينعمُ',
-            profile: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }]
-        const categoryAra: TCategoryAra = [{
-            الاسم: 'Alaa',
-            الوصف: ' Reading is my life!',
-            الصورة: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
-        }, {
-            الاسم: 'Noor',
-            الوصف: 'To hold a pen is to be at war!',
-            الصورة: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }, {
-            الاسم: 'سارة',
-            الوصف: 'ذو العقل يشقى بالنعيم بعقله وأخو الجهالة في الشقاوة ينعمُ',
-            الصورة: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }]
-        const data = language === 'Arabic' ? categoryAra : category
-
-        setUsersList(data);
-    }
 
     const actionsTemplate = (rowDate: object) => {
         return (
@@ -97,15 +81,20 @@ function Comment() {
                 }}>
                     <i className='pi pi-file-edit'></i>
                 </button> */}
-                <button className='btn btn-danger' onClick={() => deleteUserConfirm(rowDate?.id)}>
+                <button className='btn btn-danger' onClick={() => {
+                    setShow(true)
+                    console.log(rowDate?.id)
+                    deleteConfirm(rowDate?.id)
+                }}>
                     <i className='pi pi-trash'></i>
                 </button>
             </>
         )
     }
 
-    const deleteUserConfirm = (userId: number) => {
-        confirmDialog({
+
+    const deleteConfirm = (userId: number) => {
+        confirm({
             message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف المستخدم' : 'Are you sure you want to delete this user?',
             header: language === 'English' ? 'Confirmation' : "التأكيد",
             icon: 'pi pi-trash',
@@ -115,16 +104,20 @@ function Comment() {
         });
     }
 
-    const deleteUser = async (userId: number) => {
-        try {
-            const response = await axios.delete('http://localhost:4000/users/' + userId);
-            if (response) {
-                getAllUsers();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
+    const deleteUser = (userId: number) => {
+        dispatch(actDeleteUser(userId))
+            .unwrap().then(() => {
+                alert('user deleted succesfully!')
+            })
+        // try {
+        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
+        //     if (response) {
+        //         getAllUsers();
+        //     }
+        // }
+        // catch (e) {
+        //     console.log(e)
+        // }
     }
 
     return (
@@ -149,11 +142,6 @@ function Comment() {
                             <Column field={language === 'English' ? "profile" : "الصورة"} header={language === 'English' ? "profile" : "الصورة"}></Column>
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
                             <Column field={language === 'English' ? "bio" : "الوصف"} header={language === 'English' ? "bio" : "الوصف"}></Column>
-                            {/* <Column field="name" header="Name"></Column>
-                            <Column field="username" header="Username"></Column>
-                            <Column field="email" header="Email Adress"></Column>
-                            <Column field="phone" header="Phone Number"></Column>
-                            <Column field="website" header="Website"></Column> */}
                             <Column header={language === 'English' ? "Actions" : "العمليات"} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
@@ -189,7 +177,7 @@ function Comment() {
                     }} />
                 </Dialog> */}
 
-                <ConfirmDialog />
+                {show ? <ConfirmUser /> : ''}
 
             </div>
         </>

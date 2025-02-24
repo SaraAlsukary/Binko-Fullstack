@@ -1,44 +1,49 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import style from './UserInfo.module.css';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import BookCard from '@components/Books/BookCard/BookCard';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 import { Button } from '@components/feedback';
+import { useParams } from 'react-router-dom';
+import actGetUsers from '@store/usersSlice/act/actGetUsers';
+import actGetfavorite from '@store/Favorite/act/actGetfavorite';
+import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
 const { profileContainer, settings, userName, pic, img, info } = style;
 
 const UserInfo = () => {
 
     const [file, setFile] = useState('');
-
-    // const dispatch = useAppDispatch();
+    const { id } = useParams();
+    const idx = parseInt(id);
+    const { users } = useAppSelector(state => state.users);
+    const { books } = useAppSelector(state => state.favorite);
+    const { myBooks } = useAppSelector(state => state.books);
+    const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
-    const { favorite, books } = useAppSelector(state => state);
     // const booksCardsWrite = addBook.books.map((book => <BookCard {...book} />))
-    const booksCardsFavorite = favorite.books.map((book => <BookCard {...book} />))
-    const booksCardsPublished = books.books.map((book => <BookCard {...book} />))
-
-    // const data = {
-    //     // file: imageFile,
-    //     // username,
-    //     // password,
-
-
-    // }
-
-    // useEffect(() => {
-    //     dispatch(actGetfavorite(auth.accessToken));
-    // }, [])
+    const booksCardsFavorite = books.map((book => <BookCard {...book} />))
+    const booksCardsPublished = myBooks.map((book => <BookCard {...book} />))
+    const userInfo = users.find(user => user.id === idx);
+    useEffect(() => {
+        dispatch(actGetUsers())
+        dispatch(actGetfavorite(idx))
+        dispatch(actGetMyBooks(idx))
+    }, [])
 
     return (
         <div className={profileContainer}>
             <Container>
                 <div className={pic}>
                     <div className={img}>
-                        <img src={file} alt="" />
-                    </div>                </div>
+                        <img src={`http://127.0.0.1:8000${userInfo?.image}`} alt="" />
+                    </div>
+                </div>
+                <div className="para">
+                    <p>{userInfo?.discriptions}</p>
+                </div>
                 <div className={userName}>
-                    <h2>Sara Alsukary</h2>
+                    <h2>{userInfo?.name}</h2>
                 </div>
                 <div className={userName}>
                     <Button>{language === 'Arabic' ? 'محادثة' : "Chat"}</Button>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import ViewUser from './View/View';
 import AddUser from './Add/Add';
 import EditUser from './Edit/Edit';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog as ConfirmCategory } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -23,9 +23,10 @@ type TCategoryAra = {
     الاسم_العربي: React.ReactNode,
     الملف: string
 }
-function Category() {
+function Category({ rend }: { rend: boolean }) {
     const { language } = useAppSelector(state => state.language);
     const { categories } = useAppSelector(state => state.categories);
+    const [show, setShow] = useState(false);
     const dispatch = useAppDispatch();
     const [users, setUsersList] = useState([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -36,7 +37,7 @@ function Category() {
     useEffect(() => {
         getAllUsers();
         dispatch(actGetCategories())
-    }, [language]);
+    }, [language, rend]);
 
     const getAllUsers = async () => {
         // try {
@@ -193,8 +194,8 @@ function Category() {
                     }} />
                 </Dialog>
 
-                <ConfirmDialog />
-
+                {show ? <ConfirmCategory />
+                    : ''}
             </div >
         </>
     )

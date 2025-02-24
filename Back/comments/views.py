@@ -2,10 +2,11 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import CommentSerializer ,UserCommentSerializer
+from .serializers import CommentSerializer ,UserCommentSerializer ,GetCommentSerializer
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from account.models import CustomUser
+from django.http import JsonResponse
 from .models import Comment
 @api_view(['POST'])
 def add_comment(request, book_id, user_id): 
@@ -17,13 +18,6 @@ def add_comment(request, book_id, user_id):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-"""@api_view(['GET'])
-def get_comments_for_book(request, book_id):
-    comments = Comment.objects.filter(book=book_id)
-    serializer = CommentSerializer(comments, many=True)
-    return Response(serializer.data)
-"""
 @api_view(['GET'])
 def get_comments_by_book(request, book_id):
     try:
@@ -33,3 +27,9 @@ def get_comments_by_book(request, book_id):
         return Response({'error': 'comment not found.'}, status=status.HTTP_404_NOT_FOUND)    
     serializer = UserCommentSerializer(comments, many=True)  
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_all_comments(request):
+    comments = Comment.objects.select_related('user', 'book').all()  
+    serializer = GetCommentSerializer(comments, many=True)
+    return JsonResponse(serializer.data, safe=False, status=200)

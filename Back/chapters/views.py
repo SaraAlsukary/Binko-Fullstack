@@ -32,7 +32,7 @@ def get_book_chapters(request, book_id):
         return JsonResponse({"error": "Book not found"}, status=status.HTTP_404_NOT_FOUND)
 
     # جلب جميع الفصول المرتبطة بالكتاب
-    chapters = book.chapters.all()  # استخدام العلاقة العكسية related_name="chapters"
+    chapters = book.chapters.filter(is_accept=True)  # استخدام العلاقة العكسية related_name="chapters"
     
     # تمرير البيانات إلى السيريالايزر
     serializer = ChapterSerializer(chapters, many=True)

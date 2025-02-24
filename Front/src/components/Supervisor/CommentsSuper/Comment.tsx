@@ -23,8 +23,9 @@ type TCategoryAra = {
     الصورة: React.ReactNode,
     التعليق: string
 }
-function Comment() {
+function Comment({ rend }: { rend: boolean }) {
     const { language } = useAppSelector(state => state.language);
+    const [show, setShow] = useState(false);
 
     const [users, setUsersList] = useState([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -34,7 +35,7 @@ function Comment() {
 
     useEffect(() => {
         getAllUsers();
-    }, [language]);
+    }, [language, rend]);
 
 
     const getAllUsers = async () => {
@@ -189,7 +190,7 @@ function Comment() {
                     }} />
                 </Dialog> */}
 
-                <ConfirmDialog />
+                {show ? <ConfirmDialog /> : ""}
 
             </div>
         </>

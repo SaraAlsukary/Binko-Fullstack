@@ -49,7 +49,7 @@ const Header = () => {
 
     }
     return (
-        <header >
+        <header>
             <Container className={headerContainer} >
                 <div className={icon}><NavLink to='/'> <LogoIcon /></NavLink></div>
                 <Search className="showInput" isThereNavigate={true} checkLocate={location.pathname === '/Binko/booksSearch' ? true : false} />

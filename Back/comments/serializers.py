@@ -8,6 +8,20 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class UserCommentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='user.name')
+    image=serializers.ImageField(source='user.image')
+    
     class Meta:
         model = Comment
-        fields = ['name', 'comment']
+        fields = ['name', 'comment' , 'image']
+
+
+class GetCommentSerializer(serializers.ModelSerializer):
+
+    name = serializers.CharField(source='user.name')
+    image=serializers.ImageField(source='user.image')
+    book=serializers.CharField(source='book.name')
+    
+    class Meta:
+        model = Comment
+        fields = ['name', 'comment' ,'user','image','book']
+

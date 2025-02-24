@@ -7,8 +7,9 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@hooks/app";
 import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButton";
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
-import { addChapter } from "@store/addChapterSlice/addChapterSlice";
 import { Button } from "@components/feedback";
+import actAddChapter from "@store/chaptersSlice/act/actAddChapter";
+import { useParams } from "react-router-dom";
 const modules = {
     toolbar: [
         [{
@@ -35,11 +36,8 @@ const AddChapter = () => {
     const [audioFile, setAudioFile] = useState("");
     const { language } = useAppSelector(state => state.language);
     const dispatch = useAppDispatch();
-    const data: Object = {
-        file,
-        title,
-        value
-    }
+    const { id } = useParams();
+    const idx = parseInt(id);
     const titleHandler = (e: any) => {
         setTitle(e.target.value);
     }
@@ -47,8 +45,23 @@ const AddChapter = () => {
         setAudioFile(URL.createObjectURL(e.target.files[0]));
         setFile(e.target.files[0]);
     }
-    const addChapterToMem = (data: Object) => {
-        dispatch(addChapter(data))
+    const addChapterHandler = () => {
+        const formData = new FormData();
+        formData.append('audio', file)
+        formData.append('title', title)
+        formData.append('content_text', value)
+        // formData.append('book_id', idx)
+        const data = {
+            dataform: formData,
+            book_id: idx
+        }
+        dispatch(actAddChapter(data)).unwrap().then(() => {
+            alert('chapter published successfully!')
+        })
+        setAudioFile('');
+        setFile('');
+        setTitle('')
+        setValue('')
     }
     return (
         <div className={addBooksContainer}>
@@ -75,12 +88,12 @@ const AddChapter = () => {
                     <Col className={editors}>
                         <ReactQuill className={editorInput} modules={modules}
                             theme="snow" value={value} onChange={setValue} />
-                        {/* <div className={contentText} dangerouslySetInnerHTML={{ __html: value }} /> */}
+                        {/* <div className={'contentText'} dangerouslySetInnerHTML={{ __html: value }} /> */}
                     </Col>
                 </Row>
                 <div className={controlBtn}>
-                    <SecondaryButton onClick={() => addChapterToMem(data)}>{language === 'English' ? 'Save' : 'حفظ'}</SecondaryButton>
-                    <SecondaryButton>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
+                    {/* <SecondaryButton onClick={() => addChapterToMem(data)}>{language === 'English' ? 'Save' : 'حفظ'}</SecondaryButton> */}
+                    <SecondaryButton onClick={addChapterHandler}>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
                 </div>
 
             </Container>

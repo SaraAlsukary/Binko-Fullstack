@@ -1,8 +1,12 @@
 .list {
     display: flex;
     flex-direction: column;
+    position: absolute;
+    left: 0;
+    padding: 0;
 }
 
+/* .list a{} */
 .icons {
     display: flex;
     align-items: center;
@@ -10,12 +14,12 @@
     width: 150px;
     height: 70px;
     position: relative;
-    left: -56px;
+    /* left: -56px; */
 }
 
-[data-lang='Arabic'] .icons {
+/* [data-lang='Arabic'] .icons {
     left: 66px;
-}
+} */
 
 .settings {
     height: 200px;
@@ -23,17 +27,18 @@
     height: 274px;
     border-radius: 8px;
     position: fixed;
-    left: -18px;
+    left: -29px;
     top: 100px;
     z-index: 100;
 }
 
+/* 
 @media (min-width:801px) and (max-width:991px) {
     .settings {
         left: -31px;
     }
 
-}
+} */
 
 @media (max-width:800px) {
     .settings {
@@ -47,7 +52,7 @@
     }
 
     .icons {
-        width: 153px;
+        width: 111px;
         height: 81px;
     }
 
@@ -68,7 +73,7 @@
     }
 
     .icons {
-        width: 153px;
+        width: 130px;
         height: 81px;
     }
 
