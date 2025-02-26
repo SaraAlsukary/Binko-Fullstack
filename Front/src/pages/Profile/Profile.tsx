@@ -60,7 +60,7 @@ function Profile() {
         return <BookCard name={book.name} category={book.category} image={book.image} user={userName} id={book.id} description={book.description} />
 
     }))
-    const booksCardsPublished = books.myBooks.map((book => {
+    const booksCardsPublished = books.acceptedBooks.map((book => {
         const userName = users.users.find(user => user.id === book.user)?.name;
         return <BookCard name={book.name} category={book.category} image={book.image} user={userName} id={book.id} description={book.description} />
 

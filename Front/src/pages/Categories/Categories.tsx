@@ -1,14 +1,35 @@
 import { Row, Col, Container } from "react-bootstrap";
 import Style from './Categories.module.css';
-import { useAppSelector } from "@hooks/app";
+import { useAppDispatch, useAppSelector } from "@hooks/app";
 import LottieHandler from "@components/feedback/lottieHandler/lottieHandler";
+import { useEffect } from "react";
+import actGetCategories from "@store/categorySlice/act/actGetCategories";
+import './CategoriesColor.css';
 const { cardCate, containerCate, colss, advanture, action, romance, fiction, science, scienceFiction, fantasy, classic, horror, poem } = Style;
 const Categories = () => {
-    const language = useAppSelector(state => state.language.language)
+    const language = useAppSelector(state => state.language.language);
+    const { categories } = useAppSelector(state => state.categories);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(actGetCategories())
+    }, [])
+    const categoryCard = categories.map((cate) =>
+        <Col key={cate.id} className={colss}>
+            <div className={`${cardCate} ${cate.name}`}>
+                <h3>{language === 'Arabic' ? cate.name : cate.name}</h3>
+                <video width='100' height='100' autoPlay loop>
+                    <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
+                </video>
+            </div>
+        </Col>
+    )
     return (
         <Container className={containerCate}>
             <Row>
-                <Col className={colss}>
+                {categoryCard}
+
+                {/* <Col className={colss}>
                     <div className={`${cardCate} ${advanture}`}>
                         <h3>{language === 'Arabic' ? 'مغامرة' : 'Advanture'}</h3>
                         <LottieHandler type="Advanture" loop={true} style={{ width: '100px', height: '100px' }} />
@@ -16,7 +37,7 @@ const Categories = () => {
 
                 </Col>                   <Col className={colss}>
 
-                    <div className={`${cardCate} ${action}`}>
+                    <div className={`${cardCate} Action`}>
                         <h3>{language === 'Arabic' ? 'أكشن' : 'Action'}</h3>
                         <LottieHandler type="Action" loop={true} style={{ width: '100px', height: '100px' }} />
                     </div>
@@ -81,7 +102,7 @@ const Categories = () => {
                         <LottieHandler type="Horror" loop={true} style={{ width: '100px', height: '100px' }} />
                     </div>
 
-                </Col>
+                </Col> */}
 
 
             </Row>

@@ -66,6 +66,8 @@ import { isString } from "@customtypes/isString";
 import actAddBooks from "./act/actAddBooks";
 import actGetMyBooks from "./act/actGetMyBooks";
 import actGetBooksToAccept from "./act/actGetBooksToAccept";
+import actDeleteBook from "./act/actDeleteBooks";
+import actAcceptBooks from "./act/actAcceptBook";
 interface IBooksState {
     books: TBooks[];
     acceptedBooks: TBooks[];
@@ -149,6 +151,51 @@ const books = createSlice({
             state.acceptedBooks = action.payload;
         });
         builder.addCase(actGetBooksToAccept.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //accept book
+        builder.addCase(actAcceptBooks.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAcceptBooks.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.acceptedBooks = action.payload;
+        });
+        builder.addCase(actAcceptBooks.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // delete book
+        builder.addCase(actDeleteBook.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteBook.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.acceptedBooks = action.payload;
+        });
+        builder.addCase(actDeleteBook.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //get books by category
+        builder.addCase(actDeleteBook.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteBook.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.acceptedBooks = action.payload;
+        });
+        builder.addCase(actDeleteBook.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

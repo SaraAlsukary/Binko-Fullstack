@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
+import actAddCategory from '@store/categorySlice/act/actAddCategory';
+import { useAppDispatch } from '@hooks/app';
 
 const initialUserInfo = {
     name: '',
@@ -9,20 +11,34 @@ const initialUserInfo = {
 
 function Add(props: { setUserAdded: () => void }) {
     const [userInfo, setUserInfo] = useState(initialUserInfo);
-
-    useEffect(() => {
-    }, []);
-
-    const addNewUser = async () => {
-        try {
-            const response = await axios.post('http://localhost:4000/users', userInfo);
-            if (response) {
-                props.setUserAdded();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
+    const [file, setFile] = useState("");
+    const [name, setName] = useState("");
+    const [araName, setArName] = useState("");
+    const dispatch = useAppDispatch();
+    const fileHandler = (e: any) => {
+        // setAudioFile(URL.createObjectURL(e.target.files[0]));
+        setFile(e.target.files[0]);
+    }
+    const addNewUser = () => {
+        const formdata = new FormData();
+        formdata.append("name", name);
+        formdata.append("name_arabic", araName);
+        formdata.append("file", file);
+        // try {
+        //     const response = await axios.post('http://localhost:4000/users', userInfo);
+        //     if (response) {
+        //         props.setUserAdded();
+        //     }
+        // }
+        // catch (e) {
+        //     console.log(e)
+        // }
+        dispatch(actAddCategory(formdata)).unwrap().then(() => {
+            alert('Added Successfully!')
+            setFile('')
+            setName('')
+            setArName('')
+        })
     }
 
 
@@ -38,8 +54,8 @@ function Add(props: { setUserAdded: () => void }) {
                                 type='text'
                                 className='form-control'
                                 placeholder='Enter Name'
-                                value={userInfo.name}
-                                onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+                                value={name}
+                                onChange={e => setName(e.target.value)}
                             />
                         </p>
                     </div>
@@ -50,8 +66,8 @@ function Add(props: { setUserAdded: () => void }) {
                                 type='text'
                                 className='form-control'
                                 placeholder='Enter Arabic Name'
-                                value={userInfo.arabic_name}
-                                onChange={e => setUserInfo({ ...userInfo, arabic_name: e.target.value })}
+                                value={araName}
+                                onChange={e => setArName(e.target.value)}
                             />
                         </p>
                     </div>
@@ -62,8 +78,8 @@ function Add(props: { setUserAdded: () => void }) {
                                 type='file'
                                 className='form-control'
                                 placeholder='Enter file'
-                                value={userInfo.file}
-                                onChange={e => setUserInfo({ ...userInfo, file: e.target.value })}
+                                // value={file}
+                                onChange={fileHandler}
                             />
                         </p>
                     </div>
@@ -71,7 +87,7 @@ function Add(props: { setUserAdded: () => void }) {
                 </div>
             </div>
 
-            <button className='btn btn-success' onClick={() => addNewUser()}>Add New User</button>
+            <button className='btn btn-success' onClick={() => addNewUser()}>Add New Category</button>
         </div>
     )
 }

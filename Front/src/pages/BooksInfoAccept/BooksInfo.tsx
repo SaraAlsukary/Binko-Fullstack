@@ -24,8 +24,7 @@ import { actClearFavoriteBook } from "@store/Favorite/favoriteSlice";
 import { actClearCategories } from "@store/categorySlice/categorySlice";
 import { actClearChapters } from "@store/chaptersSlice/chaptersSlice";
 import actAddComments from "@store/commentsSlice/act/actAddComment";
-import actDeleteBook from "@store/booksSlice/act/actDeleteBooks";
-import actDeleteComment from "@store/commentsSlice/act/actDeleteComment";
+import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
   text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
@@ -39,8 +38,9 @@ const BooksInfo = () => {
   const commentss = useAppSelector(state => state.comments.comments);
   const { id }: any = useParams();
   const { chapters } = useAppSelector(state => state.chapters);
-  const { books } = useAppSelector(state => state);
-  const bookInfo = books.books.find(book => book.id == id);
+  const { acceptedBooks } = useAppSelector(state => state.books);
+  const { books } = useAppSelector(state => state.books);
+  const bookInfo = acceptedBooks.find(book => book.id == id);
   const navigate = useNavigate();
   const indx = parseInt(id)
   const favoriteData = {
@@ -48,7 +48,7 @@ const BooksInfo = () => {
     book: indx
   }
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
-  const ExistedBook = books.myBooks.find((book) => book.id === indx) ? true : false;
+  const ExistedBook = books.find((book) => book.id === indx) ? true : false;
   const ExistedComment = commentss.find((comment) => comment.user_id === user?.id) ? true : false;
   const activeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
@@ -84,9 +84,9 @@ const BooksInfo = () => {
     (e.target as Element).classList.add(active);
 
   }
-  const denyHandler = () => {
-    dispatch(actDeleteBook(indx)).unwrap().then(() => {
-      alert('Deleted successfully!')
+  const acceptHandler = () => {
+    dispatch(actAcceptBooks(indx)).unwrap().then(() => {
+      alert('Accepted Successfully')
       navigate(`/Binko/admin`)
     })
   }
@@ -116,10 +116,8 @@ const BooksInfo = () => {
 
     })
   }
-  const deleteCommentHandler = (id) => {
-    // dispatch(actDeleteComment(id)).unwrap().then(() => {
-    //   alert('deleted successfully');
-    // })
+  const deleteCommentHandler = () => {
+    // dispatch()
   }
   const commentData = {
     user: user?.id,
@@ -155,7 +153,7 @@ const BooksInfo = () => {
     }, [rend]
   )
   unactiveInputHandler();
-  const categoriesBookExist = books.books.filter((book) => book.category);
+  const categoriesBookExist = acceptedBooks.filter((book) => book.category);
   const categoriesBook = categories.filter((cate) => {
     const categoryInfo = categoriesBookExist.map((cat) => {
       cat.id === cate.id
@@ -170,10 +168,10 @@ const BooksInfo = () => {
     const image = users.find(user => user.id === comment.user_id);
     return (<div key={comment?.id} className={boxCont}><div className={box}>
       <div className={commenter}>
-        <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={pic}>
+        <div onClick={() => navigate(`/Binko/userInfo/${comment.user_id}`)} className={pic}>
           <img src={`http://127.0.0.1:8000${image}`} alt="" />
         </div>
-        <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={commenterName}>
+        <div onClick={() => navigate(`/Binko/userInfo/${comment.user_id}`)} className={commenterName}>
           {comment?.name}
         </div>
       </div>
@@ -183,12 +181,9 @@ const BooksInfo = () => {
           id={`span-${comment?.name}`}
         >{language === 'English' ? `REPLY` : `الرد`}</span></p>
       </div>
-      {ExistedComment || user?.user_type === 'admin' || user?.user_type === 'supervisor' ?
-        <div className={commentBtns}>
-          {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""}
-          <Button
-            onClick={() => deleteCommentHandler(comment?.id)}
-            style={{ width: '60px', margin: "0 10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
+      {ExistedComment ?
+        <div className={commentBtns}>        <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button>
+          <Button onClick={deleteCommentHandler} style={{ width: '60px', margin: "0 10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
         </div> : ""
       }
       <div
@@ -238,11 +233,11 @@ const BooksInfo = () => {
     </div> : ''} */}
     </div >)
   });
-  // console.log(commentss)
   const chaptersList = chapters?.map((chapter, idx) => <li key={chapter.id}
     // onClick={() => navigate(`${idx}`)}
     onClick={() => navigate(`${chapter.id}`)}
   >{chapter.title}</li>)
+  console.log(ExistedBook)
   const authorData = users.find((user) => user.id === bookInfo?.user)
   return (
     <Container className={bookCont} >
@@ -250,7 +245,7 @@ const BooksInfo = () => {
         <div className={pic}>
           <img src={`http://127.0.0.1:8000${bookInfo?.image}`} alt="" crossOrigin="anonymous" />
         </div>
-        <div className={author} onClick={() => navigate(`/Binko/userInfo/${authorData?.id}/`)}>
+        <div className={author}>
           <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
           <div className={authInfo}>
             <div className={photo}>
@@ -296,7 +291,7 @@ const BooksInfo = () => {
             </>
             : ''}
           {(user?.user_type === 'supervisor' || user?.user_type === 'admin') ?
-            <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept ? 'Deny' : "Accept"}</Button>
+            <Button onClick={acceptHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept ? 'Deny' : "Accept"}</Button>
             : ""}
         </div>
         <div className={down}>

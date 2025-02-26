@@ -2,10 +2,11 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
-import Comment from '../../Supervisor/CommentsSuper/Comment'
-import Category from '../../Supervisor/CategorySuper/Category'
-import Book from '../../Supervisor/BooksSuper/Book'
-import Users from '../../Admin/Users/Users'
+import Comment from '../../Supervisor/CommentsSuper/Comment';
+import Category from '../../Supervisor/CategorySuper/Category';
+import Book from '../../Supervisor/BooksSuper/Book';
+import AcceptedBooks from '../../Supervisor/BooksSuperAccept/Book';
+import Users from '../../Admin/Users/Users';
 import { useAppSelector } from '@hooks/app';
 import Supervisors from '../Supervisors/Supervisors';
 import './SupervisorTab.css'
@@ -28,7 +29,10 @@ function LeftTabsExample() {
                                 <Nav.Link eventKey="second">{language === 'English' ? 'Comments' : 'التعليقات'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item onClick={() => setRend(!rend)}>
-                                <Nav.Link eventKey="third">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
+                                <Nav.Link eventKey="third">{language === 'English' ? 'Accepted Books' : 'الكتب المنشورة'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item onClick={() => setRend(!rend)}>
+                                <Nav.Link eventKey="six">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item onClick={() => setRend(!rend)}>
                                 <Nav.Link eventKey="fourth">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
@@ -43,6 +47,7 @@ function LeftTabsExample() {
                             <Tab.Pane eventKey="first"><Category rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="second"><Comment rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="third"><Book rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="six"><AcceptedBooks rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="fourth"><Supervisors rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="fifth"><Users rend={rend} /></Tab.Pane>
                         </Tab.Content>

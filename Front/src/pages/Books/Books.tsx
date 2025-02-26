@@ -13,17 +13,28 @@ import image from '@assets/imgs/s.jpg';
 import './BooksSlider.css'
 import { TBooks } from '@customtypes/booksTypes';
 import { useEffect } from 'react';
+import actGetUsers from '@store/usersSlice/act/actGetUsers';
 const { bookContainer, box, square } = styles;
 
 const Books = () => {
     const dispatch = useAppDispatch();
     const { books } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
-    const booksCards = books.map(((book: TBooks) => <BookCard key={book.id} {...book} />))
-    const booksCardsSquare = books.map(((book: TBooks) => <BookCardSquare key={book.id} {...book} />));
+    const { users } = useAppSelector(state => state.users);
+    const booksCards = books.map(((book: TBooks) => {
+        const username = users.find(user => user.id == book.user)?.name;
+        return <BookCard id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+
+    }))
+    const booksCardsSquare = books.map(((book: TBooks) => {
+        const username = users.find(user => user.id == book.user)?.name;
+        return <BookCardSquare id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+
+    }));
     // const booksCardsBackground = books.map(((book: TBooks) => <BooksBackground key={book.id} img={image} />));
     useEffect(() => {
         dispatch(actGetBooks())
+        dispatch(actGetUsers())
     }, [])
     return (
 

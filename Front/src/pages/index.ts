@@ -8,7 +8,7 @@ import Settings from '@pages/Settings/Settings';
 import Favorite from '@pages/Favorite/Favorite';
 import News from '@pages/News/News';
 import Books from '@pages/Books/Books';
-import BooksInfo from '@pages/BooksInfo/BooksInfo';
+import BooksInfo from '@pages/BooksInfoAccept/BooksInfo';
 import Chapters from '@pages/Chapters/Chapters';
 import UpdateBook from './UpdateBook/UpdateBook';
 import BooksSearch from '@pages/BooksSearch/BooksSearch';

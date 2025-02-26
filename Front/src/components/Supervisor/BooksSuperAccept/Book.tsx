@@ -31,7 +31,7 @@ type TCategoryAra = {
 function Book({ rend }: { rend: boolean }) {
     const [show, setShow] = useState(false);
     const { language } = useAppSelector(state => state.language);
-    const { books } = useAppSelector(state => state.books);
+    const { acceptedBooks } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -39,15 +39,14 @@ function Book({ rend }: { rend: boolean }) {
     const [showEditMode, setShowEditMode] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null)
     const dispatch = useAppDispatch();
-    let booksData: TBooks[] = books;
     const navigate = useNavigate();
     useEffect(() => {
-        dispatch(actGetBooks())
+        dispatch(actGetBooksToAccept())
     }, [])
     useEffect(() => {
 
         const getAllUsers = async () => {
-            const category: TCategory[] = books.map((book) => {
+            const category: TCategory[] = acceptedBooks?.map((book) => {
                 return ({
                     id: book.id,
                     name: book.name,
@@ -56,7 +55,7 @@ function Book({ rend }: { rend: boolean }) {
 
                 })
             })
-            const categoryAra: TCategoryAra[] = books.map((book) => {
+            const categoryAra: TCategoryAra[] = acceptedBooks?.map((book) => {
                 return ({
                     id: book.id,
                     الاسم: book.name,
@@ -77,7 +76,7 @@ function Book({ rend }: { rend: boolean }) {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    navigate(`/Binko/books/${rowDate.id}`)
+                    navigate(`/Binko/acceptedBook/${rowDate.id}`)
                     // setSelectedUserId(rowDate?.id)
                     // setShowViewMode(true)
                 }}>

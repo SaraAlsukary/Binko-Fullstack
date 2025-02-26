@@ -13,6 +13,7 @@ import LottieHandler from '@components/feedback/lottieHandler/lottieHandler';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
 import Lottie from 'lottie-react';
+import actDeleteCategory from '@store/categorySlice/act/actDeleteCategory';
 type TCategory = {
     name: string,
     name_ar: string,
@@ -28,15 +29,85 @@ function Category({ rend }: { rend: boolean }) {
     const { categories } = useAppSelector(state => state.categories);
     const [show, setShow] = useState(false);
     const dispatch = useAppDispatch();
-    const [users, setUsersList] = useState([]);
+    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
     const [showAddMode, setShowAddMode] = useState(false);
     const [showEditMode, setShowEditMode] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null)
 
     useEffect(() => {
-        getAllUsers();
         dispatch(actGetCategories())
+    }, []);
+    useEffect(() => {
+        const getAllUsers = async () => {
+            // try {
+            //     const response = await axios.get('http://localhost:4000/users');
+            //     if (response) {
+            //         setUsersList(response.data);
+            //     }
+            // }
+            // catch (e) {
+            //     console.log(e)
+            // }
+            // const category = categories.map((cate) => {
+            //     name: cate.name,
+            //         name_ar: cate.name_arabic,
+            //             file: <Lottie animationData={cate.file} style={{ width: '50px', height: '50px' }} loop={loop} />
+            // })
+            const category: TCategory[] = categories?.map((cate) => {
+                return ({
+                    id: cate.id,
+                    name: cate.name,
+                    name_ar: cate.name_arabic,
+                    file: <video width='100' height='100' autoPlay loop >
+                        <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
+                    </video>
+                    // file: <LottieHandler type={cate.name} loop={true} style={{ width: '50px', height: '50px' }} />
+
+                })
+            })
+            // const category: TCategory = [{
+            //     name: 'Action',
+            //     name_ar: 'أكشن',
+            //     file: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }, {
+            //     name: 'Romance',
+            //     name_ar: 'عاطفي',
+            //     file: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }, {
+            //     name: 'Poem',
+            //     name_ar: 'شعر',
+            //     file: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }]
+            // const categoryAra: TCategoryAra = [{
+            //     الاسم: 'Action',
+            //     الاسم_العربي: 'أكشن',
+            //     الملف: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }, {
+            //     الاسم: 'Romance',
+            //     الاسم_العربي: 'عاطفي',
+            //     الملف: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }, {
+            //     الاسم: 'Poem',
+            //     الاسم_العربي: 'شعر',
+            //     الملف: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
+            // }]
+            const categoryAra: TCategoryAra[] = categories?.map((cate) => {
+                return ({
+                    id: cate.id,
+                    الاسم: cate.name,
+                    الاسم_العربي: cate.name_arabic,
+                    الملف: <video width='100' height='100' autoPlay loop >
+                        <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
+                    </video>
+                })
+            })
+            const data = language === 'Arabic' ? categoryAra : category
+            setUsersList(data);
+        }
+
+
+        getAllUsers();
     }, [language, rend]);
 
     const getAllUsers = async () => {
@@ -54,33 +125,48 @@ function Category({ rend }: { rend: boolean }) {
         //         name_ar: cate.name_arabic,
         //             file: <Lottie animationData={cate.file} style={{ width: '50px', height: '50px' }} loop={loop} />
         // })
+        const category: TCategory[] = categories?.map((cate) => {
+            return ({
+                name: cate.name,
+                name_ar: cate.name_arabic,
+                file: <Lottie animationData={`http://127.0.0.1:8000${cate.file}`} style={{ width: '50px', height: '50px' }} loop={true} />
 
-        const category: TCategory = [{
-            name: 'Action',
-            name_ar: 'أكشن',
-            file: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            name: 'Romance',
-            name_ar: 'عاطفي',
-            file: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            name: 'Poem',
-            name_ar: 'شعر',
-            file: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }]
-        const categoryAra: TCategoryAra = [{
-            الاسم: 'Action',
-            الاسم_العربي: 'أكشن',
-            الملف: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            الاسم: 'Romance',
-            الاسم_العربي: 'عاطفي',
-            الملف: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }, {
-            الاسم: 'Poem',
-            الاسم_العربي: 'شعر',
-            الملف: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-        }]
+            })
+        })
+        // const category: TCategory = [{
+        //     name: 'Action',
+        //     name_ar: 'أكشن',
+        //     file: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }, {
+        //     name: 'Romance',
+        //     name_ar: 'عاطفي',
+        //     file: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }, {
+        //     name: 'Poem',
+        //     name_ar: 'شعر',
+        //     file: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }]
+        // const categoryAra: TCategoryAra = [{
+        //     الاسم: 'Action',
+        //     الاسم_العربي: 'أكشن',
+        //     الملف: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }, {
+        //     الاسم: 'Romance',
+        //     الاسم_العربي: 'عاطفي',
+        //     الملف: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }, {
+        //     الاسم: 'Poem',
+        //     الاسم_العربي: 'شعر',
+        //     الملف: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
+        // }]
+        const categoryAra: TCategoryAra[] = categories?.map((cate) => {
+            return ({
+                الاسم: cate.name,
+                الاسم_العربي: cate.name_arabic,
+                الملف: <Lottie animationData={`http://127.0.0.1:8000${cate.file}`} style={{ width: '50px', height: '50px' }} loop={true} />
+
+            })
+        })
         const data = language === 'Arabic' ? categoryAra : category
         setUsersList(data);
     }
@@ -100,7 +186,10 @@ function Category({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-file-edit'></i>
                 </button>
-                <button className='btn btn-danger' onClick={() => deleteUserConfirm(rowDate?.id)}>
+                <button className='btn btn-danger' onClick={() => {
+                    setShow(true)
+                    deleteUserConfirm(rowDate?.id)
+                }}>
                     <i className='pi pi-trash'></i>
                 </button>
             </>
@@ -118,16 +207,10 @@ function Category({ rend }: { rend: boolean }) {
         });
     }
 
-    const deleteUser = async (userId: number) => {
-        try {
-            const response = await axios.delete('http://localhost:4000/users/' + userId);
-            if (response) {
-                getAllUsers();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
+    const deleteUser = (userId: number) => {
+        dispatch(actDeleteCategory(userId)).unwrap().then(() => {
+            alert("deleted successfully!");
+        })
     }
 
     return (
@@ -188,7 +271,7 @@ function Category({ rend }: { rend: boolean }) {
                     style={{ width: '70vw' }}
                     onHide={() => setShowEditMode(false)}>
 
-                    <EditUser userId={selectedUserId} setUserEdited={() => {
+                    <EditUser id={selectedUserId} setUserEdited={() => {
                         setShowEditMode(false);
                         getAllUsers();
                     }} />

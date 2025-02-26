@@ -10,6 +10,14 @@
     justify-content: center;
 }
 
+.profileContainer p {
+    text-align: center;
+}
+
+.info div {
+    text-align: center;
+}
+
 .pic .img {
     position: relative;
     width: 200px;

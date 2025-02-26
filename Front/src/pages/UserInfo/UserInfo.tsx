@@ -13,7 +13,6 @@ const { profileContainer, settings, userName, pic, img, info } = style;
 
 const UserInfo = () => {
 
-    const [file, setFile] = useState('');
     const { id } = useParams();
     const idx = parseInt(id);
     const { users } = useAppSelector(state => state.users);
@@ -24,12 +23,12 @@ const UserInfo = () => {
     // const booksCardsWrite = addBook.books.map((book => <BookCard {...book} />))
     const booksCardsFavorite = books.map((book => <BookCard {...book} />))
     const booksCardsPublished = myBooks.map((book => <BookCard {...book} />))
-    const userInfo = users.find(user => user.id === idx);
     useEffect(() => {
         dispatch(actGetUsers())
         dispatch(actGetfavorite(idx))
         dispatch(actGetMyBooks(idx))
     }, [])
+    const userInfo = users.find(user => user.id === idx);
 
     return (
         <div className={profileContainer}>
@@ -39,11 +38,11 @@ const UserInfo = () => {
                         <img src={`http://127.0.0.1:8000${userInfo?.image}`} alt="" />
                     </div>
                 </div>
-                <div className="para">
-                    <p>{userInfo?.discriptions}</p>
-                </div>
                 <div className={userName}>
                     <h2>{userInfo?.name}</h2>
+                </div>
+                <div className="para">
+                    <p>{userInfo?.discriptions}</p>
                 </div>
                 <div className={userName}>
                     <Button>{language === 'Arabic' ? 'محادثة' : "Chat"}</Button>
@@ -57,7 +56,12 @@ const UserInfo = () => {
                     >
                         <Tab eventKey="home" title={language === 'English' ? 'Info' : 'نبذة'}
                         ><div className={info}>
-                                info
+                                <div>
+                                    {language === "English" ? 'Name:' : 'الاسم'} {userInfo?.name}
+                                </div>
+                                <div>
+                                    {language === "English" ? 'Bio:' : 'نبذة'} {userInfo?.discriptions}
+                                </div>
                             </div>
                         </Tab>
                         <Tab eventKey="profile" title=

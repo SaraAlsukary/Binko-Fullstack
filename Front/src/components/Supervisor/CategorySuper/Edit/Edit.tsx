@@ -1,58 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import actUpdateCategory from '@store/categorySlice/act/actUpdateCategory';
+import { useAppDispatch } from '@hooks/app';
 
-const initialUserInfo = {
-    id: '',
-    name: '',
-    username: '',
-    email: '',
-    phone: '',
-    website: '',
-    address: {
-        city: '',
-        street: '',
-        suite: '',
-        zipcode: ''
-    },
-    company: {
-        name: '',
-        catchPhrase: '',
-        bs: ''
-    }
-}
 
-function EditUser(props) {
-    const [userInfo, setUserInfo] = useState(initialUserInfo);
+function EditUser({ id }: { id: number }) {
+    const [userInfo, setUserInfo] = useState('');
+    const [name, setName] = useState('');
+    const [ar_name, setAraName] = useState('');
+    const [file, setFile] = useState('');
 
-    useEffect(() => {
-        setUserInfo({ ...userInfo, id: props.userId })
-        fetchUserData();
-    }, []);
-
-    const fetchUserData = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/users/' + props.userId);
-            if (response) {
-                console.log(response)
-                setUserInfo(response.data);
-            }
-            return
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
+    const dispatch = useAppDispatch();
 
     const editExistUser = async () => {
-        try {
-            const response = await axios.put('http://localhost:4000/users/' + props.userId, userInfo);
-            if (response) {
-                props.setUserEdited();
-            }
+        const formdata = new FormData();
+        formdata.append("name", name)
+        formdata.append("file", file)
+        formdata.append("name_arabic", ar_name)
+
+        const data = {
+            formdata,
+            id: id
         }
-        catch (e) {
-            console.log(e)
-        }
+        dispatch(actUpdateCategory(data)).unwrap().then(() => {
+            alert('updated successfully!');
+            setName('')
+            setAraName('')
+            setFile('')
+        })
     }
 
 
@@ -63,207 +38,46 @@ function EditUser(props) {
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Full Name:</span>
+                            <span>Name:</span>
                             <input
                                 type='text'
                                 className='form-control'
                                 placeholder='Enter Full Name'
-                                value={userInfo.name}
-                                onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+                                onChange={e => setName(e.target.value)}
+
                             />
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Username:</span>
+                            <span>Arabic Name:</span>
                             <input
                                 type='text'
                                 className='form-control'
                                 placeholder='Enter Username'
-                                value={userInfo.username}
-                                onChange={e => setUserInfo({ ...userInfo, username: e.target.value })}
+                                onChange={e => setAraName(e.target.value)}
                             />
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Email Address:</span>
+                            <span>File:</span>
                             <input
-                                type='text'
+                                type='file'
                                 className='form-control'
                                 placeholder='Enter Email Address'
-                                value={userInfo.email}
-                                onChange={e => setUserInfo({ ...userInfo, email: e.target.value })}
+                                onChange={e => setFile(e.target.files[0])}
+
                             />
                         </p>
                     </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Phone Number:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Phone Number'
-                                value={userInfo.phone}
-                                onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Website:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Website'
-                                value={userInfo.website}
-                                onChange={e => setUserInfo({ ...userInfo, website: e.target.value })}
-                            />
-                        </p>
-                    </div>
+
 
                 </div>
             </div>
 
-            <h1>User Address</h1>
-            <div className='box'>
-                <div className='row'>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>City:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter City Name'
-                                value={userInfo.address.city}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        city: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Street:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Street Name'
-                                value={userInfo.address.street}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        street: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Suite:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Suite Name'
-                                value={userInfo.address.suite}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        suite: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>ZIP Code:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter ZIP Code'
-                                value={userInfo.address.zipcode}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        zipcode: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                </div>
-            </div>
 
-            <h1>User Company</h1>
-            <div className='box'>
-                <div className='row'>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Company Name:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Company Name'
-                                value={userInfo.company.name}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        name: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Catch Phrase:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Catch Phrase'
-                                value={userInfo.company.catchPhrase}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        catchPhrase: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>BS:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter BS'
-                                value={userInfo.company.bs}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        bs: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <button className='btn btn-success' onClick={() => editExistUser()}>Edit User</button>
+            <button className='btn btn-success' onClick={() => editExistUser()}>Edit Category</button>
         </div>
     )
 }

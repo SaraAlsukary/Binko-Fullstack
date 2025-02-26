@@ -1,0 +1,118 @@
+.Advanture {
+    color: var(--main-color);
+    border: 3px solid var(--main-color);
+}
+
+.Advanture:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Action {
+    color: rgb(253, 226, 125);
+    border: 3px solid rgb(253, 226, 125);
+}
+
+.Action:hover {
+    background-color: rgb(253, 226, 125);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Fiction {
+    color: rgb(75, 54, 119);
+    border: 3px solid rgb(75, 54, 119);
+}
+
+.Fiction:hover {
+    background-color: rgb(75, 54, 119);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Science {
+    color: rgb(242, 204, 91);
+    border: 3px solid rgb(242, 204, 91);
+}
+
+.Science:hover {
+    background-color: rgb(242, 204, 91);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.ScienceFiction {
+    color: rgb(45, 54, 101);
+    border: 3px solid rgb(45, 54, 101);
+}
+
+.ScienceFiction:hover {
+    background-color: rgb(45, 54, 101);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Poem {
+    color: rgb(2, 127, 238);
+    border: 3px solid rgb(2, 127, 238);
+}
+
+.Poem:hover {
+    background-color: rgb(2, 127, 238);
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Classic {
+    color: rgb(175, 4, 16);
+    border: 3px solid rgb(175, 4, 16);
+
+}
+
+.Classic:hover {
+    background-color: rgb(89, 89, 87);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Fantasy {
+    color: rgb(255, 216, 75);
+    border: 3px solid rgb(255, 216, 75);
+
+}
+
+.Fantasy:hover {
+    background-color: rgb(255, 216, 75);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Romance {
+    color: rgb(249, 29, 80);
+    border: 3px solid rgb(249, 29, 80);
+
+
+}
+
+.Romance:hover {
+    background-color: rgb(249, 29, 80);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Horror {
+    color: rgb(235, 224, 48);
+    border: 3px solid rgb(235, 224, 48);
+
+
+}
+
+.Horror:hover {
+    background-color: rgb(235, 224, 48);
+    color: #fff;
+    border: 3px solid #fff;
+}

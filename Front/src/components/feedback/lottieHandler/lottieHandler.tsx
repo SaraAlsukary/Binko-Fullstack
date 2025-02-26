@@ -40,7 +40,6 @@ type LottieHandlerProps = {
     loop?: boolean;
     style?: React.CSSProperties
 };
-
 const LottieHandler = ({ type, message, className, loop, style }: LottieHandlerProps) => {
     const lottie = lottieFilesMap[type];
     // const messageStyle =
