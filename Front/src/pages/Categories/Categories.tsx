@@ -5,17 +5,19 @@ import LottieHandler from "@components/feedback/lottieHandler/lottieHandler";
 import { useEffect } from "react";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
 import './CategoriesColor.css';
+import { useNavigate } from "react-router-dom";
 const { cardCate, containerCate, colss, advanture, action, romance, fiction, science, scienceFiction, fantasy, classic, horror, poem } = Style;
 const Categories = () => {
     const language = useAppSelector(state => state.language.language);
     const { categories } = useAppSelector(state => state.categories);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(actGetCategories())
     }, [])
     const categoryCard = categories.map((cate) =>
-        <Col key={cate.id} className={colss}>
+        <Col onClick={() => navigate(`books/${cate.id}`)} key={cate.id} className={colss}>
             <div className={`${cardCate} ${cate.name}`}>
                 <h3>{language === 'Arabic' ? cate.name : cate.name}</h3>
                 <video width='100' height='100' autoPlay loop>

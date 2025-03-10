@@ -5,6 +5,7 @@ import { TBooks } from "@customtypes/booksTypes";
 import { TLoading } from "@customtypes/loadingType";
 import { isString } from "@customtypes/isString";
 import actAddFavorite from "./act/actAddFavorite";
+import actDeleteFavorite from "./act/actDeleteFavorite";
 interface IBooksState {
     books: TBooks[];
     loading: TLoading;
@@ -49,6 +50,20 @@ const favorite = createSlice({
             state.loading = "succeeded";
         });
         builder.addCase(actAddFavorite.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // delete Favorite
+        builder.addCase(actDeleteFavorite.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteFavorite.fulfilled, (state) => {
+            state.loading = "succeeded";
+        });
+        builder.addCase(actDeleteFavorite.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

@@ -7,6 +7,8 @@ import { Alert, Container, Form } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
+import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const { book, bookReg, registers, bottom } = style;
@@ -19,7 +21,7 @@ const schema = z.object({
     confirm_password: z.string({
         required_error: 'required field', invalid_type_error: 'confirm_password is required!'
 
-    })
+    }).min(8)
 });
 type TUser = {
     name: string,
@@ -35,6 +37,9 @@ const Registeration = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showEye, setShowEye] = useState(false);
+    const [showEye1, setShowEye1] = useState(false);
+
     const [confirm_password, setConfirmPassword] = useState('');
     const dispatch = useAppDispatch();
     const language = useAppSelector(state => state.language.language);
@@ -117,21 +122,33 @@ const Registeration = () => {
                                 {!errors.username ? <Form.Text className="text-muted">
                                 </Form.Text> : <Alert className='dangerAlert' key='danger' variant='danger'>{errors.username.message}</Alert>}
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
-                                <Form.Control type="password" placeholder={language === 'English' ? 'Password' : '  كلمة المرور'} {...register('password'
+                            <Form.Group
+
+                                style={{ position: 'relative' }}
+                                className="mb-3" controlId="formBasicPassword">
+                                <Form.Control type={showEye ? 'text' : 'password'} placeholder={language === 'English' ? 'Password' : '  كلمة المرور'} {...register('password'
 
                                 )}
                                     onChange={(e: any) => setPassword(e.target.value)}
-                                />
+                                />    <div style={{ position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
+                                    {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
+                                </div>
+
                             </Form.Group>
                             {errors.password && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.password.message}</Alert>}
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
-                                <Form.Control type="password" placeholder={language === 'English' ? 'Confirm Password' : ' تأكيد كلمة المرور'} {...register('confirm_password'
+                            <Form.Group
+
+                                style={{ position: 'relative' }}
+                                className="mb-3" controlId="formBasicPassword">
+                                <Form.Control type={showEye1 ? 'text' : 'password'} placeholder={language === 'English' ? 'Confirm Password' : ' تأكيد كلمة المرور'} {...register('confirm_password'
 
                                 )}
                                     onChange={(e: any) => setConfirmPassword(e.target.value)}
 
                                 />
+                                <div style={{ position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
+                                    {!showEye1 ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
+                                </div>
                             </Form.Group>
                             {errors.confirm_password && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.confirm_password.message}</Alert>}
 

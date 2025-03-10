@@ -16,6 +16,7 @@ import actGetBooks from '@store/booksSlice/act/actGetBooks';
 import { useNavigate } from 'react-router-dom';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import { TBooks } from '@customtypes/booksTypes';
+import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -89,7 +90,13 @@ function Book({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-file-edit'></i>
                 </button> */}
-                <button className='btn btn-danger' onClick={() => deleteUserConfirm(rowDate?.id)}>
+                <button className='btn btn-danger' onClick={() => {
+                    setShow(true)
+
+                    deleteUserConfirm(rowDate?.id)
+                }
+
+                }>
                     <i className='pi pi-trash'></i>
                 </button>
             </>
@@ -104,22 +111,16 @@ function Book({ rend }: { rend: boolean }) {
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
             accept: () => {
-                setShow(true)
                 deleteUser(userId)
             },
         });
     }
 
-    const deleteUser = async (userId: number) => {
-        // try {
-        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
-        //     if (response) {
-        //         getAllUsers();
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
+    const deleteUser = (userId: number) => {
+        dispatch(actDeleteBook(userId)).unwrap().then(() => {
+            alert('Deleted successfully!')
+            navigate(`/Binko/admin`)
+        })
     }
 
     return (

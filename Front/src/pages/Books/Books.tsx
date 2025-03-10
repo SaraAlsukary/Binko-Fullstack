@@ -23,12 +23,12 @@ const Books = () => {
     const { users } = useAppSelector(state => state.users);
     const booksCards = books.map(((book: TBooks) => {
         const username = users.find(user => user.id == book.user)?.name;
-        return <BookCard id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+        return <BookCard key={book.id} id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
 
     }))
     const booksCardsSquare = books.map(((book: TBooks) => {
         const username = users.find(user => user.id == book.user)?.name;
-        return <BookCardSquare id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+        return <BookCardSquare key={book.id} id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
 
     }));
     // const booksCardsBackground = books.map(((book: TBooks) => <BooksBackground key={book.id} img={image} />));

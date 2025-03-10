@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import CommentSerializer ,UserCommentSerializer ,GetCommentSerializer
+from .serializers import CommentSerializer  ,GetCommentSerializer
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from account.models import CustomUser
@@ -19,14 +19,16 @@ def add_comment(request, book_id, user_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def get_comments_by_book(request, book_id):
+def get_book_comments(request, book_id):
     try:
-    
-        comments = Comment.objects.filter(book_id=book_id)  
-    except comments.DoesNotExist:
-        return Response({'error': 'comment not found.'}, status=status.HTTP_404_NOT_FOUND)    
-    serializer = UserCommentSerializer(comments, many=True)  
-    return Response(serializer.data)
+        book = Book.objects.get(id=book_id)  # البحث عن الكتاب
+    except Book.DoesNotExist:
+        return JsonResponse({"error": "Book not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    comments = Comment.objects.filter(book=book)  # جلب جميع التعليقات الخاصة بالكتاب
+    serializer = CommentSerializer(comments, many=True)  # تحويل البيانات إلى JSON
+
+    return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_all_comments(request):

@@ -175,7 +175,7 @@ function Category({ rend }: { rend: boolean }) {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
+                    setSelectedUserId(rowDate)
                     setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>

@@ -17,10 +17,16 @@ class Book(models.Model):
 
 
 class Book_Category(models.Model):
-     category=models.ForeignKey(Category , on_delete=models.DO_NOTHING)
+     category=models.ForeignKey(Category , on_delete=models.CASCADE)
      book=models.ForeignKey(Book, on_delete=models.CASCADE )
 
 
 class Book_Fav(models.Model):
      user=models.ForeignKey(CustomUser , on_delete=models.CASCADE )
      book=models.ForeignKey(Book, on_delete=models.CASCADE )
+
+class Like(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
+

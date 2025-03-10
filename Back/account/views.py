@@ -4,9 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from .models import CustomUser
-from .serializers import UserSerializer , LoginSerializer ,LogoutSerializer ,CustomUserSerializer
+from .serializers import UserSerializer , LoginSerializer ,LogoutSerializer ,CustomUserSerializer  ,SupervisorUserSerializer
 from django.contrib.auth import login
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -37,7 +38,8 @@ def login_user(request):
             'user_type': user_type,
             'token': token.key,
             'id': user.id,
-            'username': user.username
+            'username': user.username,
+            
         }, status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -89,3 +91,13 @@ def delete_user(request, user_id):
         return Response(status=status.HTTP_204_NO_CONTENT)  # استجابة بنجاح بدون محتوى
     except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+def create_supervisor(request):
+    serializer = SupervisorUserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+

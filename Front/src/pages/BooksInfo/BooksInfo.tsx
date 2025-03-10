@@ -26,47 +26,63 @@ import { actClearChapters } from "@store/chaptersSlice/chaptersSlice";
 import actAddComments from "@store/commentsSlice/act/actAddComment";
 import actDeleteBook from "@store/booksSlice/act/actDeleteBooks";
 import actDeleteComment from "@store/commentsSlice/act/actDeleteComment";
+import actDeleteFavorite from "@store/Favorite/act/actDeleteFavorite";
+import actGetReplyByComment from "@store/repliesSlice/act/actGetReplyByComment";
+import actDenyChapters from "@store/chaptersSlice/act/actDenyChapter";
+import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
+import actAddReply from "@store/repliesSlice/act/actAddReply";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
   text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
   const [commentText, setCommentText] = useState('');
-  const [rend, setRend] = useState(false);
+  const [replyy, setReplyy] = useState('');
+  const [commentId, setCommentId] = useState(0);
   const { language } = useAppSelector(state => state.language)
+  const { replies } = useAppSelector(state => state.replies)
   const { users } = useAppSelector(state => state.users)
   const booksFav = useAppSelector(state => state.favorite.books)
   const { categories } = useAppSelector(state => state.categories)
   const { user } = useAppSelector(state => state.auth)
   const commentss = useAppSelector(state => state.comments.comments);
   const { id }: any = useParams();
-  const { chapters } = useAppSelector(state => state.chapters);
-  const { books } = useAppSelector(state => state);
-  const bookInfo = books.books.find(book => book.id == id);
-  const navigate = useNavigate();
   const indx = parseInt(id)
+  const { chapters } = useAppSelector(state => state.chapters);
+  const { books, myBooks } = useAppSelector(state => state.books);
+  const navigate = useNavigate();
   const favoriteData = {
     user: user?.id,
     book: indx
   }
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
-  const ExistedBook = books.myBooks.find((book) => book.id === indx) ? true : false;
+  const ExistedBook = myBooks.find((book) => book.id === indx) ? true : false;
+  const bookInfo = ExistedBook ? myBooks.find(book => book.id === indx) : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
   const ExistedComment = commentss.find((comment) => comment.user_id === user?.id) ? true : false;
   const activeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active)) {
-      // dispatch(actAddFavorite(favoriteData))
-      // console.log(favoriteData)
+
+
     } else {
-      console.log('not')
+
 
     }
   }
+
+  useEffect(() => {
+    commentss.forEach(comment => {
+      dispatch(actGetReplyByComment(comment.id))
+    })
+  }, [])
+
+
   const activeFavHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active) && !SavedExist) {
       dispatch(actAddFavorite(favoriteData))
-      console.log(favoriteData)
+
     } else {
-      console.log('not')
+      dispatch(actDeleteFavorite(favoriteData.book))
+
 
     }
   }
@@ -77,9 +93,9 @@ const BooksInfo = () => {
   const activeReplyHandler = (e: any) => {
     if (e.target.id !== null)
       var nameId = e.target.id;
-    console.log(nameId)
+
     var el = document.querySelector(`.${nameId}`);
-    console.log(el)
+
     el?.classList.add(active);
     (e.target as Element).classList.add(active);
 
@@ -87,6 +103,24 @@ const BooksInfo = () => {
   const denyHandler = () => {
     dispatch(actDeleteBook(indx)).unwrap().then(() => {
       alert('Deleted successfully!')
+      navigate(`/Binko/admin`)
+    })
+  }
+  const deleteHandler = () => {
+    dispatch(actDeleteBook(indx)).unwrap().then(() => {
+      alert('Deleted successfully!')
+      navigate(`/Binko/admin`)
+    })
+  }
+  const denyChapterHandler = (id: number) => {
+    dispatch(actDenyChapters(id)).unwrap().then(() => {
+      alert('Deleted successfully!')
+      navigate(`/Binko/admin`)
+    })
+  }
+  const AcceptChapterHandler = (id: number) => {
+    dispatch(actAcceptChapters(id)).unwrap().then(() => {
+      alert('Accepted successfully!')
       navigate(`/Binko/admin`)
     })
   }
@@ -129,8 +163,19 @@ const BooksInfo = () => {
   }
   const addCommentHandler = () => {
     dispatch(actAddComments(commentData));
-    setRend(!rend);
     setCommentText('');
+  }
+  const ReplyData = {
+    user: user?.id,
+    comment: commentId,
+    reply: replyy
+
+  }
+  const addReplyHandler = () => {
+    dispatch(actAddReply(ReplyData)).unwrap().then(() => {
+      alert('hello')
+    })
+    setReplyy('');
   }
   const dispatch = useAppDispatch();
   useEffect(
@@ -152,26 +197,23 @@ const BooksInfo = () => {
         dispatch(actClearFavoriteBook());
         dispatch(actClearChapters());
       }
-    }, [rend]
+    }, []
   )
   unactiveInputHandler();
-  const categoriesBookExist = books.books.filter((book) => book.category);
-  const categoriesBook = categories.filter((cate) => {
-    const categoryInfo = categoriesBookExist.map((cat) => {
-      cat.id === cate.id
-    }
-    )
-    return categoryInfo
-  }
-  )
-  const categoriesBookCard = categoriesBook.map((cate) => <p>{language === 'English' ? cate.name : cate.name_arabic}</p>
+
+  const categoriesBookExist = books.map((book) => book.category)
+  const categoriesBook = categoriesBookExist.map((cate) => {
+    const filter = categories.filter((cates) => cates.id === cate)
+    if (filter)
+      return filter
+  })
+  const categoriesBookCard = categoriesBook.map((cate) => <p key={Math.random() * 2}>{language === 'English' ? cate?.name : cate?.name_arabic}</p>
   )
   const commentsListElements = commentss.map(comment => {
-    const image = users.find(user => user.id === comment.user_id);
     return (<div key={comment?.id} className={boxCont}><div className={box}>
       <div className={commenter}>
         <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={pic}>
-          <img src={`http://127.0.0.1:8000${image}`} alt="" />
+          <img src={`http://127.0.0.1:8000${comment.image}`} alt="" />
         </div>
         <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={commenterName}>
           {comment?.name}
@@ -179,8 +221,8 @@ const BooksInfo = () => {
       </div>
       <div className={text}>
         <p>{comment?.comment} <span
-          className={`${comment?.name}`}
-          id={`span-${comment?.name}`}
+          className={`${comment?.id}`}
+          id={`span-${comment?.id}`}
         >{language === 'English' ? `REPLY` : `الرد`}</span></p>
       </div>
       {ExistedComment || user?.user_type === 'admin' || user?.user_type === 'supervisor' ?
@@ -193,56 +235,79 @@ const BooksInfo = () => {
       }
       <div
         className={` ${inputField}`}
-        id={`inp-${comment?.name}`} >
+        id={`inp-${comment?.id}`} >
         <div className={input}>
-          <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+          <Input onChange={(e) => {
+            setCommentId(comment?.id)
+            setReplyy(e.target.value)
+          }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
         </div>
-        <div className={icon}>
+        <div className={icon} onClick={addReplyHandler}>
           {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
         </div>
       </div>
     </div>
-      {/* {
-      comment?.reply.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
-        {language === 'English' ? `There are ${comment.reply.length} replies` : `   هناك ${comment.reply.length} رد`}
-      </div> : ''
-    }
-    {comment?.reply.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
-      {comment?.reply.map(rep => <div className={replyBox}>
-        <div className={replyer}>
-          <div className={pic}>
-            <img src={rep?.img} alt="" />
-           </div>
-          <div className={replyerName}>
-            {rep?.commenterName}
-          </div>
-        </div>
-        <div className={text}>
-          <p>{rep?.text} <span
-            className={`${rep?.id}`}
-            id={`span-${rep?.id}`}
-          >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-        </div>
-        <div
-          className={` ${inputField}`}
-          id={`inp-${rep?.id}`} >
-          <div className={input}>
-            <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-          </div>
-          <div className={icon}>
-            {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-          </div>
-        </div>
-      </div>
-      )}
-    </div> : ''} */}
+
+      {
+        replies.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
+          {language === 'English' ? `There are ${replies.length} replies` : `   هناك ${replies.length} رد`}
+        </div> : ''
+      }
+      {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
+        {replies.map(rep => {
+          const user = users.find((user => user.id === rep.user))
+          // const replyInfo = replies?.find((reply => reply.comment === comment.id))
+
+          return (
+            <div className={replyBox}>
+              <div className={replyer}>
+                <div className={pic}>
+                  <img src={`http://127.0.0.1:8000${user?.image}`} alt="" />
+                </div>
+                <div className={replyerName}>
+                  {user?.name}
+                </div>
+              </div>
+              <div className={text}>
+                <p>{rep?.reply} <span
+                  className={`${rep?.id}`}
+                  id={`span-${rep?.id}`}
+                >{language === 'English' ? `REPLY` : `الرد`}</span></p>
+              </div>
+              <div
+                className={` ${inputField}`}
+                id={`inp-${rep?.id}`} >
+                <div className={input}>
+                  <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                </div>
+                <div className={icon}>
+                  {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div> : ''}
     </div >)
   });
-  // console.log(commentss)
+
   const chaptersList = chapters?.map((chapter, idx) => <li key={chapter.id}
-    // onClick={() => navigate(`${idx}`)}
-    onClick={() => navigate(`${chapter.id}`)}
-  >{chapter.title}</li>)
+
+    style={{ position: 'relative' }}
+  >
+    <span
+    // onClick={() => navigate(`${chapter.id}`)}
+    >
+      {chapter.title}
+    </span>
+    {(user?.user_type === 'supervisor' || user?.user_type === 'admin') ?
+      !bookInfo?.is_accept ? <Button style={language === 'Arabic' ? { position: 'absolute', right: '90%' } : { position: 'absolute', right: '10px' }} onClick={() => AcceptChapterHandler(chapter.id)}>
+        {language === 'Arabic' ? 'قبول' : 'Accept'}
+      </Button> : <Button style={language === 'Arabic' ? { backgroundColor: '#f35151', position: 'absolute', right: '90%' } : { backgroundColor: '#f35151', position: 'absolute', right: '10px' }} onClick={() => denyChapterHandler(chapter.id)}>
+        {language === 'Arabic' ? 'رفض' : 'Deny'
+        }      </Button>
+      : ""}
+  </li>)
   const authorData = users.find((user) => user.id === bookInfo?.user)
   return (
     <Container className={bookCont} >
@@ -289,14 +354,16 @@ const BooksInfo = () => {
               <div className={activeIcon}><LoveFillWhite style={{ width: '20px' }} /> </div><div className={icon}><LoveNotFill style={{ width: '20px' }} /></div></div></li>
             <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
           </ul>
-          {ExistedBook ?
+          {ExistedBook && user?.user_type === 'regular' ?
             <>
               <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
-              <Button style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
             </>
             : ''}
           {(user?.user_type === 'supervisor' || user?.user_type === 'admin') ?
-            <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept ? 'Deny' : "Accept"}</Button>
+            <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept && language === 'English' ? 'Deny' : bookInfo?.is_accept && language === 'Arabic' ? " رفض" :
+              !bookInfo?.is_accept && language === 'Arabic' ? 'قبول' :
+                'Accept'}</Button>
             : ""}
         </div>
         <div className={down}>

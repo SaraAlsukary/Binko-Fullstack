@@ -6,7 +6,7 @@ from rest_framework import status
 from .models import Book_Fav , Book ,Book_Category
 from account.models import CustomUser
 from account.models import CustomUser
-from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer, FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
+from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,LikeSerializer,FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
 from .serializers import BookSerializer
 from categories.models import Category
@@ -20,9 +20,9 @@ def favorite_books(request, user_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_book_fav(request, pk):
+def delete_book_fav(request, book_id):
     try:
-        book_fav = Book_Fav.objects.get(pk=pk)
+        book_fav = Book_Fav.objects.get(book_id=book_id)
     except Book_Fav.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -123,3 +123,5 @@ def accept_book(request, pk):
 
     serializer = BookSerializer(book)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+

@@ -9,6 +9,7 @@ import './Users.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
+import { useNavigate } from 'react-router-dom';
 type TCategory = {
     name: string | null,
     profile: React.ReactNode,
@@ -63,15 +64,16 @@ function Comment({ rend }: { rend: boolean }) {
         getAllUsers();
     }, [language, rend]);
 
-
+    const navigate = useNavigate();
 
 
     const actionsTemplate = (rowDate: object) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
-                    setShowViewMode(true)
+                    // setSelectedUserId(rowDate?.id)
+                    navigate(`/Binko/userInfo/${rowDate.id}`)
+                    // setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>

@@ -1,12 +1,31 @@
 from rest_framework import serializers
-from .models import Book_Fav ,Book , Book_Category
+from .models import Book_Fav ,Book , Book_Category ,Like
 from account.models import CustomUser
 from chapters.models import Chapter
 from categories.models import Category 
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'name']  
+
 class BooksSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True) 
+    categories = serializers.SerializerMethodField() 
+
     class Meta:
         model = Book
-        fields = ['id', 'user','name', 'image' ,'description' ,'is_accept' , 'publication_date']
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'user', 'categories']
+
+    def get_categories(self, obj):
+
+        return [book_category.category.name for book_category in Book_Category.objects.filter(book=obj)]
 
 
 class FavoriteBookSerializer(serializers.ModelSerializer):
@@ -94,3 +113,14 @@ class AddBookSerializer(serializers.ModelSerializer):
             Book_Category.objects.create(book=book, category=category)
 
         return book
+    
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ['user', 'book']
+
+    def create(self, validated_data):
+        if Like.objects.filter(user=validated_data['user'], book=validated_data['book']).exists():
+            raise serializers.ValidationError("لقد أعجبت بهذا الكتاب بالفعل.")
+        return super().create(validated_data)    

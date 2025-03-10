@@ -13,7 +13,7 @@ const actDeleteBook = createAsyncThunk(
 
         try {
             const response = await axios.delete(
-                `books/${id}/`,
+                `delete/books/${id}/`,
                 {
                     signal,
                     // headers: {

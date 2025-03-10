@@ -12,7 +12,13 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import './Comment.css'
-import { useAppSelector } from '@hooks/app';
+import { useAppDispatch, useAppSelector } from '@hooks/app';
+import actGetCommentByBook from '@store/commentsSlice/act/actGetCommentByBook';
+import actGetComments from '@store/commentsSlice/act/actGetComments';
+import actGetUsers from '@store/usersSlice/act/actGetUsers';
+import actDeleteComment from '@store/commentsSlice/act/actDeleteComment';
+import { useNavigate } from 'react-router-dom';
+import actGetBooks from '@store/booksSlice/act/actGetBooks';
 type TCategory = {
     name: string,
     profile: React.ReactNode,
@@ -25,70 +31,102 @@ type TCategoryAra = {
 }
 function Comment({ rend }: { rend: boolean }) {
     const { language } = useAppSelector(state => state.language);
+    const userss = useAppSelector(state => state.users.users);
     const [show, setShow] = useState(false);
 
-    const [users, setUsersList] = useState([]);
+    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
-    const [showAddMode, setShowAddMode] = useState(false);
-    const [showEditMode, setShowEditMode] = useState(false);
+    // const [showAddMode, setShowAddMode] = useState(false);
+    // const [showEditMode, setShowEditMode] = useState(false);
+    const { comments } = useAppSelector(state => state.comments)
+    const { books } = useAppSelector(state => state.books)
     const [selectedUserId, setSelectedUserId] = useState(null)
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    useEffect(() => {
+        dispatch(actGetComments());
+        dispatch(actGetUsers());
+        dispatch(actGetBooks());
+    }, []);
+
 
     useEffect(() => {
+        const getAllUsers = () => {
+            // try {
+            //     const response = await axios.get('http://localhost:4000/users');
+            //     if (response) {
+            //         setUsersList(response.data);
+            //     }
+            // }
+            // catch (e) {
+            //     console.log(e)
+            // }
+            const category: TCategory[] = comments.map((comment) => {
+                const userImg = userss.find(user => user.id === comment.user_id)?.image
+                return ({
+                    book: comment.book,
+                    name: comment.name,
+                    comment: comment.comment,
+                    profile: <img src={`http://127.0.0.1:8000${userImg}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                })
+            })
+            const categoryAra: TCategoryAra[] = comments.map((comment) => {
+                const userImg = userss.find(user => user.id === comment.user_id)?.image
+                return ({
+                    book: comment.book,
+                    الاسم: comment.name,
+                    التعليق: comment.comment,
+                    الصورة: <img src={`http://127.0.0.1:8000${userImg}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                })
+            })
+            // const category: TCategory = [{
+            //     name: 'Sara',
+            //     comment: 'It is a good book!',
+            //     profile: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+            // }, {
+            //     name: 'Noor',
+            //     comment: 'What a boring writes!',
+            //     profile: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
+
+            // }, {
+            //     name: 'Alaa',
+            //     comment: 'Beautiful, it is a useful book',
+            //     profile: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
+
+            // }]
+            // const categoryAra: TCategoryAra = [{
+            //     الاسم: 'Sara',
+            //     التعليق: 'It is a good book!',
+            //     الصورة: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+            // }, {
+            //     الاسم: 'Noor',
+            //     التعليق: 'What a boring writes!',
+            //     الصورة: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
+
+            // }, {
+            //     الاسم: 'Alaa',
+            //     التعليق: 'Beautiful, it is a useful book',
+            //     الصورة: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
+
+            // }]
+            const data = language === 'Arabic' ? categoryAra : category
+
+            setUsersList(data);
+        }
         getAllUsers();
     }, [language, rend]);
 
 
-    const getAllUsers = async () => {
-        // try {
-        //     const response = await axios.get('http://localhost:4000/users');
-        //     if (response) {
-        //         setUsersList(response.data);
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
-        const category: TCategory = [{
-            name: 'Sara',
-            comment: 'It is a good book!',
-            profile: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
-        }, {
-            name: 'Noor',
-            comment: 'What a boring writes!',
-            profile: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
 
-        }, {
-            name: 'Alaa',
-            comment: 'Beautiful, it is a useful book',
-            profile: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }]
-        const categoryAra: TCategoryAra = [{
-            الاسم: 'Sara',
-            التعليق: 'It is a good book!',
-            الصورة: <img src={img} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
-        }, {
-            الاسم: 'Noor',
-            التعليق: 'What a boring writes!',
-            الصورة: <img src={img2} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }, {
-            الاسم: 'Alaa',
-            التعليق: 'Beautiful, it is a useful book',
-            الصورة: <img src={img3} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />,
-
-        }]
-        const data = language === 'Arabic' ? categoryAra : category
-
-        setUsersList(data);
-    }
 
     const actionsTemplate = (rowDate: object) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
-                    setShowViewMode(true)
+                    const bookId = books.find(book => book.name === rowDate.book)?.id
+                    navigate(`/Binko/books/${bookId}`)
+                    // setSelectedUserId(rowDate?.id)
+                    // setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
@@ -117,15 +155,7 @@ function Comment({ rend }: { rend: boolean }) {
     }
 
     const deleteUser = async (userId: number) => {
-        try {
-            const response = await axios.delete('http://localhost:4000/users/' + userId);
-            if (response) {
-                getAllUsers();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
+        dispatch(actDeleteComment(userId))
     }
 
     return (

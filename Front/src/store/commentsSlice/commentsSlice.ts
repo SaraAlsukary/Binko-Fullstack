@@ -6,6 +6,7 @@ import { TLoading } from "@customtypes/loadingType";
 import { isString } from "@customtypes/isString";
 import actAddComments from "./act/actAddComment";
 import actDeleteComment from "./act/actDeleteComment";
+import actGetComments from "./act/actGetComments";
 
 // const initialState = [, {
 //     id: 3,
@@ -127,6 +128,23 @@ const comments = createSlice({
 
         });
         builder.addCase(actDeleteComment.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //Get all comments
+        builder.addCase(actGetComments.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetComments.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.comments = action.payload
+
+
+        });
+        builder.addCase(actGetComments.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

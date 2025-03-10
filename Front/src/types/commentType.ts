@@ -3,5 +3,4 @@ export type TComment = {
     id?: number,
     name?: string,
     book_id?: number,
-    user_id?: number
-}
+    image: string

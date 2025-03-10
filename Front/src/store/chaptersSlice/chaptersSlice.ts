@@ -4,6 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import actGetChapters from "./act/actGetChapters";
 import { isString } from "@customtypes/isString";
 import actAddChapter from "./act/actAddChapter";
+import actAcceptChapters from "./act/actAcceptChapter";
+import actDenyChapters from "./act/actDenyChapter";
 
 // const initialState = [{
 //     id: 23,
@@ -154,6 +156,38 @@ const chapters = createSlice({
             // state.chapters = action.payload;
         });
         builder.addCase(actAddChapter.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
+        // Accept chapter 
+        builder.addCase(actAcceptChapters.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAcceptChapters.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.chapters = action.payload;
+        });
+        builder.addCase(actAcceptChapters.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
+        // Deny chapter 
+        builder.addCase(actDenyChapters.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDenyChapters.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.chapters = action.payload;
+        });
+        builder.addCase(actDenyChapters.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

@@ -68,6 +68,7 @@ import actGetMyBooks from "./act/actGetMyBooks";
 import actGetBooksToAccept from "./act/actGetBooksToAccept";
 import actDeleteBook from "./act/actDeleteBooks";
 import actAcceptBooks from "./act/actAcceptBook";
+import actGetBooksByCategory from "./act/actGetBooksByCate";
 interface IBooksState {
     books: TBooks[];
     acceptedBooks: TBooks[];
@@ -187,15 +188,15 @@ const books = createSlice({
             }
         });
         //get books by category
-        builder.addCase(actDeleteBook.pending, (state) => {
+        builder.addCase(actGetBooksByCategory.pending, (state) => {
             state.loading = "pending";
             state.error = null;
         });
-        builder.addCase(actDeleteBook.fulfilled, (state, action) => {
+        builder.addCase(actGetBooksByCategory.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.acceptedBooks = action.payload;
+            state.books = action.payload;
         });
-        builder.addCase(actDeleteBook.rejected, (state, action) => {
+        builder.addCase(actGetBooksByCategory.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

@@ -9,7 +9,7 @@ const BookCard = ({ image, description, user, name, id }: TBooks) => {
     const { language } = useAppSelector(state => state.language);
 
     return (
-        <div className={booCard} key={id} >
+        <div className={booCard}  >
             <div className={pic}>
                 <img src={`http://127.0.0.1:8000${image}`} alt="" crossOrigin='anonymous' />
             </div>

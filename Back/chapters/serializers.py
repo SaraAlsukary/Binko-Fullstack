@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import  Chapter
 from books.models import Book
+from categories.models import Category
 import base64
 from django.core.files.base import ContentFile
 
@@ -11,19 +12,18 @@ class ChapterSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'content_text', 'audio']
 
 class BookSerializer(serializers.ModelSerializer):
-    chapters = ChapterSerializer(many=True)  # ربط الفصول بالكتاب
-
     class Meta:
         model = Book
-        fields = ['id', 'name', 'image', 'description', 'publication_date', 'chapters']
+        fields = ['id', 'name', 'image', 'description', 'publication_date']     
 
-    def create(self, validated_data):
-        chapters_data = validated_data.pop('chapters')  # استخراج بيانات الفصول
-        user = validated_data.pop('user')  # استخراج المستخدم
-        book = Book.objects.create(user=user, **validated_data)  # إنشاء الكتاب وربطه بالمستخدم
-        for chapter_data in chapters_data:
-            Chapter.objects.create(book=book, **chapter_data)  # إنشاء الفصول وربطها بالكتاب
-        return book
+class ChaptersSerializer(serializers.ModelSerializer):
+    name= serializers.CharField(source='book.name', read_only=True)  
+    
+    class Meta:
+        model = Chapter
+        fields = ['id', 'book', 'name', 'is_accept', 'title', 'content_text', 'audio']         
+
+
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +36,31 @@ class ChapterSerializer(serializers.ModelSerializer):
             ext = format.split('/')[-1]
             validated_data['audio'] = ContentFile(base64.b64decode(audio_str), name=f"uploaded.{ext}")
             return super().create(validated_data)
+           
+
+class ChapterDeleteSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+    def delete(self):
+        chapter_id = self.validated_data['id']
+        try:
+            chapter = Chapter.objects.get(id=chapter_id)
+            chapter.delete()
+            return True
+        except Chapter.DoesNotExist:
+            raise serializers.ValidationError("Chapter not found.")      
+        
+
+
+class ChapterAcceptSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+    def update(self):
+        chapter_id = self.validated_data['id']
+        try:
+            chapter = Chapter.objects.get(id=chapter_id)
+            chapter.is_accept = True  
+            chapter.save()
+            return chapter
+        except Chapter.DoesNotExist:
+            raise serializers.ValidationError("Chapter not found.")        

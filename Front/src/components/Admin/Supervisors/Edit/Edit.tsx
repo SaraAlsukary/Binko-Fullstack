@@ -1,59 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios';
+import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
+import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
+import { useAppDispatch } from '@hooks/app';
+import { actUpdateProfile } from '@store/auth/authSlice';
 
-const initialUserInfo = {
-    id: '',
-    name: '',
-    username: '',
-    email: '',
-    phone: '',
-    website: '',
-    address: {
-        city: '',
-        street: '',
-        suite: '',
-        zipcode: ''
-    },
-    company: {
-        name: '',
-        catchPhrase: '',
-        bs: ''
-    }
-}
 
 function EditUser(props) {
-    const [userInfo, setUserInfo] = useState(initialUserInfo);
-
-    useEffect(() => {
-        setUserInfo({ ...userInfo, id: props.userId })
-        fetchUserData();
-    }, []);
-
-    const fetchUserData = async () => {
-        try {
-            const response = await axios.get('http://localhost:4000/users/' + props.userId);
-            if (response) {
-                console.log(response)
-                setUserInfo(response.data);
-            }
-            return
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [showEye, setShowEye] = useState(false);
+    const [showEye1, setShowEye1] = useState(false);
+    const [confirm_password, setConfirmPassword] = useState('');
+    const [is_supervisor, setSupervisor] = useState(1);
+    const dispatch = useAppDispatch();
+    const addNewUser = () => {
+        const data = {
+            name,
+            username,
+            password,
+            confirm_password,
+            is_supervisor
         }
-        catch (e) {
-            console.log(e)
-        }
+        dispatch(actUpdateProfile(data)).unwrap().then(() => {
+            alert('New Supervisor Added!')
+        })
     }
 
-    const editExistUser = async () => {
-        try {
-            const response = await axios.put('http://localhost:4000/users/' + props.userId, userInfo);
-            if (response) {
-                props.setUserEdited();
-            }
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
 
 
     return (
@@ -63,65 +37,59 @@ function EditUser(props) {
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Full Name:</span>
+                            <span>Name:</span>
                             <input
                                 type='text'
                                 className='form-control'
-                                placeholder='Enter Full Name'
-                                value={userInfo.name}
-                                onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+                                placeholder='Enter Name'
+                                onChange={e => setName(e.target.value)}
                             />
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
-                            <span>Username:</span>
+                            <span>Email:</span>
                             <input
                                 type='text'
                                 className='form-control'
-                                placeholder='Enter Username'
-                                value={userInfo.username}
-                                onChange={e => setUserInfo({ ...userInfo, username: e.target.value })}
+                                placeholder='Enter Email'
+                                onChange={e => setUsername(e.target.value)}
                             />
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Email Address:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Email Address'
-                                value={userInfo.email}
-                                onChange={e => setUserInfo({ ...userInfo, email: e.target.value })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Phone Number:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Phone Number'
-                                value={userInfo.phone}
-                                onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Website:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Website'
-                                value={userInfo.website}
-                                onChange={e => setUserInfo({ ...userInfo, website: e.target.value })}
-                            />
+                        <p >
+                            <span>password:</span>
+                            <div style={{ position: "relative" }}>
+                                <input
+                                    type={showEye1 ? 'password' : 'text'}
+                                    className='form-control'
+                                    placeholder='Enter Password'
+                                    onChange={e => setPassword(e.target.value)}
+                                />
+                                <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
+                                    {!showEye1 ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
+                                </div>
+                            </div>
                         </p>
                     </div>
 
+                    <div className='col-sm-12 col-md-6'>
+                        <p >
+                            <span>Confirm Password:</span>
+                            <div style={{ position: "relative" }}>
+                                <input
+                                    type={showEye ? 'password' : 'text'}
+                                    className='form-control'
+                                    placeholder='Enter Confirm Password'
+                                    onChange={e => setConfirmPassword(e.target.value)}
+                                />
+                                <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
+                                    {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
+                                </div>
+                            </div>
+                        </p>
+                    </div>
                 </div>
             </div>
 

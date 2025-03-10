@@ -14,6 +14,7 @@ import { Dialog } from 'primereact/dialog';
 import './Users.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
+import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 type TCategory = {
     id: Number,
     name: string,
@@ -81,12 +82,12 @@ function Supervisors({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
-                <button className='btn btn-primary' onClick={() => {
+                {/* <button className='btn btn-primary' onClick={() => {
                     setSelectedUserId(rowDate?.id)
                     setShowEditMode(true)
                 }}>
                     <i className='pi pi-file-edit'></i>
-                </button>
+                </button> */}
                 <button className='btn btn-danger' onClick={() => {
                     setShow(true)
                     deleteUserConfirm(rowDate?.id)
@@ -109,15 +110,9 @@ function Supervisors({ rend }: { rend: boolean }) {
     }
 
     const deleteUser = async (userId: number) => {
-        // try {
-        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
-        //     if (response) {
-        //         getAllUsers();
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
+        dispatch(actDeleteUser(userId)).unwrap().then(() => {
+            alert('Deleted Successfully')
+        })
     }
 
     return (
@@ -154,7 +149,7 @@ function Supervisors({ rend }: { rend: boolean }) {
                     </div>
                 </div>
 
-                <Dialog header="View User Data"
+                <Dialog header="View Supervisor Data"
                     visible={showViewMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowViewMode(false)}>
@@ -162,25 +157,23 @@ function Supervisors({ rend }: { rend: boolean }) {
                     <ViewUser userId={selectedUserId} />
                 </Dialog>
 
-                <Dialog header="Add New User"
+                <Dialog header="Add New Supervisor"
                     visible={showAddMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowAddMode(false)}>
 
                     <AddUser setUserAdded={() => {
                         setShowAddMode(false);
-                        getAllUsers();
                     }} />
                 </Dialog>
 
-                <Dialog header="Edit Exist User"
+                <Dialog header="Edit Exist Supervisor"
                     visible={showEditMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowEditMode(false)}>
 
                     <EditUser userId={selectedUserId} setUserEdited={() => {
                         setShowEditMode(false);
-                        getAllUsers();
                     }} />
                 </Dialog>
 

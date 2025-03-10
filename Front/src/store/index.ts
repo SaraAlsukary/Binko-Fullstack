@@ -18,6 +18,7 @@ import theme from "./themeSlice/themeSlice";
 import chapters from "./chaptersSlice/chaptersSlice";
 import comments from "./commentsSlice/commentsSlice";
 import categories from "./categorySlice/categorySlice";
+import replies from "./repliesSlice/repliesSlice";
 import users from './usersSlice/userSlice';
 import supervisors from './supervisorSlice/supervisorSlice';
 // const rootPersistConfig = {
@@ -62,6 +63,7 @@ const rootReducer = combineReducers({
     chapters,
     comments,
     supervisors,
+    replies,
     users
 });
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

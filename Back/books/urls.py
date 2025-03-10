@@ -8,8 +8,8 @@ urlpatterns = [
     path('mybook/<int:user_id>/', get_my_book, name='get_my_book'),
     path('allbooks/', get_all_books, name='get_all_books'),
     path('allbooksforaccept/', get_all_books_to_accept, name='get_all_books_to_accept'),
-    path('books/<int:book_id>/', delete_book, name='delete_book'),
+    path('delete/books/<int:book_id>/', delete_book, name='delete_book'),
      path('books/add/<int:user_id>/', add_book, name='add_book'),
-     path('book-favs/<int:pk>/', delete_book_fav, name='delete_book_fav'),
+     path('book-favs/<int:book_id>/', delete_book_fav, name='delete_book_fav'),
      path('books/<int:pk>/accept/', accept_book, name='accept_book'),
 ]
