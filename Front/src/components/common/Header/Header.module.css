@@ -12,7 +12,11 @@
     border-radius: 50%;
 }
 
-
+.prof img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
 
 .prof.dark {
     border: 1px solid #fff;

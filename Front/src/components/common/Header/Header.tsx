@@ -10,19 +10,23 @@ import { changeThemeToDark, changeThemeToLight } from '@store/themeSlice/themeSl
 import Sun from '@assets/svgs/sun.svg?react'
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@components/feedback';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { changeLanguageToArabic, changeLanguageToEnglish } from '@store/languageSlice/languageSlice';
 import { Container } from 'react-bootstrap';
+import actGetUsers from '@store/usersSlice/act/actGetUsers';
 const { headerContainer, closeIcon, searchIcon, navStyle, icon, prof, burger, show, dark } = Styles;
 const Header = () => {
     const [toggle, setToggle] = useState(false);
     const dispatch = useAppDispatch();
     const { theme } = useAppSelector(state => state.theme);
     const { language } = useAppSelector(state => state.language);
-    const { user } = useAppSelector(state => state.auth)
+    const { userData } = useAppSelector(state => state.auth)
+    const { users } = useAppSelector(state => state.users)
     const location: any = useLocation();
-
+    useEffect(() => {
+        dispatch(actGetUsers())
+    }, [])
     const showToggleHandler = () => {
         setToggle(!toggle);
     }
@@ -81,8 +85,12 @@ const Header = () => {
                                 <option value="English" onClick={changeToEnglish}>{language === 'English' ? 'English' : 'الانجليزية'} </option>
                             </select>
                         </li>
-                        {user ?
-                            <li><NavLink to='profile' ><div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}></div></NavLink></li>
+                        {userData ?
+                            <li><NavLink to='profile' ><div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}>
+
+
+                                <img src={`http://127.0.0.1:8000${userData?.user.image}`} alt="" />
+                            </div></NavLink></li>
 
                             : <li><Button ><NavLink to='Login' style={{ color: 'black' }}>{language === 'Arabic' ? 'تسجبل الدخول' : "login"}</NavLink></Button></li>
                         }</ul>

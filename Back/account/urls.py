@@ -9,6 +9,6 @@ urlpatterns = [
     path('non-supervisors/', get_non_supervisor_users, name='get_non_supervisor_users'),
     path('supervisors/', get_supervisor_users, name='get_non_supervisor_users'),
     path('delete-user/<int:user_id>/', delete_user, name='delete-user'),
-     path('create-supervisor/', create_supervisor, name='create-supervisor'),
+    path('create-supervisor/', create_supervisor, name='create-supervisor'),
     
 ]

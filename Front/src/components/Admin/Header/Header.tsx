@@ -13,7 +13,7 @@ const Header = () => {
     const dispatch = useAppDispatch();
     const { theme } = useAppSelector(state => state.theme);
     const { language } = useAppSelector(state => state.language);
-    const { user } = useAppSelector(state => state.auth)
+    const { userData } = useAppSelector(state => state.auth)
 
     const changeToDark = () => {
         dispatch(changeThemeToDark());
@@ -67,10 +67,10 @@ const Header = () => {
                             <option value="English" onClick={changeToEnglish}>{language === 'English' ? 'English' : 'الانجليزية'} </option>
                         </select>
                     </li>
-                    <li onClick={() => setShow(!show)} className='pro'><div className={theme === 'Dark' ? `prof dark` : `prof`}>{user?.username} {show ? <i className='pi pi-angle-up'></i> : <i className='pi pi-angle-down'></i>}</div></li>
+                    <li onClick={() => setShow(!show)} className='pro'><div className={theme === 'Dark' ? `prof dark` : `prof`}>{userData?.user.username} {show ? <i className='pi pi-angle-up'></i> : <i className='pi pi-angle-down'></i>}</div></li>
                     <li><ul className={show ? 'list2 show' : 'list2'}>
-                        <li><NavLink to='profile'>{user?.name}</NavLink></li>
-                        <li>{user?.username}</li>
+                        <li><NavLink to='profile'>{userData?.user.name}</NavLink></li>
+                        <li>{userData?.user.username}</li>
                         <li onClick={logoutHandler}>{language === 'English' ? "Logout" : "تسجيل الخروج"}</li>
                     </ul></li>
 

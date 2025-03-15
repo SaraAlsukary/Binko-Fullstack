@@ -7,16 +7,22 @@ import actLogout from "./act/actLogout";
 import actUpdateProfile from "./act/actUpdateProfile";
 
 interface IAuthState {
-    user: {
+    userData: {
         id: number,
         name: string,
         username: string,
         is_admin: boolean,
         is_supervisor: boolean
     } | {
-        id: number,
-        user_type: string,
-        username: string,
+        user: {
+            id: number,
+            is_supervisor: boolean,
+            is_admin: boolean,
+            username: string,
+            name: string,
+            image: string,
+            discriptions: string,
+        }
         message: string,
         token: string,
     } | null;
@@ -24,7 +30,7 @@ interface IAuthState {
     error: string | null;
 }
 const initialState: IAuthState = {
-    user: null,
+    userData: null,
     loading: "idle",
     error: null,
 }
@@ -33,7 +39,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         authLogout: (state) => {
-            state.user = null;
+            state.userData = null;
         },
     }
     ,
@@ -45,7 +51,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actCreateAccount.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.user = action.payload;
+            state.userData = action.payload;
 
         });
         builder.addCase(actCreateAccount.rejected, (state, action) => {
@@ -63,7 +69,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actLogin.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.user = action.payload;
+            state.userData = action.payload;
         });
         builder.addCase(actLogin.rejected, (state, action) => {
             state.loading = "failed";

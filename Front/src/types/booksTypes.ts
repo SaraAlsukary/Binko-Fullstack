@@ -5,6 +5,6 @@ export type TBooks = {
     name?: string,
     image?: string,
     description?: string,
-    category?: number,
+    categories?: [],
     publication_date?: string
 }

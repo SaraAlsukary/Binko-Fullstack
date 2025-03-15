@@ -31,12 +31,16 @@ class GetCommentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'image']  # إرجاع اسم المستخدم وصورته
+        fields = ['id', 'name', 'image']  
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # تضمين بيانات المستخدم داخل التعليق
+    user = UserSerializer(read_only=True)  
 
     class Meta:
         model = Comment
         fields = ['id', 'user', 'comment']        
 
+class DeleteCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'

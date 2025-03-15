@@ -3,13 +3,15 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Book_Fav , Book ,Book_Category
+from .models import Book_Fav , Book ,Book_Category ,Like
 from account.models import CustomUser
 from account.models import CustomUser
 from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,LikeSerializer,FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
 from .serializers import BookSerializer
 from categories.models import Category
+from .serializers import  NoteSerializer
+from django.shortcuts import get_object_or_404
 @api_view(['GET'])
 def favorite_books(request, user_id):
     try:
@@ -20,14 +22,17 @@ def favorite_books(request, user_id):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_book_fav(request, book_id):
-    try:
-        book_fav = Book_Fav.objects.get(book_id=book_id)
-    except Book_Fav.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+def delete_book_fav(request, user_id, book_id) :
+    user = get_object_or_404(CustomUser, id=user_id)  # البحث عن المستخدم
+    book = get_object_or_404(Book, id=book_id)  # البحث عن الكتاب
 
-    book_fav.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)    
+    favorite = Book_Fav.objects.filter(user=user, book=book).first()  # البحث عن المفضلة
+
+    if favorite:
+        favorite.delete()
+        return Response({"message": "تم حذف الكتاب من المفضلة "}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "هذا الكتاب غير موجود في المفضلة"}, status=status.HTTP_404_NOT_FOUND)  
 
 
 
@@ -122,6 +127,46 @@ def accept_book(request, pk):
     book.save()
 
     serializer = BookSerializer(book)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def toggle_like(request, user_id, book_id):
+    user = get_object_or_404(CustomUser, id=user_id)  # البحث عن المستخدم
+    book = get_object_or_404(Book, id=book_id)  # البحث عن الكتاب
+
+    like, created = Like.objects.get_or_create(user=user, book=book)
+
+    if created:
+        return Response({"message": "تم تسجيل الإعجاب بالكتاب "}, status=status.HTTP_201_CREATED)
+    else:
+        like.delete()  # إذا كان موجودًا، يتم حذف الإعجاب
+        return Response({"message": "تم إلغاء الإعجاب بالكتاب "}, status=status.HTTP_200_OK)
+    
+
+
+@api_view(['PATCH']) 
+def update_note(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = NoteSerializer(book, data=request.data, partial=True) 
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET']) 
+def get_note(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = NoteSerializer(book)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

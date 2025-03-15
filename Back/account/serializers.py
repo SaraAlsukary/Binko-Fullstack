@@ -6,10 +6,12 @@ from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
+
     class Meta:
         model = CustomUser
-        fields = ['id','name', 'username', 'password', 'confirm_password','is_admin', 'is_supervisor']
+        fields = ['id', 'name', 'username', 'password', 'confirm_password', 'is_admin', 'is_supervisor', 'image', 'discriptions']
         extra_kwargs = {'password': {'write_only': True}}
+
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
             raise serializers.ValidationError({"password": "كلمات المرور غير متطابقة."})
@@ -20,8 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
         user = CustomUser(
             name=validated_data['name'],
             username=validated_data['username'],
-            is_admin=validated_data.get('is_admin',False),
-            is_supervisor=validated_data.get('is_supervisor',False)
+            is_admin=validated_data.get('is_admin', False),
+            is_supervisor=validated_data.get('is_supervisor', False),
+            image=validated_data.get('image', ""),
+            discriptions=validated_data.get('discriptions', "")
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -31,17 +35,14 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    
 
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
-        
 
         if username and password:
-            
             user = authenticate(username=username, password=password)  
-            
+
             if user:
                 if not user.is_active:
                     raise serializers.ValidationError("الحساب معطل.")
@@ -52,7 +53,10 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("يجب إدخال البريد الإلكتروني وكلمة المرور.")
         
         return data
-    
+class CustomrUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'    
 class LogoutSerializer(serializers.Serializer):
     token = serializers.CharField()         
 

@@ -52,9 +52,9 @@ const Login = () => {
             dispatch(actLogin(userData))
                 .unwrap()
                 .then((res) => {
-                    if (res.user_type === 'admin') {
+                    if (res.user.is_admin) {
                         navigate('/Binko/admin')
-                    } else if (res.user_type === 'supervisor') {
+                    } else if (res.user.is_supervisor) {
                         navigate('/Binko/supervisor')
                     } else {
                         navigate('/Binko/')

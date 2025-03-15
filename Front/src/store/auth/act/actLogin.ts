@@ -8,12 +8,18 @@ type TFormData = {
 };
 
 type TResponse = {
+    user: {
+        id: number,
+        is_supervisor: boolean,
+        is_admin: boolean,
+        username: string,
+        name: string,
+        image: string,
+        discriptions: string,
+    }
     message: string,
     token: string,
-    username: boolean,
-    user_type: string,
-    id: number
-};
+}
 
 const actLogin = createAsyncThunk(
     "auth/actLogin",
@@ -27,6 +33,7 @@ const actLogin = createAsyncThunk(
             );
             return res.data;
         } catch (error) {
+            console.log(error)
             return rejectWithValue(axiosErrorHandler(error));
         }
     }

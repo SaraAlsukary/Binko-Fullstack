@@ -15,7 +15,6 @@ const Registeration = lazy(() => import('@pages/Registeration/Registeration'));
 const Books = lazy(() => import('@pages/Books/Books'));
 const BooksCategory = lazy(() => import('@pages/BooksCategory/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
-const BooksInfoAccepted = lazy(() => import('@pages/BooksInfoAccept/BooksInfo'));
 const AddBook = lazy(() => import('@pages/AddBook/AddBook'));
 const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
 const AddChapter = lazy(() => import('@pages/AddChapter/AddChapter'));
@@ -96,10 +95,6 @@ const AppRouter = () => {
         {
             path: 'books/:id',
             element: <SuspendPage><BooksInfo /></SuspendPage>,
-
-        }, {
-            path: 'acceptedBook/:id',
-            element: <SuspendPage><BooksInfoAccepted /></SuspendPage>,
 
         },
         {

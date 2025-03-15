@@ -8,10 +8,13 @@ type TFormData = {
     confirm_password: string;
 };
 type TResponse = {
+    id: number,
     name: string,
     username: string,
     is_admin: boolean,
-    is_supervisor: boolean
+    is_supervisor: boolean,
+    image: string,
+    discriptions: string
 };
 const actCreateAccount = createAsyncThunk(
     "auth/actCreateAccount",

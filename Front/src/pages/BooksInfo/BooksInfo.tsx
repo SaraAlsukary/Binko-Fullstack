@@ -42,7 +42,7 @@ const BooksInfo = () => {
   const { users } = useAppSelector(state => state.users)
   const booksFav = useAppSelector(state => state.favorite.books)
   const { categories } = useAppSelector(state => state.categories)
-  const { user } = useAppSelector(state => state.auth)
+  const { userData } = useAppSelector(state => state.auth)
   const commentss = useAppSelector(state => state.comments.comments);
   const { id }: any = useParams();
   const indx = parseInt(id)
@@ -50,13 +50,13 @@ const BooksInfo = () => {
   const { books, myBooks } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
-    user: user?.id,
+    user: userData.user?.id,
     book: indx
   }
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
   const ExistedBook = myBooks.find((book) => book.id === indx) ? true : false;
   const bookInfo = ExistedBook ? myBooks.find(book => book.id === indx) : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
-  const ExistedComment = commentss.find((comment) => comment.user_id === user?.id) ? true : false;
+  const ExistedComment = commentss.find((comment) => comment.user_id === userData?.user.id) ? true : false;
   const activeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active)) {
@@ -109,7 +109,7 @@ const BooksInfo = () => {
   const deleteHandler = () => {
     dispatch(actDeleteBook(indx)).unwrap().then(() => {
       alert('Deleted successfully!')
-      navigate(`/Binko/admin`)
+      navigate(-1)
     })
   }
   const denyChapterHandler = (id: number) => {
@@ -156,7 +156,7 @@ const BooksInfo = () => {
     // })
   }
   const commentData = {
-    user: user?.id,
+    user: userData.user?.id,
     book: indx,
     comment: commentText
 
@@ -166,7 +166,7 @@ const BooksInfo = () => {
     setCommentText('');
   }
   const ReplyData = {
-    user: user?.id,
+    user: userData.user?.id,
     comment: commentId,
     reply: replyy
 
@@ -184,7 +184,7 @@ const BooksInfo = () => {
       const promiseChapters = dispatch(actGetChapters(bookInfo?.id))
       const promiseUsers = dispatch(actGetUsers())
       const promiseCategories = dispatch(actGetCategories())
-      const promiseFavorite = dispatch(actGetfavorite(user?.id))
+      const promiseFavorite = dispatch(actGetfavorite(userData?.user.id))
       return () => {
         promiseComment.abort();
         promiseChapters.abort();
@@ -201,94 +201,116 @@ const BooksInfo = () => {
   )
   unactiveInputHandler();
 
-  const categoriesBookExist = books.map((book) => book.category)
-  const categoriesBook = categoriesBookExist.map((cate) => {
-    const filter = categories.filter((cates) => cates.id === cate)
-    if (filter)
-      return filter
-  })
-  const categoriesBookCard = categoriesBook.map((cate) => <p key={Math.random() * 2}>{language === 'English' ? cate?.name : cate?.name_arabic}</p>
+  // const categoriesBookExist = books.map((book) => book.categories)
+  // console.log(categoriesBookExist)
+  //   for (let index = 0; index < books.length; index++) {
+  //     const categoriess = books[index].categories;
+  //     for (let index2 = 0; index2 < categoriess.length; index2++) {
+  //       const category = book.categories?.map(ct => {
+
+  //         const filter = categories.filter((cates) => cates.name === ct)
+  //         return filter;
+  //       });
+
+  //     }
+
+  // }
+  // const categoriesBook = books.map((book) => {
+  //   const category = book.categories?.map(ct => {
+
+  //     const filter = categories.filter((cates) => cates.name === ct)
+  //     return filter;
+  //   });
+  //   return category
+  // })
+  // console.log(categoriesBook)
+  const categoriesBookCard = bookInfo?.categories.map((cate) => <p key={Math.random() * 2}>
+    {/* {language === 'English' ? cate?.name : cate?.name_arabic} */}
+    {cate}
+  </p>
   )
   const commentsListElements = commentss.map(comment => {
-    return (<div key={comment?.id} className={boxCont}><div className={box}>
-      <div className={commenter}>
-        <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={pic}>
-          <img src={`http://127.0.0.1:8000${comment.image}`} alt="" />
-        </div>
-        <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={commenterName}>
-          {comment?.name}
-        </div>
-      </div>
-      <div className={text}>
-        <p>{comment?.comment} <span
-          className={`${comment?.id}`}
-          id={`span-${comment?.id}`}
-        >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-      </div>
-      {ExistedComment || user?.user_type === 'admin' || user?.user_type === 'supervisor' ?
-        <div className={commentBtns}>
-          {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""}
-          <Button
-            onClick={() => deleteCommentHandler(comment?.id)}
-            style={{ width: '60px', margin: "0 10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
-        </div> : ""
-      }
-      <div
-        className={` ${inputField}`}
-        id={`inp-${comment?.id}`} >
-        <div className={input}>
-          <Input onChange={(e) => {
-            setCommentId(comment?.id)
-            setReplyy(e.target.value)
-          }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-        </div>
-        <div className={icon} onClick={addReplyHandler}>
-          {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-        </div>
-      </div>
-    </div>
-
-      {
-        replies.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
-          {language === 'English' ? `There are ${replies.length} replies` : `   هناك ${replies.length} رد`}
-        </div> : ''
-      }
-      {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
-        {replies.map(rep => {
-          const user = users.find((user => user.id === rep.user))
-          // const replyInfo = replies?.find((reply => reply.comment === comment.id))
-
-          return (
-            <div className={replyBox}>
-              <div className={replyer}>
-                <div className={pic}>
-                  <img src={`http://127.0.0.1:8000${user?.image}`} alt="" />
-                </div>
-                <div className={replyerName}>
-                  {user?.name}
-                </div>
-              </div>
-              <div className={text}>
-                <p>{rep?.reply} <span
-                  className={`${rep?.id}`}
-                  id={`span-${rep?.id}`}
-                >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-              </div>
-              <div
-                className={` ${inputField}`}
-                id={`inp-${rep?.id}`} >
-                <div className={input}>
-                  <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-                </div>
-                <div className={icon}>
-                  {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-                </div>
-              </div>
+    return (
+      <div key={comment?.id} className={boxCont}>
+        <div className={box}>
+          <div className={commenter}>
+            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user.id}`)} className={pic}>
+              <img src={`http://127.0.0.1:8000${comment.user.image}`} alt="" />
             </div>
-          )
-        })}
-      </div> : ''}
-    </div >)
+            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={commenterName}>
+              {comment?.user.name}
+            </div>
+          </div>
+          <div className={text}>
+            <p>{comment?.comment} <span
+              className={`${comment?.id}`}
+              id={`span-${comment?.id}`}
+            >{language === 'English' ? `REPLY` : `الرد`}</span></p>
+          </div>
+          {ExistedComment || userData.user.is_admin || userData.user.is_supervisor ?
+            <div className={commentBtns}>
+              {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""}
+              <Button
+                onClick={() => deleteCommentHandler(comment?.id)}
+                style={{ width: '60px', margin: "0 10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
+            </div> : ""
+          }
+          <div
+            className={` ${inputField}`}
+            id={`inp-${comment?.id}`} >
+            <div className={input}>
+              <Input onChange={(e) => {
+                setCommentId(comment?.id)
+                setReplyy(e.target.value)
+              }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+            </div>
+            <div className={icon} onClick={addReplyHandler}>
+              {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+            </div>
+          </div>
+        </div>
+
+        {
+          replies.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
+            {language === 'English' ? `There are ${replies.length} replies` : `   هناك ${replies.length} رد`}
+          </div> : ''
+        }
+        {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
+          {replies.map(rep => {
+            const user = users.find((user => user.id === rep.user))
+            // const replyInfo = replies?.find((reply => reply.comment === comment.id))
+
+            return (
+              <div className={replyBox}>
+                <div className={replyer}>
+                  <div className={pic}>
+                    <img src={`http://127.0.0.1:8000${user?.image}`} alt="" />
+                  </div>
+                  <div className={replyerName}>
+                    {user?.name}
+                  </div>
+                </div>
+                <div className={text}>
+                  <p>{rep?.reply} <span
+                    className={`${rep?.id}`}
+                    id={`span-${rep?.id}`}
+                  >{language === 'English' ? `REPLY` : `الرد`}</span></p>
+                </div>
+                <div
+                  className={` ${inputField}`}
+                  id={`inp-${rep?.id}`} >
+                  <div className={input}>
+                    <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                  </div>
+                  <div className={icon}>
+                    {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div> : ''}
+      </div >)
   });
 
   const chaptersList = chapters?.map((chapter, idx) => <li key={chapter.id}
@@ -300,7 +322,7 @@ const BooksInfo = () => {
     >
       {chapter.title}
     </span>
-    {(user?.user_type === 'supervisor' || user?.user_type === 'admin') ?
+    {(userData?.user.is_supervisor || userData.user.is_admin) ?
       !bookInfo?.is_accept ? <Button style={language === 'Arabic' ? { position: 'absolute', right: '90%' } : { position: 'absolute', right: '10px' }} onClick={() => AcceptChapterHandler(chapter.id)}>
         {language === 'Arabic' ? 'قبول' : 'Accept'}
       </Button> : <Button style={language === 'Arabic' ? { backgroundColor: '#f35151', position: 'absolute', right: '90%' } : { backgroundColor: '#f35151', position: 'absolute', right: '10px' }} onClick={() => denyChapterHandler(chapter.id)}>
@@ -308,20 +330,20 @@ const BooksInfo = () => {
         }      </Button>
       : ""}
   </li>)
-  const authorData = users.find((user) => user.id === bookInfo?.user)
+  const authorData = users.find((user) => user.id === bookInfo?.user.id)
   return (
     <Container className={bookCont} >
       <div className={left}>
         <div className={pic}>
           <img src={`http://127.0.0.1:8000${bookInfo?.image}`} alt="" crossOrigin="anonymous" />
         </div>
-        <div className={author} onClick={() => navigate(`/Binko/userInfo/${authorData?.id}/`)}>
+        <div className={author} onClick={() => navigate(`/Binko/userInfo/${bookInfo?.user?.id}/`)}>
           <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
           <div className={authInfo}>
             <div className={photo}>
               <img src={`http://127.0.0.1:8000${authorData?.image}`} alt="" />
             </div>
-            <div className={nameAuth}>{authorData?.name}</div>
+            <div className={nameAuth}>{bookInfo?.user?.name}</div>
           </div>
           <div className={descAuth}>
             {authorData?.discriptions}
@@ -331,11 +353,12 @@ const BooksInfo = () => {
       <div className={right}>
         <div className={up}>
           <h1>{bookInfo?.name}</h1>
-          <span>{authorData?.name}</span>
+          <span>{bookInfo?.user?.name}</span>
           <div className={cate}>
             {categoriesBookCard}
           </div>
           <p className={loves}>{language === 'English' ? `200 Likes` : ` 200 اعجاب `} </p>
+          <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
           <p className={desc}>{bookInfo?.description}</p>
           <ul>
             {ExistedBook ? '' :
@@ -354,16 +377,20 @@ const BooksInfo = () => {
               <div className={activeIcon}><LoveFillWhite style={{ width: '20px' }} /> </div><div className={icon}><LoveNotFill style={{ width: '20px' }} /></div></div></li>
             <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
           </ul>
-          {ExistedBook && user?.user_type === 'regular' ?
+          {ExistedBook && !userData.user.is_supervisor && !userData.user.is_admin ?
             <>
               <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
               <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
             </>
             : ''}
-          {(user?.user_type === 'supervisor' || user?.user_type === 'admin') ?
-            <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept && language === 'English' ? 'Deny' : bookInfo?.is_accept && language === 'Arabic' ? " رفض" :
-              !bookInfo?.is_accept && language === 'Arabic' ? 'قبول' :
-                'Accept'}</Button>
+          {(userData.user.is_supervisor || userData.user.is_admin) ?
+            <>
+              <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept && language === 'English' ? 'Deny' : bookInfo?.is_accept && language === 'Arabic' ? " رفض" :
+                !bookInfo?.is_accept && language === 'Arabic' ? 'قبول' :
+                  'Accept'}</Button>
+              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+
+            </>
             : ""}
         </div>
         <div className={down}>

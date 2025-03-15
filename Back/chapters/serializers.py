@@ -64,3 +64,9 @@ class ChapterAcceptSerializer(serializers.Serializer):
             return chapter
         except Chapter.DoesNotExist:
             raise serializers.ValidationError("Chapter not found.")        
+        
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'note']
+

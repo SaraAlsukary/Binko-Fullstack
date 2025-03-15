@@ -6,6 +6,8 @@ from books.models import Book
 from .models import Chapter
 from .serializers import ChapterAcceptSerializer ,ChapterSerializer,ChaptersSerializer, ChapterDeleteSerializer
 from django.http import JsonResponse
+from .serializers import NoteSerializer
+
 
 @api_view(['GET'])
 def get_book_chapters_if_accept(request, book_id):
@@ -53,11 +55,29 @@ def delete_chapter(request, chapter_id):
 
 @api_view(['PATCH'])
 def accept_chapter(request, chapter_id):
-    # تمرير ID الشابتر إلى Serializer
     serializer = ChapterAcceptSerializer(data={'id': chapter_id})
     
     if serializer.is_valid():
-        serializer.update()  # تحديث الحقل is_accept
+        serializer.update() 
         return Response({"message": "Chapter accepted successfully."}, status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+
+@api_view(['GET', 'PATCH'])  # نستخدم GET لاسترجاع و PATCH لتحديث الملاحظة
+def manage_note(request, chapter_id):
+    try:
+        chapter = Chapter.objects.get(id=chapter_id)
+    except Chapter.DoesNotExist:
+        return Response({'error': 'Chapter not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = NoteSerializer(chapter)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'PATCH':
+        serializer = NoteSerializer(chapter, data=request.data, partial=True)  # استخدام partial=True لتحديث فقط الحقول المحددة
+        if serializer.is_valid():
+            serializer.save()  # حفظ التغييرات
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

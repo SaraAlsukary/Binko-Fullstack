@@ -7,5 +7,6 @@ class Chapter(models.Model):
     title=models.CharField(max_length=250)
     content_text=models.TextField()
     audio=models.FileField(upload_to='audio/', null=True, blank=True)
+    note=models.CharField(max_length=250,null=True)
     class Meta:
         db_table='chapters'

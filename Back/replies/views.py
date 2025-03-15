@@ -24,7 +24,7 @@ def get_replies_for_comment(request, comment_id):
 def add_reply_to_comment(request, comment_id, user_id):
     try:
         comment = Comment.objects.get(id=comment_id)
-        user = CustomUser.objects.get(id=user_id)  # البحث عن المستخدم
+        user = CustomUser.objects.get(id=user_id) 
     except Comment.DoesNotExist:
         return JsonResponse({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
     except CustomUser.DoesNotExist:
@@ -32,14 +32,25 @@ def add_reply_to_comment(request, comment_id, user_id):
 
     data = request.data.copy()
     data['comment'] = comment.id
-    data['user'] = user.id  # التأكد من تعيين المستخدم بشكل صحيح
+    data['user'] = user.id 
 
     serializer = ReplySerializer(data=data)
     if serializer.is_valid():
-        serializer.save(user=user)  # تمرير المستخدم ككائن `CustomUser`
+        serializer.save(user=user) 
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def delete_reply(request, reply_id):
+    try:
+        reply = Reply.objects.get(id=reply_id)
+    except Reply.DoesNotExist:
+        return Response({'error': 'Reply not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    reply.delete()
+    return Response({'message': 'Reply deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 

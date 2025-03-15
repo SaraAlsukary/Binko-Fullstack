@@ -76,7 +76,8 @@ function Book({ rend }: { rend: boolean }) {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    navigate(`/Binko/acceptedBook/${rowDate.id}`)
+                    navigate(`/Binko/books/${rowDate.id}`)
+                    // navigate(`/Binko/acceptedBook/${rowDate.id}`)
                     // setSelectedUserId(rowDate?.id)
                     // setShowViewMode(true)
                 }}>

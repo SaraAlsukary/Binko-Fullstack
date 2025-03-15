@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 
 const HomePage = () => {
-  const { user } = useAppSelector(state => state.auth);
+  const { userData } = useAppSelector(state => state.auth);
 
   return (
     <>
@@ -14,7 +14,7 @@ const HomePage = () => {
       {/* <div> */}
       <Outlet />
       {/* </div> */}
-      {user?.username ? <Menu /> : ''}
+      {userData ? <Menu /> : ''}
 
       <Footer />
 

@@ -13,7 +13,7 @@ const actAddBooks = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `books/add/${auth.user?.id}/`, Formdata,
+                `books/add/${auth?.userData.user.id}/`, Formdata,
                 {
                     signal,
                     // headers: {
