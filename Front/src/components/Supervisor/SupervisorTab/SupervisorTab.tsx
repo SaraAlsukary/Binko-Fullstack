@@ -2,6 +2,7 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
+import AcceptedBooks from '../BooksSuperAccept/Book';
 import Comment from '../CommentsSuper/Comment'
 import Category from '../CategorySuper/Category'
 import Book from '../BooksSuper/Book'
@@ -27,13 +28,17 @@ function LeftTabsExample() {
                             <Nav.Item onClick={() => setRend(!rend)}>
                                 <Nav.Link eventKey="third">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
                             </Nav.Item>
+                            <Nav.Item onClick={() => setRend(!rend)}>
+                                <Nav.Link eventKey="fourth">{language === 'English' ? 'Accepted Books' : 'الكتب المنشورة'}</Nav.Link>
+                            </Nav.Item>
                         </Nav>
                     </Col>
                     <Col sm={9}>
                         <Tab.Content>
                             <Tab.Pane eventKey="first"><Category rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="second"><Comment rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="third"><Book rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="fourth"><Book rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="third"><AcceptedBooks rend={rend} /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

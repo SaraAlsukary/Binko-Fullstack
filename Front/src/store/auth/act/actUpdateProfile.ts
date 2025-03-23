@@ -22,7 +22,7 @@ const actUpdateProfile = createAsyncThunk(
         const { rejectWithValue, getState } = thunk;
         const { auth } = getState() as RootState;
         try {
-            const res = await axios.put<TResponse>(`update-user/${auth.user.id}/`, formData, {
+            const res = await axios.put<TResponse>(`update-user/${auth.userData.user.id}/`, formData, {
                 // headers: { 'Content-Type': 'application/json' },
             });
             return res.data;

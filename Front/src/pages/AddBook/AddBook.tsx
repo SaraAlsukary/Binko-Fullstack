@@ -6,13 +6,14 @@ import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButto
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
 import actAddBooks from "@store/booksSlice/act/actAddBooks";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
+import { TCategory } from "@customtypes/categoryType";
 
 const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
 const AddBook = () => {
     const dataForm = new FormData();
     const [image, setImage] = useState('');
     const [imageFile, setImageFile] = useState('');
-    const [category, setCategory] = useState([]);
+    const [category, setCategory] = useState<number[]>([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
@@ -23,8 +24,24 @@ const AddBook = () => {
 
     var cate: any = [];
     const categoryHandler = (e: any) => {
-        const value = parseInt(e.target.value);
-        cate.push(value);
+        const id = parseInt(e.target.value);
+        console.log(id)
+        if (category.find((cate: any) => cate === id)) {
+            // if (category.find((cate: any) => cate === id)) {
+            // console.log('exist')
+            // console.log(id)
+            const cate = category.filter(cate => cate !== id);
+            setCategory(cate);
+            console.log(category)
+
+        } else {
+            // const categoryItem = categories.find(cate => cate.id == id)
+            setCategory([...category, id])
+            console.log(category)
+
+            // setCategory([...category, id])
+
+        }
     }
     const titleHandler = (e: any) => {
         setName(e.target.value);
@@ -40,11 +57,11 @@ const AddBook = () => {
 
     }
     const addBookHandler = () => {
-        setCategory(cate);
+        // setCategory(cate);
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
         dataForm.append('description', description);
-        dataForm.append('categories', category as any);
+        dataForm.append('categories', category);
         // dataForm.append('user_id', user?.user_id);
         // console.log(dataForm)
         // console.log(imageFile)

@@ -20,15 +20,13 @@ const Books = () => {
     const dispatch = useAppDispatch();
     const { books } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
-    const { users } = useAppSelector(state => state.users);
     const booksCards = books.map(((book: TBooks) => {
-        const username = users.find(user => user.id == book.user.id)?.name;
-        return <BookCard key={book.id} id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+        return <BookCard key={book.id}
+            {...book} />
 
     }))
     const booksCardsSquare = books.map(((book: TBooks) => {
-        const username = users.find(user => user.id == book.user.id)?.name;
-        return <BookCardSquare key={book.id} id={book.id} category={book.category} user={username} description={book.description} name={book.name} image={book.image} />
+        return <BookCardSquare key={book.id} {...book} />
 
     }));
     // const booksCardsBackground = books.map(((book: TBooks) => <BooksBackground key={book.id} img={image} />));

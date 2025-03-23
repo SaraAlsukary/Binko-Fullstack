@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useAppDispatch } from '@hooks/app';
-import { actCreateAccount } from '@store/auth/authSlice';
 import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
 import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
+import actAddSupervisor from '@store/supervisorSlice/act/actAddSupervisor';
 
 
 function Add(props: { setUserAdded: () => void }) {
@@ -13,7 +13,6 @@ function Add(props: { setUserAdded: () => void }) {
     const [showEye, setShowEye] = useState(false);
     const [showEye1, setShowEye1] = useState(false);
     const [confirm_password, setConfirmPassword] = useState('');
-    const [is_supervisor, setSupervisor] = useState(1);
     const dispatch = useAppDispatch();
     const addNewUser = () => {
         const data = {
@@ -21,9 +20,8 @@ function Add(props: { setUserAdded: () => void }) {
             username,
             password,
             confirm_password,
-            is_supervisor
         }
-        dispatch(actCreateAccount(data)).unwrap().then(() => {
+        dispatch(actAddSupervisor(data)).unwrap().then(() => {
             alert('New Supervisor Added!')
         })
     }

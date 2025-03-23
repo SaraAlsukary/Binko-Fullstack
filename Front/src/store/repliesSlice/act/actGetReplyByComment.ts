@@ -11,7 +11,6 @@ const actGetReplyByComment = createAsyncThunk(
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.get<TResponse>(`commentsget/${id}/replies/`, { signal });
-            console.log(response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

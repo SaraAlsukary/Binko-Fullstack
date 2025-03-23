@@ -20,18 +20,15 @@ const actAddReply = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `comments/${Formdata?.comment}/replies/
-                `, Formdata,
+                `api/comments/${Formdata?.comment}/reply/${auth.userData.user.id}/`, Formdata.reply,
                 {
                     signal,
-                    headers: {
-                        Authorization: `Bearer ${auth.user?.token}`,
-                        'Content-Type': 'application/json'
-                    },
+                    // headers: {
+                    //     Authorization: `Bearer ${auth.userData?.user.token}`,
+                    //     'Content-Type': 'application/json'
+                    // },
                 },
             );
-            console.log(response.data)
-            console.log(auth.user?.token)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

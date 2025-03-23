@@ -1,19 +1,21 @@
-import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
+import { createAsyncThunk, } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TBooks } from "@customtypes/booksTypes";
-import { RootState } from "@store/index";
 
-// type TResponse = [];
+
+type TNote = {
+    id: number,
+    note: string
+};
 const actDenyChapters = createAsyncThunk(
     "chapters/actDenyChapters",
-    async (id: number, thunkAPI) => {
-        const { rejectWithValue, getState, signal } = thunkAPI;
+    async (form: TNote, thunkAPI) => {
+        const { rejectWithValue, signal } = thunkAPI;
         // const { auth } = getState() as RootState;
 
         try {
-            const response = await axios.delete(
-                `delete-chapter/${id}/`,
+            const response = await axios.patch<TNote>(
+                `chapters/${form.id}/note/`, JSON.stringify(form),
                 {
                     signal,
                     // headers: {

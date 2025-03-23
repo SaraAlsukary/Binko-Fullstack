@@ -19,6 +19,7 @@ import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteComment from '@store/commentsSlice/act/actDeleteComment';
 import { useNavigate } from 'react-router-dom';
 import actGetBooks from '@store/booksSlice/act/actGetBooks';
+import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 type TCategory = {
     name: string,
     profile: React.ReactNode,
@@ -39,7 +40,7 @@ function Comment({ rend }: { rend: boolean }) {
     // const [showAddMode, setShowAddMode] = useState(false);
     // const [showEditMode, setShowEditMode] = useState(false);
     const { comments } = useAppSelector(state => state.comments)
-    const { books } = useAppSelector(state => state.books)
+    const { books, acceptedBooks } = useAppSelector(state => state.books)
     const [selectedUserId, setSelectedUserId] = useState(null)
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -47,6 +48,7 @@ function Comment({ rend }: { rend: boolean }) {
         dispatch(actGetComments());
         dispatch(actGetUsers());
         dispatch(actGetBooks());
+        dispatch(actGetBooksToAccept());
     }, []);
 
 
@@ -62,21 +64,25 @@ function Comment({ rend }: { rend: boolean }) {
             //     console.log(e)
             // }
             const category: TCategory[] = comments.map((comment) => {
-                const userImg = userss.find(user => user.id === comment.user_id)?.image
+
+
+                const bookId = acceptedBooks.find(book => book.name === comment.book) ? acceptedBooks.find(book => book.name === comment.book) : books.find(book => book.name === comment.book)
                 return ({
-                    book: comment.book,
+                    id: comment.id,
+                    book: bookId?.id,
                     name: comment.name,
                     comment: comment.comment,
-                    profile: <img src={`http://127.0.0.1:8000${userImg}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                    profile: <img src={`http://127.0.0.1:8000${comment.image}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
                 })
             })
             const categoryAra: TCategoryAra[] = comments.map((comment) => {
-                const userImg = userss.find(user => user.id === comment.user_id)?.image
+                const bookId = acceptedBooks.find(book => book.name === comment.book) ? acceptedBooks.find(book => book.name === comment.book) : books.find(book => book.name === comment.book)
                 return ({
-                    book: comment.book,
+                    id: comment.id,
+                    book: bookId?.id,
                     الاسم: comment.name,
                     التعليق: comment.comment,
-                    الصورة: <img src={`http://127.0.0.1:8000${userImg}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                    الصورة: <img src={`http://127.0.0.1:8000${comment.image}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
                 })
             })
             // const category: TCategory = [{
@@ -123,8 +129,7 @@ function Comment({ rend }: { rend: boolean }) {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    const bookId = books.find(book => book.name === rowDate.book)?.id
-                    navigate(`/Binko/books/${bookId}`)
+                    navigate(`/Binko/books/${rowDate.id}`)
                     // setSelectedUserId(rowDate?.id)
                     // setShowViewMode(true)
                 }}>
@@ -136,7 +141,11 @@ function Comment({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-file-edit'></i>
                 </button> */}
-                <button className='btn btn-danger' onClick={() => deleteUserConfirm(rowDate?.id)}>
+                <button className='btn btn-danger' onClick={() => {
+                    setShow(true)
+
+                    deleteUserConfirm(rowDate?.id)
+                }}>
                     <i className='pi pi-trash'></i>
                 </button>
             </>

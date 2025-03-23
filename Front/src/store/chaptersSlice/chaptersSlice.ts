@@ -6,6 +6,9 @@ import { isString } from "@customtypes/isString";
 import actAddChapter from "./act/actAddChapter";
 import actAcceptChapters from "./act/actAcceptChapter";
 import actDenyChapters from "./act/actDenyChapter";
+import actGetAcceptedChapters from "./act/actGetAcceptedChapter";
+import actGetChaptersNotes from "./act/actGetChaptersNotes";
+import actDeleteChapters from "./act/actDeleteChapter";
 
 // const initialState = [{
 //     id: 23,
@@ -108,8 +111,14 @@ import actDenyChapters from "./act/actDenyChapter";
 
 // },
 // ];
+type TNote = {
+    id: number,
+    note: string
+}
 interface IChaptersState {
     chapters: TChapters[];
+    notes: TNote | null;
+    acceptedchapters: TChapters[];
     myBooks: [];
     loading: TLoading;
     error: string | null;
@@ -117,6 +126,8 @@ interface IChaptersState {
 
 const initialState: IChaptersState = {
     chapters: [],
+    notes: null,
+    acceptedchapters: [],
     myBooks: [],
     loading: "idle",
     error: null,
@@ -127,6 +138,9 @@ const chapters = createSlice({
     reducers: {
         actClearChapters: (state) => {
             state.chapters = []
+        },
+        actClearNotes: (state) => {
+            state.notes = null
         }
     },
     extraReducers: (builder) => {
@@ -140,6 +154,22 @@ const chapters = createSlice({
             state.chapters = action.payload;
         });
         builder.addCase(actGetChapters.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
+        // get accepted books
+        builder.addCase(actGetAcceptedChapters.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetAcceptedChapters.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.acceptedchapters = action.payload;
+        });
+        builder.addCase(actGetAcceptedChapters.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;
@@ -177,6 +207,22 @@ const chapters = createSlice({
                 state.error = action.payload;
             }
         });
+        // delete chapter
+        builder.addCase(actDeleteChapters.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteChapters.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.chapters = action.payload;
+        });
+        builder.addCase(actDeleteChapters.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
 
         // Deny chapter 
         builder.addCase(actDenyChapters.pending, (state) => {
@@ -188,6 +234,21 @@ const chapters = createSlice({
             // state.chapters = action.payload;
         });
         builder.addCase(actDenyChapters.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // get notes for chapters
+        builder.addCase(actGetChaptersNotes.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetChaptersNotes.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.notes = action.payload;
+        });
+        builder.addCase(actGetChaptersNotes.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

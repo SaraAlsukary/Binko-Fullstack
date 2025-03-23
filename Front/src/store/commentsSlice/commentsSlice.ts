@@ -123,7 +123,7 @@ const comments = createSlice({
         });
         builder.addCase(actDeleteComment.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.comments = state.comments.filter((cate) => cate.id !== action.payload)
+            state.comments = state.comments.filter((cate) => cate !== action.payload)
 
 
         });

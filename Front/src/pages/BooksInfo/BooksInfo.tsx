@@ -31,8 +31,15 @@ import actGetReplyByComment from "@store/repliesSlice/act/actGetReplyByComment";
 import actDenyChapters from "@store/chaptersSlice/act/actDenyChapter";
 import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
+import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
+import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
+import { actClearAcceptedBooks, actClearBook, actClearMyBook } from "@store/booksSlice/booksSlice";
+import actGetBooksToAccept from "@store/booksSlice/act/actGetBooksToAccept";
+import actDeleteChapters from "@store/chaptersSlice/act/actDeleteChapter";
+import actGetNotes from "@store/booksSlice/act/actGetNotes";
+import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
-  text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
+  text, bookCont, warnings, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
   const [commentText, setCommentText] = useState('');
   const [replyy, setReplyy] = useState('');
@@ -46,17 +53,22 @@ const BooksInfo = () => {
   const commentss = useAppSelector(state => state.comments.comments);
   const { id }: any = useParams();
   const indx = parseInt(id)
-  const { chapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks } = useAppSelector(state => state.books);
+  const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
+  const { books, myBooks, acceptedBooks, notes } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
-    user: userData.user?.id,
+    user: userData?.user?.id,
     book: indx
   }
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
-  const ExistedBook = myBooks.find((book) => book.id === indx) ? true : false;
-  const bookInfo = ExistedBook ? myBooks.find(book => book.id === indx) : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
-  const ExistedComment = commentss.find((comment) => comment.user_id === userData?.user.id) ? true : false;
+  const AcceptedBook = acceptedBooks.find((book) => book.id === indx) ? true : false;
+  const ExistedBook = myBooks.find((book) => (book.id === indx)) ? true : false;
+  const chaptersOfBook = (userData?.user.is_supervisor || userData?.user.is_admin || ExistedBook) ? acceptedchapters.filter((ch) => ch.book === indx) : chapters.filter((ch) => ch.book === indx);
+  const bookInfo = (userData?.user.is_supervisor || userData?.user.is_admin) ? AcceptedBook ?
+    acceptedBooks.find(book => book.id === indx) : books.find((book) => book.id === indx) : ExistedBook ? myBooks.find(book => book.id === indx)
+    : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
+
+  // const ExistedComment = commentss.find((comment) => comment.user.id === userData?.user.id) ? true : false;
   const activeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active)) {
@@ -67,10 +79,9 @@ const BooksInfo = () => {
 
     }
   }
-
   useEffect(() => {
     commentss.forEach(comment => {
-      dispatch(actGetReplyByComment(comment.id))
+      dispatch(actGetReplyByComment(comment?.id))
     })
   }, [])
 
@@ -100,28 +111,49 @@ const BooksInfo = () => {
     (e.target as Element).classList.add(active);
 
   }
-  const denyHandler = () => {
-    dispatch(actDeleteBook(indx)).unwrap().then(() => {
-      alert('Deleted successfully!')
-      navigate(`/Binko/admin`)
-    })
-  }
+  // const denyHandler = () => {
+  //   const DenyNote = {
+  //     id: indx,
+  //     note:note
+  //   }
+  //   dispatch(actDenyBooks(DenyNote)).unwrap().then(() => {
+  //     alert('Deleted successfully!')
+  //     navigate(-1)
+
+  //   })
+  // }
   const deleteHandler = () => {
     dispatch(actDeleteBook(indx)).unwrap().then(() => {
       alert('Deleted successfully!')
       navigate(-1)
     })
   }
-  const denyChapterHandler = (id: number) => {
-    dispatch(actDenyChapters(id)).unwrap().then(() => {
+  // const denyChapterHandler = (id: number) => {
+  //   dispatch(actDenyChapters(id)).unwrap().then(() => {
+  //     alert('Denyed successfully!')
+  //     navigate(-1)
+
+  //   })
+  // }
+
+  const deleteChapterHandler = (id: number) => {
+    dispatch(actDeleteChapters(id)).unwrap().then(() => {
       alert('Deleted successfully!')
-      navigate(`/Binko/admin`)
+      navigate(-1)
     })
   }
   const AcceptChapterHandler = (id: number) => {
     dispatch(actAcceptChapters(id)).unwrap().then(() => {
       alert('Accepted successfully!')
-      navigate(`/Binko/admin`)
+      navigate(-1)
+
+    })
+  }
+  const AcceptBookHandler = (id: number) => {
+    dispatch(actAcceptBooks(id)).unwrap().then(() => {
+      alert('Accepted successfully!')
+      navigate(-1)
+
     })
   }
   const unactiveInputHandler = () => {
@@ -132,7 +164,6 @@ const BooksInfo = () => {
 
       var inp = document.getElementById(`inp-${nameCLass}`);
       var span = document.getElementById(`span-${nameCLass}`);
-
       var inpActive = document.querySelector(`.${inputField}.${active}`);
       var spanActive = document.querySelector(`span.${active}`);
 
@@ -150,25 +181,29 @@ const BooksInfo = () => {
 
     })
   }
-  const deleteCommentHandler = (id) => {
-    // dispatch(actDeleteComment(id)).unwrap().then(() => {
-    //   alert('deleted successfully');
-    // })
+  const deleteCommentHandler = (id: number) => {
+    dispatch(actDeleteComment(id)).unwrap().then(() => {
+      alert('deleted successfully');
+    })
   }
   const commentData = {
-    user: userData.user?.id,
-    book: indx,
     comment: commentText
 
   }
   const addCommentHandler = () => {
-    dispatch(actAddComments(commentData));
+    const dataCom = {
+      id: bookInfo.id,
+      commentData
+    }
+    dispatch(actAddComments(dataCom));
     setCommentText('');
   }
   const ReplyData = {
-    user: userData.user?.id,
+    user: userData?.user?.id,
     comment: commentId,
-    reply: replyy
+    reply: {
+      reply: replyy
+    }
 
   }
   const addReplyHandler = () => {
@@ -183,15 +218,27 @@ const BooksInfo = () => {
       const promiseComment = dispatch(actGetCommentByBook(bookInfo?.id));
       const promiseChapters = dispatch(actGetChapters(bookInfo?.id))
       const promiseUsers = dispatch(actGetUsers())
+      const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id))
+      const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
+      const promiseAcceptedBooks = dispatch(actGetBooksToAccept())
       const promiseCategories = dispatch(actGetCategories())
       const promiseFavorite = dispatch(actGetfavorite(userData?.user.id))
+      const promiseNotes = dispatch(actGetNotes(bookInfo?.id));
+
       return () => {
+        promiseAcceptedChapter.abort();
+        promiseAcceptedBooks.abort();
         promiseComment.abort();
         promiseChapters.abort();
+        promiseMybooks.abort();
         promiseUsers.abort();
         promiseCategories.abort();
         promiseFavorite.abort();
+        promiseNotes.abort();
         dispatch(actClearComments());
+        dispatch(actClearBook());
+        dispatch(actClearAcceptedBooks());
+        dispatch(actClearMyBook());
         dispatch(actClearCategories());
         dispatch(actClearUsers());
         dispatch(actClearFavoriteBook());
@@ -230,6 +277,7 @@ const BooksInfo = () => {
   </p>
   )
   const commentsListElements = commentss.map(comment => {
+    // const replyData = replies.filter(rep => rep.name === comment.user.name);
     return (
       <div key={comment?.id} className={boxCont}>
         <div className={box}>
@@ -237,7 +285,7 @@ const BooksInfo = () => {
             <div onClick={() => navigate(`/Binko/userInfo/${comment?.user.id}`)} className={pic}>
               <img src={`http://127.0.0.1:8000${comment.user.image}`} alt="" />
             </div>
-            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user_id}`)} className={commenterName}>
+            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user.id}`)} className={commenterName}>
               {comment?.user.name}
             </div>
           </div>
@@ -247,13 +295,15 @@ const BooksInfo = () => {
               id={`span-${comment?.id}`}
             >{language === 'English' ? `REPLY` : `الرد`}</span></p>
           </div>
-          {ExistedComment || userData.user.is_admin || userData.user.is_supervisor ?
-            <div className={commentBtns}>
-              {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""}
-              <Button
-                onClick={() => deleteCommentHandler(comment?.id)}
-                style={{ width: '60px', margin: "0 10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
-            </div> : ""
+          {
+
+            (comment.user.id === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
+              <div className={commentBtns}>
+                {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
+                <Button
+                  onClick={() => deleteCommentHandler(comment?.id)}
+                  style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
+              </div> : ""
           }
           <div
             className={` ${inputField}`}
@@ -277,17 +327,16 @@ const BooksInfo = () => {
         }
         {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
           {replies.map(rep => {
-            const user = users.find((user => user.id === rep.user))
             // const replyInfo = replies?.find((reply => reply.comment === comment.id))
 
             return (
               <div className={replyBox}>
                 <div className={replyer}>
                   <div className={pic}>
-                    <img src={`http://127.0.0.1:8000${user?.image}`} alt="" />
+                    <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
                   </div>
                   <div className={replyerName}>
-                    {user?.name}
+                    {rep?.name}
                   </div>
                 </div>
                 <div className={text}>
@@ -299,7 +348,7 @@ const BooksInfo = () => {
                 <div
                   className={` ${inputField}`}
                   id={`inp-${rep?.id}`} >
-                  <div className={input}>
+                  <div className={input} >
                     <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
                   </div>
                   <div className={icon}>
@@ -312,24 +361,71 @@ const BooksInfo = () => {
         </div> : ''}
       </div >)
   });
+  const chaptersLists = chapters?.map((chapter, idx) => <li key={chapter.id} style={{ position: 'relative' }}><span onClick={() => navigate(`${chapter.id}`)}>{chapter.title}</span> <span
+    style={language === 'Arabic' ? { position: 'absolute', right: '78%', top: '31%', display: 'flex' } : { position: 'absolute', right: '10px' }}
+  >
 
-  const chaptersList = chapters?.map((chapter, idx) => <li key={chapter.id}
+    <Button
+      style={{ backgroundColor: '#f35151', margin: '0 1px' }
+      }
+      onClick={() => deleteChapterHandler(chapter.id)}
+
+
+    >
+      {language === 'Arabic' ? 'حذف' : 'Delete'
+      }      </Button>
+  </span></li>);
+  const chaptersList = chaptersOfBook?.map((chapter, idx) => <li key={chapter.id}
 
     style={{ position: 'relative' }}
   >
     <span
-    // onClick={() => navigate(`${chapter.id}`)}
+      onClick={() => navigate(`${chapter.id}`)}
     >
       {chapter.title}
     </span>
-    {(userData?.user.is_supervisor || userData.user.is_admin) ?
-      !bookInfo?.is_accept ? <Button style={language === 'Arabic' ? { position: 'absolute', right: '90%' } : { position: 'absolute', right: '10px' }} onClick={() => AcceptChapterHandler(chapter.id)}>
-        {language === 'Arabic' ? 'قبول' : 'Accept'}
-      </Button> : <Button style={language === 'Arabic' ? { backgroundColor: '#f35151', position: 'absolute', right: '90%' } : { backgroundColor: '#f35151', position: 'absolute', right: '10px' }} onClick={() => denyChapterHandler(chapter.id)}>
-        {language === 'Arabic' ? 'رفض' : 'Deny'
-        }      </Button>
-      : ""}
-  </li>)
+    {(userData?.user.is_supervisor || userData?.user.is_admin) ?
+      <span
+        style={language === 'Arabic' ? { position: 'absolute', right: '67%', top: '31%', display: 'flex' } : { position: 'absolute', right: '10px' }}
+      >
+        {!chapter.is_accept ? <Button style={{ backgroundColor: 'var(--secondary-color)', margin: '0 1px' }}
+          onClick={() => AcceptChapterHandler(chapter.id)}
+        >
+          {language === 'Arabic' ? 'قبول' : 'Accept'}
+        </Button> : ""
+        }
+        <Button
+          style={{ backgroundColor: '#f35151', margin: '0 1px' }
+          }
+          onClick={() => navigate(`chapter/${chapter.id}/note`)
+
+          }
+
+
+        >
+          {language === 'Arabic' ? 'رفض' : 'Deny'
+          }      </Button>
+      </span>
+      : ExistedBook ? <span
+        style={language === 'Arabic' ? { position: 'absolute', right: '90%', top: '31%', display: 'flex' } : { position: 'absolute', right: '10px' }}
+      >
+        {/* <Button style={{ backgroundColor: 'var(--secondary-color)', margin: '0 1px' }}
+        // onClick={() => AcceptChapterHandler(chapter.id)}
+        >
+          {language === 'Arabic' ? 'تعديل' : 'Edit'}
+        </Button> */}
+        <Button
+          style={{ backgroundColor: '#f35151', margin: '0 1px' }
+          }
+          onClick={() => deleteChapterHandler(chapter.id)}
+
+
+        >
+          {language === 'Arabic' ? 'حذف' : 'Delete'
+          }      </Button>
+      </span>
+        : ''}
+  </li >)
   const authorData = users.find((user) => user.id === bookInfo?.user.id)
   return (
     <Container className={bookCont} >
@@ -377,29 +473,40 @@ const BooksInfo = () => {
               <div className={activeIcon}><LoveFillWhite style={{ width: '20px' }} /> </div><div className={icon}><LoveNotFill style={{ width: '20px' }} /></div></div></li>
             <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
           </ul>
-          {ExistedBook && !userData.user.is_supervisor && !userData.user.is_admin ?
+          {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
             <>
-              <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
+              {/* <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button> */}
               <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
             </>
             : ''}
-          {(userData.user.is_supervisor || userData.user.is_admin) ?
+          {(userData?.user.is_supervisor || userData?.user.is_admin) ?
             <>
-              <Button onClick={denyHandler} style={bookInfo?.is_accept ? { backgroundColor: '#f35151', width: '100%' } : { width: '100%' }}>{bookInfo?.is_accept && language === 'English' ? 'Deny' : bookInfo?.is_accept && language === 'Arabic' ? " رفض" :
-                !bookInfo?.is_accept && language === 'Arabic' ? 'قبول' :
-                  'Accept'}</Button>
-              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+              {!bookInfo?.is_accept ? <Button onClick={() => AcceptBookHandler(indx)} style={{ width: '100%' }}>{language === 'Arabic' ? 'قبول' :
+                'Accept'}</Button> : ""}
+              <Button onClick={() => navigate(`note`)
+              } style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Deny' : "رفض"}</Button>
 
             </>
             : ""}
         </div>
+        {!bookInfo?.is_accept && notes?.note && (ExistedBook || userData?.user.is_supervisor || userData?.user.is_admin) ?
+          <div className={warnings}>
+
+
+            <h3>{language === 'English' ? "Warnings" : "تحذير"}</h3>
+            <p>{language === 'English' ? "Your book was denied from supervisors with this note:" : "كتابك تم رفضه من المشرفين مع الملاحظة النالية"}</p>
+            <p>{notes?.note}</p>
+          </div> : ""
+        }
         <div className={down}>
           <HeadingTitle>{language === 'English' ? `Chapters` : `الفصول`}</HeadingTitle>
-          {ExistedBook ? <Button onClick={() => navigate(`/Binko/books/${bookInfo?.id}/addChapter`)} style={{ width: '100%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
+          {ExistedBook ? <Button onClick={() =>
+            navigate(`/Binko/books/${bookInfo?.id}/addChapter`)
+          } style={{ width: '100%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
           <ul className={list}>
-            {chaptersList.length ? chaptersList :
+            {(chaptersList.length || chaptersLists.length) || (chaptersList.length && (!userData?.user.is_admin || !userData.user.is_supervisor)) ? chaptersList :
               language === 'English' ? 'There is no chapters yet' : 'لا يوجد فصول بعد'}
-
+            {(userData?.user.is_admin || userData?.user.is_supervisor) ? chaptersLists : ""}
           </ul>
           <div className={comments}>
 

@@ -27,13 +27,12 @@
 [data-lang='English'] .ups .book .photo {
     width: 30px;
     height: 40px;
-    margin-right: 10px;
-    margin-left: 0;
 }
 
 .up .book .photo {
     margin-left: 10px;
     width: 30px;
+    margin: 0 10px;
     height: 40px;
 }
 

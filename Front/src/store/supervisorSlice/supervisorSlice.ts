@@ -4,6 +4,7 @@ import { isString } from "@customtypes/isString";
 import actGetSupervisor from "./act/actGetSupervisor";
 import { TUser } from "@customtypes/userType";
 import actDeleteSupervisor from "./act/actDeleteSupervisor";
+import actAddSupervisor from "./act/actAddSupervisor";
 interface IBooksState {
     supervisors: TUser[];
     loading: TLoading;
@@ -40,6 +41,23 @@ const supervisors = createSlice({
                 state.error = action.payload;
             }
         });
+        // add supervisor
+        builder.addCase(actAddSupervisor.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAddSupervisor.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.supervisors = action.payload;
+        });
+        builder.addCase(actAddSupervisor.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
+
         // get users
         builder.addCase(actDeleteSupervisor.pending, (state) => {
             state.loading = "pending";

@@ -16,7 +16,7 @@ const BookCard = ({ image, description, user, name, id }: TBooks) => {
             <div className={text}>
                 <div onClick={() => navigate(`/Binko/books/${id}`)} className={paraga}>
                     <h3>{name}</h3>
-                    <span>{user}</span>
+                    <span>{user?.name}</span>
                     <p>{description}</p>
                     <div className={btnCard}>
                         <Button>
@@ -26,7 +26,7 @@ const BookCard = ({ image, description, user, name, id }: TBooks) => {
                 </div>
                 <div className={info}>
                     <h3>{name}</h3>
-                    <span>{user}</span>
+                    <span>{user?.name}</span>
                     <div className={btnCard}>
                         <Button>
                             {language === 'Arabic' ? 'قراءة' : 'Read'}

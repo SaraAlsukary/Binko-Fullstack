@@ -4,9 +4,10 @@ import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 import { TBooks } from "@customtypes/booksTypes";
 import { RootState } from "@store/index";
 type TForm = {
-    user: number,
-    book: number,
-    comment: string
+    id: string
+    commentData: {
+        comment: string,
+    }
 }
 type TResponse = [];
 const actAddComments = createAsyncThunk(
@@ -17,8 +18,8 @@ const actAddComments = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `books/${Formdata.book}/users/${auth.user?.id}/comments/
-                `, Formdata,
+                `books/${Formdata.id}/users/${auth.userData.user?.id}/comments/
+                `, Formdata.commentData,
                 {
                     signal,
                     // headers: {
@@ -29,6 +30,7 @@ const actAddComments = createAsyncThunk(
             console.log(response.data)
             return response.data;
         } catch (error) {
+            console.log(error)
             return rejectWithValue(axiosErrorHandler(error));
         }
     }

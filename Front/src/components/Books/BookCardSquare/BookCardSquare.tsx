@@ -15,7 +15,7 @@ const BookCardSquare = ({ image, description, user, name, id }: TBooks) => {
             </div>
             <div className={text}>
                 <h3>{name}</h3>
-                <span>{user}</span>
+                <span>{user?.name}</span>
                 <p>{description}</p>
                 <Button>
                     {language === 'Arabic' ? 'قراءة' : 'Read'}

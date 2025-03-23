@@ -9,23 +9,45 @@ import { useParams } from 'react-router-dom';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
 import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
+import { settingsBox } from '@utils/settingsForSlick';
+import { TBooks } from '@customtypes/booksTypes';
+import actGetBooks from '@store/booksSlice/act/actGetBooks';
 const { profileContainer, settings, userName, pic, img, info } = style;
 
 const UserInfo = () => {
 
     const { id } = useParams();
-    const idx = parseInt(id);
+    const idx = parseInt(id as string);
     const { users } = useAppSelector(state => state.users);
-    const { books } = useAppSelector(state => state.favorite);
-    const { myBooks } = useAppSelector(state => state.books);
+    const booksFav = useAppSelector(state => state.favorite.books);
+    const { myBooks, books } = useAppSelector(state => state.books);
+    const { userData } = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
     // const booksCardsWrite = addBook.books.map((book => <BookCard {...book} />))
-    const booksCardsFavorite = books.map((book => <BookCard {...book} />))
-    const booksCardsPublished = myBooks.map((book => <BookCard {...book} />))
+    const booksCardsFavorite = booksFav.map((book => <BookCard key={book.id} {...book} />))
+    // const booksPublished = books.map((book1) => {
+    //     const bookFilter = myBooks.find((book => book.id === book1.id))
+    //     console.log(bookFilter)
+    //     return bookFilter
+    // }
+    // )
+    const booksPublished = books.filter(book => book.user?.id === idx)
+    // const existedBooks = () => {
+    //     let booksFill: TBooks[] = [];
+    //     books.forEach((book1) => {
+    //         const bookFilter: any = myBooks.find(book2 => book2.id === book1.id)
+    //         booksFill.push(bookFilter)
+    //     })
+    //     return booksFill;
+
+    // }
+    // const booksPublished = existedBooks();
+    const booksCardsPublished = booksPublished.map((book => <BookCard key={book?.id} {...book} />))
     useEffect(() => {
         dispatch(actGetUsers())
         dispatch(actGetfavorite(idx))
+        dispatch(actGetBooks())
         dispatch(actGetMyBooks(idx))
     }, [])
     const userInfo = users.find(user => user.id === idx);
@@ -67,13 +89,13 @@ const UserInfo = () => {
                         <Tab eventKey="profile" title=
                             {language === 'English' ? 'Favorite' : 'المفضلة'}
                         >
-                            <BookCardList>{booksCardsFavorite}</BookCardList>
+                            <BookCardList type="box" settings={settingsBox}>{booksCardsFavorite}</BookCardList>
 
                         </Tab>
                         <Tab eventKey="longer-tab" title=
                             {language === 'English' ? 'Published Books' : 'الكتب المنشورة'}
                         >
-                            <BookCardList>{booksCardsPublished}</BookCardList>
+                            <BookCardList type="box" settings={settingsBox}>{booksCardsPublished}</BookCardList>
 
                         </Tab>
 

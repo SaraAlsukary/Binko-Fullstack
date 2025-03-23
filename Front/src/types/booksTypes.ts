@@ -1,7 +1,10 @@
 export type TBooks = {
     id?: number,
     is_accept?: boolean,
-    user?: string,
+    user?: {
+        name: string,
+        id: number
+    },
     name?: string,
     image?: string,
     description?: string,

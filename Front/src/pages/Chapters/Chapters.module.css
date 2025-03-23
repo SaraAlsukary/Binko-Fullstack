@@ -2,6 +2,29 @@
     position: relative;
 }
 
+.warnings {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+}
+
+.warnings h5 {
+    background-color: var(--secondary-color);
+    width: fit-content;
+    padding: 7px;
+    color: #000;
+    border-radius: 7px;
+    margin: 0 10px;
+}
+
+.warnings p {
+    margin: 0;
+}
+
+.warnings span {
+    color: #f35151;
+}
+
 .chapterCont .down {
     padding: 100px 0;
     text-align: center;

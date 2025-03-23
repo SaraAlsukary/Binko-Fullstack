@@ -5,6 +5,28 @@
     margin-top: 100px;
 }
 
+.warnings {
+
+    margin-top: 35px;
+    padding: 20px;
+    color: #000;
+    background: var(--main-color);
+    box-shadow: 0 0 6px 5px var(--main-color);
+    ;
+}
+
+.warnings h3 {
+    background-color: var(--secondary-color);
+    width: fit-content;
+    padding: 12px;
+    color: #000;
+    border-radius: 7px;
+}
+
+.warnings p:last-of-type {
+    font-weight: bold;
+}
+
 .bookCont .left {
     width: 40%;
     position: relative;

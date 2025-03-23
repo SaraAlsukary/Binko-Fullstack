@@ -7,13 +7,14 @@ import actLogout from "./act/actLogout";
 import actUpdateProfile from "./act/actUpdateProfile";
 
 interface IAuthState {
-    userData: {
-        id: number,
-        name: string,
-        username: string,
-        is_admin: boolean,
-        is_supervisor: boolean
-    } | {
+    userData:
+    {
+        //     id: number,
+        //     name: string,
+        //     username: string,
+        //     is_admin: boolean,
+        //     is_supervisor: boolean
+        // } | {
         user: {
             id: number,
             is_supervisor: boolean,
