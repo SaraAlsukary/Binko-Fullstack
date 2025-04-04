@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import update_note ,get_note
+from .views import update_note ,get_note ,book_likes
 from .views import favorite_books , add_favorite_book ,get_books_by_category , get_all_books ,get_my_book
 from .views import delete_book ,add_book ,get_all_books_to_accept, delete_book_fav ,accept_book,toggle_like
 urlpatterns = [
@@ -16,4 +16,5 @@ urlpatterns = [
      path('books/like/<int:user_id>/<int:book_id>/', toggle_like, name='toggle_like'),
      path('books/<int:book_id>/note/', update_note, name='update_note'),
     path('get/books/<int:book_id>/note/', get_note, name='get_note'),
+    path('books/<int:book_id>/likes/', book_likes, name='book-likes'),
 ]

@@ -86,7 +86,7 @@ class BookSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id']
 
 class BookCategorySerializer(serializers.ModelSerializer):
     category = CategorySerializer()  
@@ -125,3 +125,14 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'note']
+
+
+
+class BookLikesSerializer(serializers.ModelSerializer):
+    likes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name','image','description', 'likes_count'] 
+    def get_likes_count(self, obj):
+        return Like.objects.filter(book=obj).count()        

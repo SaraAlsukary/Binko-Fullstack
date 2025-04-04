@@ -62,6 +62,8 @@ const AddBook = () => {
         dataForm.append('name', name);
         dataForm.append('description', description);
         dataForm.append('categories', category);
+        console.log(dataForm.get("categories"))
+        console.log(dataForm.get("name"))
         // dataForm.append('user_id', user?.user_id);
         // console.log(dataForm)
         // console.log(imageFile)

@@ -12,12 +12,14 @@ const DenyNote = () => {
     const { language } = useAppSelector(state => state.language)
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const DenyNote = {
+        id: indx,
+        note: note
+    }
+    console.log(DenyNote)
     const denyHandler = (e: React.FormEvent) => {
         e.preventDefault();
-        const DenyNote = {
-            id: indx,
-            note: note
-        }
+
         dispatch(actDenyBooks(DenyNote))
             .unwrap()
             .then(() => {
@@ -39,7 +41,10 @@ const DenyNote = () => {
                 margin: '20px 0',
 
             }}
-                onChange={(e) => SetNote(e.target.value)} type="text" placeholder={language === 'English' ? 'Note' : 'ملاحظة'} />
+                onChange={(e) => {
+                    console.log(e.target.value)
+                    SetNote(e.target.value)
+                }} type="text" placeholder={language === 'English' ? 'Note' : 'ملاحظة'} />
             <Button
                 style={{
                     color: '#000', height: '50px',

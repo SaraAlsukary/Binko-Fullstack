@@ -4,16 +4,20 @@ import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 import { TBooks } from "@customtypes/booksTypes";
 import { RootState } from "@store/index";
 
+type TNote = {
+    id: number,
+    note: string
+};
 // type TResponse = [];
 const actDenyBooks = createAsyncThunk(
     "books/actDenyBooks",
-    async (form: object, thunkAPI) => {
+    async (form: TNote, thunkAPI) => {
         const { rejectWithValue, getState, signal } = thunkAPI;
         // const { auth } = getState() as RootState;
 
         try {
-            const response = await axios.patch(
-                `books/${form.id}/note/`, JSON.stringify(form),
+            const response = await axios.patch<TNote>(
+                `books/${form.id}/note/`, form,
 
                 {
                     signal,

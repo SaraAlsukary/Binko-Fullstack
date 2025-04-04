@@ -8,7 +8,7 @@ from account.models import CustomUser
 from account.models import CustomUser
 from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,LikeSerializer,FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
-from .serializers import BookSerializer
+from .serializers import BookSerializer ,BookLikesSerializer
 from categories.models import Category
 from .serializers import  NoteSerializer
 from django.shortcuts import get_object_or_404
@@ -169,4 +169,12 @@ def get_note(request, book_id):
     serializer = NoteSerializer(book)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def book_likes(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    serializer = BookLikesSerializer(book)
+    return Response(serializer.data, status=status.HTTP_200_OK)

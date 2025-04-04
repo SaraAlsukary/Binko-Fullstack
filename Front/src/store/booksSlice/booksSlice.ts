@@ -71,6 +71,10 @@ import actAcceptBooks from "./act/actAcceptBook";
 import actGetBooksByCategory from "./act/actGetBooksByCate";
 import actDenyBooks from "./act/actDenyBook";
 import actGetNotes from "./act/actGetNotes";
+import actAddLikes from "./act/actAddLike";
+import actGetLikes from "./act/actGetLikes";
+import actDeleteLikes from "./act/actDeleteLike";
+import { TLikes } from "@customtypes/LikesType";
 type TNote = {
     id: number,
     note: string
@@ -78,6 +82,7 @@ type TNote = {
 interface IBooksState {
     books: TBooks[];
     notes: TNote | null;
+    likes: TLikes | null,
     acceptedBooks: TBooks[];
     myBooks: TBooks[];
     loading: TLoading;
@@ -86,6 +91,7 @@ interface IBooksState {
 
 const initialState: IBooksState = {
     books: [],
+    likes: null,
     acceptedBooks: [],
     notes: null,
     myBooks: [],
@@ -101,6 +107,9 @@ const books = createSlice({
             state.books = [];
         }, actClearMyBook: (state) => {
             state.myBooks = [];
+        },
+        actClearLike: (state) => {
+            state.likes = null;
         },
         actClearAcceptedBooks: (state) => {
             state.acceptedBooks = [];
@@ -247,7 +256,53 @@ const books = createSlice({
                 state.error = action.payload;
             }
         });
+        //get likes
+        builder.addCase(actGetLikes.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetLikes.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.likes = action.payload;
+        });
+        builder.addCase(actGetLikes.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //add like
+        builder.addCase(actAddLikes.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAddLikes.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.likes = action.payload;
+        });
+        builder.addCase(actAddLikes.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //delete like
+        builder.addCase(actDeleteLikes.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteLikes.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.likes = action.payload;
+
+        });
+        builder.addCase(actDeleteLikes.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
     },
 });
-export const { actClearBook, actClearMyBook, actClearAcceptedBooks } = books.actions
+export const { actClearBook, actClearMyBook, actClearLike, actClearAcceptedBooks } = books.actions
 export default books.reducer

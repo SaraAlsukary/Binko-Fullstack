@@ -33,11 +33,14 @@ import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
 import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
 import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
-import { actClearAcceptedBooks, actClearBook, actClearMyBook } from "@store/booksSlice/booksSlice";
+import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook } from "@store/booksSlice/booksSlice";
 import actGetBooksToAccept from "@store/booksSlice/act/actGetBooksToAccept";
 import actDeleteChapters from "@store/chaptersSlice/act/actDeleteChapter";
 import actGetNotes from "@store/booksSlice/act/actGetNotes";
 import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
+import actGetLikes from "@store/booksSlice/act/actGetLikes";
+import actAddLikes from "@store/booksSlice/act/actAddLike";
+import actDeleteLikes from "@store/booksSlice/act/actDeleteLike";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
   text, bookCont, warnings, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
@@ -54,12 +57,13 @@ const BooksInfo = () => {
   const { id }: any = useParams();
   const indx = parseInt(id)
   const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks, acceptedBooks, notes } = useAppSelector(state => state.books);
+  const { books, myBooks, acceptedBooks, notes, likes } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
     user: userData?.user?.id,
     book: indx
   }
+  // const SavedLikeExist = 
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
   const AcceptedBook = acceptedBooks.find((book) => book.id === indx) ? true : false;
   const ExistedBook = myBooks.find((book) => (book.id === indx)) ? true : false;
@@ -93,6 +97,17 @@ const BooksInfo = () => {
 
     } else {
       dispatch(actDeleteFavorite(favoriteData.book))
+
+
+    }
+  }
+  const activeLikeHandler = (e: any) => {
+    (e.target as Element).classList.toggle(active);
+    if ((e.target as Element).classList.contains(active) && !SavedLikeExist) {
+      dispatch(actAddLikes(bookInfo?.id))
+
+    } else {
+      dispatch(actDeleteLikes(bookInfo?.id))
 
 
     }
@@ -217,6 +232,7 @@ const BooksInfo = () => {
     () => {
       const promiseComment = dispatch(actGetCommentByBook(bookInfo?.id));
       const promiseChapters = dispatch(actGetChapters(bookInfo?.id))
+      const promiseLikes = dispatch(actGetLikes(bookInfo?.id))
       const promiseUsers = dispatch(actGetUsers())
       const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id))
       const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
@@ -226,6 +242,7 @@ const BooksInfo = () => {
       const promiseNotes = dispatch(actGetNotes(bookInfo?.id));
 
       return () => {
+        promiseLikes.abort();
         promiseAcceptedChapter.abort();
         promiseAcceptedBooks.abort();
         promiseComment.abort();
@@ -235,6 +252,7 @@ const BooksInfo = () => {
         promiseCategories.abort();
         promiseFavorite.abort();
         promiseNotes.abort();
+        dispatch(actClearLike());
         dispatch(actClearComments());
         dispatch(actClearBook());
         dispatch(actClearAcceptedBooks());
@@ -262,18 +280,18 @@ const BooksInfo = () => {
   //     }
 
   // }
-  // const categoriesBook = books.map((book) => {
-  //   const category = book.categories?.map(ct => {
+  const categoriesBook = books.map((book) => {
+    const category = book.categories?.map(ct => {
 
-  //     const filter = categories.filter((cates) => cates.name === ct)
-  //     return filter;
-  //   });
-  //   return category
-  // })
-  // console.log(categoriesBook)
-  const categoriesBookCard = bookInfo?.categories.map((cate) => <p key={Math.random() * 2}>
+      const filter = categories.filter((cates) => cates.id === ct)
+      return filter;
+    });
+    return category
+  })
+  console.log(bookInfo?.categories);
+  const categoriesBookCard = categoriesBook.map((cate) => <p key={Math.random() * 2}>
     {/* {language === 'English' ? cate?.name : cate?.name_arabic} */}
-    {cate}
+    {cate?.name}
   </p>
   )
   const commentsListElements = commentss.map(comment => {
@@ -453,7 +471,7 @@ const BooksInfo = () => {
           <div className={cate}>
             {categoriesBookCard}
           </div>
-          <p className={loves}>{language === 'English' ? `200 Likes` : ` 200 اعجاب `} </p>
+          <p className={loves}>{language === 'English' ? `${likes?.likes_count} Likes` : ` ${likes?.likes_count} اعجاب `} </p>
           <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
           <p className={desc}>{bookInfo?.description}</p>
           <ul>

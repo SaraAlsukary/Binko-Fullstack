@@ -89,7 +89,9 @@ const Header = () => {
                             <li><NavLink to='profile' ><div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}>
 
 
-                                <img src={`http://127.0.0.1:8000${userData?.user.image}`} alt="" />
+                                {userData?.user.image ?
+                                    <img src={`http://127.0.0.1:8000${userData?.user.image}`} />
+                                    : ""}
                             </div></NavLink></li>
 
                             : <li><Button ><NavLink to='Login' style={{ color: 'black' }}>{language === 'Arabic' ? 'تسجبل الدخول' : "login"}</NavLink></Button></li>

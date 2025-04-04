@@ -15,7 +15,7 @@ const actDenyChapters = createAsyncThunk(
 
         try {
             const response = await axios.patch<TNote>(
-                `chapters/${form.id}/note/`, JSON.stringify(form),
+                `chapters/${form.id}/note/`, form,
                 {
                     signal,
                     // headers: {
