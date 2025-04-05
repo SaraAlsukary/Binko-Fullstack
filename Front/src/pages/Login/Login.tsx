@@ -99,7 +99,7 @@ const Login = () => {
                                     onChange={(e: any) => setPassword(e.target.value)}
 
                                 />
-                                <div style={{ position: 'absolute', right: "30px", top: '10px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
+                                <div style={language === 'English' ? { position: 'absolute', right: "30px", top: '10px', cursor: 'pointer' } : { position: 'absolute', right: 'initial', left: "30px", top: '10px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
                                     {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
                                 </div>
                             </Form.Group>
@@ -119,6 +119,7 @@ const Login = () => {
 
                 </div>
             </Container>
+
         </div>
     )
 }

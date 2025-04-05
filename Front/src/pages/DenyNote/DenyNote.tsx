@@ -3,6 +3,7 @@ import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle'
 import { useAppDispatch, useAppSelector } from '@hooks/app'
 import actDenyBooks from '@store/booksSlice/act/actDenyBook'
 import { useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const DenyNote = () => {
@@ -24,7 +25,9 @@ const DenyNote = () => {
             .unwrap()
             .then(() => {
                 alert('Denied successfully!')
-                navigate(-2)
+                language === 'English' ? toast.success('Denied successfully!') : toast.success('تم الرفض بنجاح!')
+
+                // navigate(-2)
 
             })
     }
@@ -51,6 +54,7 @@ const DenyNote = () => {
                     width: '331px', borderRadius: '16px', backgroundColor: 'var(--secondary-color'
                 }}
             >{language === 'English' ? 'Deny' : 'رفض'}</Button>
+
         </form>
     )
 }

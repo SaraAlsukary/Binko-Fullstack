@@ -16,6 +16,8 @@ import actGetBooks from '@store/booksSlice/act/actGetBooks';
 import { useNavigate } from 'react-router-dom';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import { TBooks } from '@customtypes/booksTypes';
+import toast, { Toaster } from 'react-hot-toast';
+import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -111,15 +113,13 @@ function Book({ rend }: { rend: boolean }) {
     }
 
     const deleteUser = async (userId: number) => {
-        // try {
-        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
-        //     if (response) {
-        //         getAllUsers();
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
+
+        dispatch(actDeleteBook(userId)).unwrap().then(() => {
+            language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
+
+            navigate(`/Binko/admin`)
+        })
+
     }
 
     return (

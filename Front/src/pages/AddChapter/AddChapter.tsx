@@ -10,6 +10,7 @@ import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
 import { Button } from "@components/feedback";
 import actAddChapter from "@store/chaptersSlice/act/actAddChapter";
 import { useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 const modules = {
     toolbar: [
         [{
@@ -37,7 +38,7 @@ const AddChapter = () => {
     const { language } = useAppSelector(state => state.language);
     const dispatch = useAppDispatch();
     const { id } = useParams();
-    const idx = parseInt(id);
+    const idx = parseInt(id as string);
     const titleHandler = (e: any) => {
         setTitle(e.target.value);
     }
@@ -56,7 +57,7 @@ const AddChapter = () => {
             book_id: idx
         }
         dispatch(actAddChapter(data)).unwrap().then(() => {
-            alert('chapter published successfully!')
+            language === 'English' ? toast.success('chapter published successfully!') : toast.success('تم نشر الفصل بنجاح!')
         })
         setAudioFile('');
         setFile('');
@@ -97,6 +98,7 @@ const AddChapter = () => {
                 </div>
 
             </Container>
+
         </div>
     )
 }

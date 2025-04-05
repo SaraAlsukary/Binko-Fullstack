@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 type TCategory = {
     name: string | null,
     profile: React.ReactNode,
@@ -109,7 +110,8 @@ function Comment({ rend }: { rend: boolean }) {
     const deleteUser = (userId: number) => {
         dispatch(actDeleteUser(userId))
             .unwrap().then(() => {
-                alert('user deleted succesfully!')
+                language === 'English' ? toast.success('user deleted succesfully!') : toast.success('تم حذف المستخدم !')
+
             })
         // try {
         //     const response = await axios.delete('http://localhost:4000/users/' + userId);

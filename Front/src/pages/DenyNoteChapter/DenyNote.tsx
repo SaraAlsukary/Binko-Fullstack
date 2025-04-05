@@ -3,6 +3,7 @@ import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle'
 import { useAppDispatch, useAppSelector } from '@hooks/app'
 import actDenyChapters from '@store/chaptersSlice/act/actDenyChapter'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { useNavigate, useParams } from 'react-router-dom'
 type TNote = {
     id: number,
@@ -22,7 +23,8 @@ const DenyNote = () => {
             note: note
         }
         dispatch(actDenyChapters(DenyNote)).unwrap().then(() => {
-            alert('Denied successfully!')
+            language === 'English' ? toast.success('Denied successfully!') : toast.success('تم الرفض بنجاح!')
+
             // navigate(-2)
 
         })

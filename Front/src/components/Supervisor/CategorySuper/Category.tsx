@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
 import Lottie from 'lottie-react';
 import actDeleteCategory from '@store/categorySlice/act/actDeleteCategory';
+import toast, { Toaster } from 'react-hot-toast';
 type TCategory = {
     name: string,
     name_ar: string,
@@ -209,7 +210,7 @@ function Category({ rend }: { rend: boolean }) {
 
     const deleteUser = (userId: number) => {
         dispatch(actDeleteCategory(userId)).unwrap().then(() => {
-            alert("deleted successfully!");
+            language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
         })
     }
 

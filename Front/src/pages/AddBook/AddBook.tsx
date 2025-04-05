@@ -6,14 +6,16 @@ import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButto
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
 import actAddBooks from "@store/booksSlice/act/actAddBooks";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
-import { TCategory } from "@customtypes/categoryType";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+
 
 const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
 const AddBook = () => {
     const dataForm = new FormData();
     const [image, setImage] = useState('');
     const [imageFile, setImageFile] = useState('');
-    const [category, setCategory] = useState<number[]>([]);
+    const [category, setCategory] = useState([]);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
@@ -21,27 +23,50 @@ const AddBook = () => {
     // const { user } = useAppSelector(state => state.auth);
     const { books } = useAppSelector(state => state.books);
     const { categories } = useAppSelector(state => state.categories);
-
+    const navigate = useNavigate()
     var cate: any = [];
-    const categoryHandler = (e: any) => {
-        const id = parseInt(e.target.value);
-        console.log(id)
-        if (category.find((cate: any) => cate === id)) {
+    // const categoryHandler = (e: any) => {
+    //     const id = parseInt(e.target.value);
+    //     console.log(id)
+    //     if (category.find((cate: any) => cate == e.target.value)) {
+    //         // if (category.find((cate: any) => cate === id)) {
+    //         // console.log('exist')
+    //         // console.log(id)
+    //         const cate = category.filter(cate => cate != e.target.value);
+    //         setCategory(cate);
+    //         console.log(category)
+
+    //     } else {
+    //         // const categoryItem = categories.find(cate => cate.id == id)
+    //         setCategory([...category, e.target.value])
+    //         console.log(category)
+
+    //         // setCategory([...category, id])
+
+    //     }
+    // }
+    const selectCate = (e: any) => {
+        const id = parseInt(e.target.value)
+        if (cate.find((catee: any) => catee == id)) {
             // if (category.find((cate: any) => cate === id)) {
             // console.log('exist')
             // console.log(id)
-            const cate = category.filter(cate => cate !== id);
-            setCategory(cate);
-            console.log(category)
+
+            cate = cate.filter((ca: any) => ca != id);
+
+            console.log(cate)
 
         } else {
             // const categoryItem = categories.find(cate => cate.id == id)
-            setCategory([...category, id])
-            console.log(category)
+            cate.push(id)
+
+            console.log(cate)
 
             // setCategory([...category, id])
 
         }
+
+
     }
     const titleHandler = (e: any) => {
         setName(e.target.value);
@@ -56,37 +81,53 @@ const AddBook = () => {
         // console.log(e.target.files[0])
 
     }
+
+
+
+
     const addBookHandler = () => {
-        // setCategory(cate);
+
+        console.log(cate)
+        console.log(category)
+        setCategory(cate)
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
         dataForm.append('description', description);
-        dataForm.append('categories', category);
-        console.log(dataForm.get("categories"))
-        console.log(dataForm.get("name"))
-        // dataForm.append('user_id', user?.user_id);
-        // console.log(dataForm)
-        // console.log(imageFile)
+        category.forEach((ca) => dataForm.append(`category_id[]`, ca))
+
+        for (let [key, value] of dataForm.entries()) {
+            console.log(key, value)
+        }
         dispatch(actAddBooks(dataForm))
             .unwrap()
-            .then(() => alert(language === 'English' ? 'Your Book published successfully!' : "تم نشر كتابك بنجاح!"))
+            .then(() => {
+                language === 'English' ? toast.success('Your Book published successfully!') : toast.success('تم نشر كتابك بنجاح!')
+                navigate(-2)
+
+
+            }
+            )
         setDescription('');
         setImage('');
         setName('');
         setImageFile('')
         setCategory([])
-        console.log(books)
     }
     const CategoriesSelects = categories.map((cate) =>
-        <div key={cate.id} className={mulch}>
-            <input onClick={categoryHandler} type="checkbox" value={cate.id} id={cate.name} />
-            <label htmlFor={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</label>
-        </div>)
+        // <div key={cate.id} className={mulch}>
+        //     <input onClick={categoryHandler} type="checkbox" value={cate.id} id={cate.name} />
+        //     <label htmlFor={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</label>
+        // </div>
+        <option key={cate?.id} onClick={selectCate} value={cate?.id}>
+            {language === 'English' ? cate.name : cate.name_arabic}
+        </option>
+    )
     useEffect(() => {
         dispatch(actGetCategories())
     }, [])
     return (
         <div className={addBooksContainer}>
+
             <Container className={cont}>
                 <div className={bookInfo}>
                     <div className={pic}>
@@ -107,7 +148,11 @@ const AddBook = () => {
                         <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
                         <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
                         <div className={mul}>
-                            {CategoriesSelects}
+                            <select name="" multiple id="">
+                                {CategoriesSelects}
+
+                            </select>
+
                             {/* <div className={mulch}>
                                 <input onClick={categoryHandler} type="checkbox" value={1} id="Action" />
                                 <label htmlFor="Action" >Action</label>
@@ -132,6 +177,7 @@ const AddBook = () => {
                     <SecondaryButton onClick={() => addBookHandler()}>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
                 </div>
             </Container>
+
         </div >
     )
 }

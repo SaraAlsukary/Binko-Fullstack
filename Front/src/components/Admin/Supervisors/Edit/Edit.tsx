@@ -4,6 +4,7 @@ import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
 import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
 import { useAppDispatch } from '@hooks/app';
 import { actUpdateProfile } from '@store/auth/authSlice';
+import toast from 'react-hot-toast';
 
 
 function EditUser(props) {
@@ -13,6 +14,8 @@ function EditUser(props) {
     const [showEye, setShowEye] = useState(false);
     const [showEye1, setShowEye1] = useState(false);
     const [confirm_password, setConfirmPassword] = useState('');
+    const { language } = useAppSelector(state => state.language)
+
     const [is_supervisor, setSupervisor] = useState(1);
     const dispatch = useAppDispatch();
     const addNewUser = () => {
@@ -24,7 +27,9 @@ function EditUser(props) {
             is_supervisor
         }
         dispatch(actUpdateProfile(data)).unwrap().then(() => {
-            alert('New Supervisor Added!')
+
+            language === 'English' ? toast.success(' Supervisor Edited successfully!') : toast.success('تم اضافة مشرف جديد!')
+
         })
     }
 

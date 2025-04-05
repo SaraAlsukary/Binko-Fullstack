@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
-import { useAppDispatch } from '@hooks/app';
+import { useAppDispatch, useAppSelector } from '@hooks/app';
 import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
 import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
 import actAddSupervisor from '@store/supervisorSlice/act/actAddSupervisor';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 function Add(props: { setUserAdded: () => void }) {
@@ -14,6 +15,7 @@ function Add(props: { setUserAdded: () => void }) {
     const [showEye1, setShowEye1] = useState(false);
     const [confirm_password, setConfirmPassword] = useState('');
     const dispatch = useAppDispatch();
+    const { language } = useAppSelector(state => state.language)
     const addNewUser = () => {
         const data = {
             name,
@@ -22,7 +24,8 @@ function Add(props: { setUserAdded: () => void }) {
             confirm_password,
         }
         dispatch(actAddSupervisor(data)).unwrap().then(() => {
-            alert('New Supervisor Added!')
+            language === 'English' ? toast.success('New Supervisor Added!') : toast.success('تم اضافة مشرف جديد!')
+
         })
     }
 

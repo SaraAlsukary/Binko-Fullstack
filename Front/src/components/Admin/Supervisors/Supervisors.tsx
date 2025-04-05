@@ -15,6 +15,7 @@ import './Users.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
+import toast, { Toaster } from 'react-hot-toast';
 type TCategory = {
     id: Number,
     name: string,
@@ -111,7 +112,8 @@ function Supervisors({ rend }: { rend: boolean }) {
 
     const deleteUser = async (userId: number) => {
         dispatch(actDeleteUser(userId)).unwrap().then(() => {
-            alert('Deleted Successfully')
+            language === 'English' ? toast.success('Deleted Successfully') : toast.success('تم الحذف بنجاح!')
+
         })
     }
 
@@ -180,6 +182,7 @@ function Supervisors({ rend }: { rend: boolean }) {
                 {show ? <ConfirmSuper /> : ""}
 
             </div>
+
         </>
     )
 }

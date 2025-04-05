@@ -41,6 +41,7 @@ import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
 import actGetLikes from "@store/booksSlice/act/actGetLikes";
 import actAddLikes from "@store/booksSlice/act/actAddLike";
 import actDeleteLikes from "@store/booksSlice/act/actDeleteLike";
+import toast, { Toaster } from "react-hot-toast";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
   text, bookCont, warnings, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
@@ -139,7 +140,9 @@ const BooksInfo = () => {
   // }
   const deleteHandler = () => {
     dispatch(actDeleteBook(indx)).unwrap().then(() => {
-      alert('Deleted successfully!')
+      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
+
+
       navigate(-1)
     })
   }
@@ -153,20 +156,22 @@ const BooksInfo = () => {
 
   const deleteChapterHandler = (id: number) => {
     dispatch(actDeleteChapters(id)).unwrap().then(() => {
-      alert('Deleted successfully!')
-      navigate(-1)
+      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
+
     })
   }
   const AcceptChapterHandler = (id: number) => {
     dispatch(actAcceptChapters(id)).unwrap().then(() => {
-      alert('Accepted successfully!')
+      language === 'English' ? toast.success('Accepted successfully!') : toast.success('تم القبول بنجاح!')
+
       navigate(-1)
 
     })
   }
   const AcceptBookHandler = (id: number) => {
     dispatch(actAcceptBooks(id)).unwrap().then(() => {
-      alert('Accepted successfully!')
+      language === 'English' ? toast.success('Accepted successfully!') : toast.success('تم القبول بنجاح!')
+
       navigate(-1)
 
     })
@@ -198,7 +203,9 @@ const BooksInfo = () => {
   }
   const deleteCommentHandler = (id: number) => {
     dispatch(actDeleteComment(id)).unwrap().then(() => {
-      alert('deleted successfully');
+      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
+
+
     })
   }
   const commentData = {
@@ -207,7 +214,7 @@ const BooksInfo = () => {
   }
   const addCommentHandler = () => {
     const dataCom = {
-      id: bookInfo.id,
+      id: bookInfo?.id,
       commentData
     }
     dispatch(actAddComments(dataCom));
@@ -222,9 +229,7 @@ const BooksInfo = () => {
 
   }
   const addReplyHandler = () => {
-    dispatch(actAddReply(ReplyData)).unwrap().then(() => {
-      alert('hello')
-    })
+    dispatch(actAddReply(ReplyData))
     setReplyy('');
   }
   const dispatch = useAppDispatch();
@@ -492,19 +497,25 @@ const BooksInfo = () => {
             <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
           </ul>
           {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
-            <>
+            <div style={{
+              display: 'flex', justifyContent: "center",
+              alignItems: "center"
+            }}>
               {/* <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button> */}
-              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
-            </>
+              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+            </div>
             : ''}
           {(userData?.user.is_supervisor || userData?.user.is_admin) ?
-            <>
-              {!bookInfo?.is_accept ? <Button onClick={() => AcceptBookHandler(indx)} style={{ width: '100%' }}>{language === 'Arabic' ? 'قبول' :
+            <div style={{
+              display: 'flex', justifyContent: "center",
+              alignItems: "center"
+            }}>
+              {!bookInfo?.is_accept ? <Button onClick={() => AcceptBookHandler(indx)} style={{ width: '40%' }}>{language === 'Arabic' ? 'قبول' :
                 'Accept'}</Button> : ""}
               <Button onClick={() => navigate(`note`)
-              } style={{ marginTop: '10px', backgroundColor: '#f35151', width: '100%' }}>{language === 'English' ? 'Deny' : "رفض"}</Button>
+              } style={{ margin: '0 5px ', backgroundColor: '#f35151', width: '40%' }}>{language === 'English' ? 'Deny' : "رفض"}</Button>
 
-            </>
+            </div>
             : ""}
         </div>
         {!bookInfo?.is_accept && notes?.note && (ExistedBook || userData?.user.is_supervisor || userData?.user.is_admin) ?
@@ -520,7 +531,7 @@ const BooksInfo = () => {
           <HeadingTitle>{language === 'English' ? `Chapters` : `الفصول`}</HeadingTitle>
           {ExistedBook ? <Button onClick={() =>
             navigate(`/Binko/books/${bookInfo?.id}/addChapter`)
-          } style={{ width: '100%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
+          } style={{ width: '50%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
           <ul className={list}>
             {(chaptersList.length || chaptersLists.length) || (chaptersList.length && (!userData?.user.is_admin || !userData.user.is_supervisor)) ? chaptersList :
               language === 'English' ? 'There is no chapters yet' : 'لا يوجد فصول بعد'}
@@ -548,6 +559,7 @@ const BooksInfo = () => {
           </div>
         </div>
       </div>
+
     </Container >
   )
 }

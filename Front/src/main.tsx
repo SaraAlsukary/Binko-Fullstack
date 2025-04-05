@@ -6,6 +6,7 @@ import { persistor, store } from './store';
 import './index.css';
 import { Provider } from 'react-redux';
 import "./services/axios-global.js";
+import { Toaster } from 'react-hot-toast';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -13,6 +14,10 @@ createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <AppRouter />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </PersistGate>
   </Provider>
 )

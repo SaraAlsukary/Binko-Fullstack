@@ -20,6 +20,7 @@ import actDeleteComment from '@store/commentsSlice/act/actDeleteComment';
 import { useNavigate } from 'react-router-dom';
 import actGetBooks from '@store/booksSlice/act/actGetBooks';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
+import toast from 'react-hot-toast';
 type TCategory = {
     name: string,
     profile: React.ReactNode,
@@ -164,7 +165,9 @@ function Comment({ rend }: { rend: boolean }) {
     }
 
     const deleteUser = async (userId: number) => {
-        dispatch(actDeleteComment(userId))
+        dispatch(actDeleteComment(userId)).unwrap().then(() => {
+            language === 'English' ? toast.success('deleted successfully!') : toast.success('تم الحذف بنجاح')
+        })
     }
 
     return (

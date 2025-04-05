@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import { TBooks } from '@customtypes/booksTypes';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
+import toast, { Toaster } from 'react-hot-toast';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -118,7 +119,8 @@ function Book({ rend }: { rend: boolean }) {
 
     const deleteUser = (userId: number) => {
         dispatch(actDeleteBook(userId)).unwrap().then(() => {
-            alert('Deleted successfully!')
+            language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
+
             navigate(`/Binko/admin`)
         })
     }
