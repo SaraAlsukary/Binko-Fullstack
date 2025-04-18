@@ -10,12 +10,15 @@ from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from .serializers import BookSerializer
+from books.models import Book , Book_Category
+from categories.models import Category
 
 @api_view(['POST'])
 def create_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        user = serializer.save()  # احفظ المستخدم
+        user = serializer.save()  
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -25,16 +28,16 @@ def login_user(request):
 
     if serializer.is_valid():
         user = serializer.validated_data['user']
-        login(request, user)  # تسجيل دخول المستخدم
+        login(request, user) 
         token, created = Token.objects.get_or_create(user=user)
 
-        # استخدام UserSerializer لإرجاع جميع بيانات المستخدم
+    
         user_serializer = UserSerializer(user)
 
         return Response({
             'message': 'تم تسجيل الدخول بنجاح.',
             'token': token.key,
-            'user': user_serializer.data,  # جميع بيانات المستخدم
+            'user': user_serializer.data,  
         }, status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -83,7 +86,7 @@ def delete_user(request, user_id):
     try:
         user = CustomUser.objects.get(id=user_id)
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)  # استجابة بنجاح بدون محتوى
+        return Response(status=status.HTTP_204_NO_CONTENT)  
     except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -95,4 +98,48 @@ def create_supervisor(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def books_by_user_category(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'المستخدم غير موجود'}, status=status.HTTP_404_NOT_FOUND)
 
+    user_category = user.category
+
+    if not user_category:
+        return Response({'message': 'المستخدم لا يملك فئة محددة'}, status=200)
+
+    categories = Category.objects.filter(name=user_category)
+
+    books = Book.objects.filter(
+        id__in=Book_Category.objects.filter(category__in=categories).values_list('book_id', flat=True),
+        is_accept=False  
+    )
+
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def books_by_user_category_is_accept(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'المستخدم غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+
+    user_category = user.category
+
+    if not user_category:
+        return Response({'message': 'المستخدم لا يملك فئة محددة'}, status=200)
+
+    
+    categories = Category.objects.filter(name=user_category)
+
+    
+    books = Book.objects.filter(
+        id__in=Book_Category.objects.filter(category__in=categories).values_list('book_id', flat=True),
+        is_accept=True  
+    )
+
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
 import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
 import actAddSupervisor from '@store/supervisorSlice/act/actAddSupervisor';
 import toast, { Toaster } from 'react-hot-toast';
+import actGetCategories from '@store/categorySlice/act/actGetCategories';
+import { actClearCategories } from '@store/categorySlice/categorySlice';
 
 
 function Add(props: { setUserAdded: () => void }) {
@@ -12,22 +13,33 @@ function Add(props: { setUserAdded: () => void }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showEye, setShowEye] = useState(false);
+    const [category, setCategory] = useState('');
     const [showEye1, setShowEye1] = useState(false);
     const [confirm_password, setConfirmPassword] = useState('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language)
+    const { categories } = useAppSelector(state => state.categories)
     const addNewUser = () => {
         const data = {
             name,
             username,
             password,
             confirm_password,
+            category
         }
         dispatch(actAddSupervisor(data)).unwrap().then(() => {
             language === 'English' ? toast.success('New Supervisor Added!') : toast.success('تم اضافة مشرف جديد!')
 
         })
     }
+    const cateOptions = categories.map(cate => <option value={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</option>)
+    useEffect(() => {
+        const promiseCate = dispatch(actGetCategories());
+        return () => {
+            promiseCate.abort();
+            dispatch(actClearCategories())
+        }
+    }, [])
 
 
     return (
@@ -55,6 +67,20 @@ function Add(props: { setUserAdded: () => void }) {
                                 placeholder='Enter Email'
                                 onChange={e => setUsername(e.target.value)}
                             />
+                        </p>
+                    </div>
+                    <div className='col-sm-12 col-md-6'>
+                        <p>
+                            <span>Category:</span>
+                            {/* <input
+                                type='text'
+                                className='form-control'
+                                placeholder='Enter Name'
+                                onChange={e => setCategory(e.target.value)}
+                            /> */}
+                            <select onChange={(e) => setCategory(e.target.value)}>
+                                {cateOptions}
+                            </select>
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
@@ -95,7 +121,7 @@ function Add(props: { setUserAdded: () => void }) {
                 </div>
             </div>
 
-            <button className='btn btn-success' onClick={() => addNewUser()}>Add New User</button>
+            <button className='btn btn-success' onClick={() => addNewUser()}>Add New Supervisor</button>
         </div>
     )
 }

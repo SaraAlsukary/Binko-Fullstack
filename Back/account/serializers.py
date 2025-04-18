@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
-
+from categories.models import Category
+from books.models import Book ,Book_Category
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
@@ -80,7 +81,10 @@ class SupervisorUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'username', 'password', 'confirm_password', 'image', 'is_admin', 'is_supervisor', 'discriptions']
+        fields = ['name', 'username', 'password', 'confirm_password', 'image', 'is_admin', 'is_supervisor', 'discriptions' ,'category']
+        extra_kwargs = {
+            'category': {'required': True}  
+        }
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -88,11 +92,19 @@ class SupervisorUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        confirm_password = validated_data.pop('confirm_password')  # حذف حقل تأكيد كلمة المرور
+        confirm_password = validated_data.pop('confirm_password')  
         user = CustomUser(
-            **validated_data,  # تمرير جميع البيانات المتبقية
-            is_supervisor=True  # تعيين المستخدم كمشرف
+            **validated_data,  
+            is_supervisor=True 
         )
-        user.set_password(validated_data['password'])  # تشفير كلمة المرور
+        user.set_password(validated_data['password'])  
         user.save()
         return user
+    
+
+class BookSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.name', read_only=True)
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'username', 'is_accept']

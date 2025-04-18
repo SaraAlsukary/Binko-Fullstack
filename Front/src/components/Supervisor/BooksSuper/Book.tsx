@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
-import axios from 'axios';
-import img from '@assets/imgs/books/Les misrables.jpg'
-import img2 from '@assets/imgs/books/الجريمة والعقاب.jpg'
+// import axios from 'axios';
+// import img from '@assets/imgs/books/Les misrables.jpg'
+// import img2 from '@assets/imgs/books/الجريمة والعقاب.jpg'
 import ViewUser from './View/View';
-import AddUser from './Add/Add';
-import EditUser from './Edit/Edit';
+// import AddUser from './Add/Add';
+// import EditUser from './Edit/Edit';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import './Book.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
-import actGetBooks from '@store/booksSlice/act/actGetBooks';
 import { useNavigate } from 'react-router-dom';
-import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import { TBooks } from '@customtypes/booksTypes';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import actGetBooksBySuperCate from '@store/booksSlice/act/actGetBooksBySuperCate';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -33,6 +32,7 @@ type TCategoryAra = {
 function Book({ rend }: { rend: boolean }) {
     const [show, setShow] = useState(false);
     const { language } = useAppSelector(state => state.language);
+    const { userData } = useAppSelector(state => state.auth);
     const { books } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
@@ -44,7 +44,7 @@ function Book({ rend }: { rend: boolean }) {
     let booksData: TBooks[] = books;
     const navigate = useNavigate();
     useEffect(() => {
-        dispatch(actGetBooks())
+        dispatch(actGetBooksBySuperCate(userData?.user.id))
     }, [])
     useEffect(() => {
 
@@ -130,7 +130,7 @@ function Book({ rend }: { rend: boolean }) {
             <div className='users-page'>
                 <div className='container'>
                     <h1>
-                        {language === 'English' ? 'The Books in the System' : 'الكتب في النظام'}
+                        {language === 'English' ? `The Books in the System with Supervisor Category` : 'الكتب في النظام بتصنيف المشرف'}
                     </h1>
                     <h3>
                         {language === 'English' ? 'Operations on Books' : ' التعديلات على الكتب '}

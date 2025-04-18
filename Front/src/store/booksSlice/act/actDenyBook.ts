@@ -1,8 +1,6 @@
 import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TBooks } from "@customtypes/booksTypes";
-import { RootState } from "@store/index";
 
 type TNote = {
     id: number,
@@ -12,12 +10,12 @@ type TNote = {
 const actDenyBooks = createAsyncThunk(
     "books/actDenyBooks",
     async (form: TNote, thunkAPI) => {
-        const { rejectWithValue, getState, signal } = thunkAPI;
+        const { rejectWithValue, signal } = thunkAPI;
         // const { auth } = getState() as RootState;
 
         try {
-            const response = await axios.patch<TNote>(
-                `books/${form.id}/note/`, form,
+            const response = await axios.post<TNote>(
+                `books/${form.id}/reject/`, form,
 
                 {
                     signal,

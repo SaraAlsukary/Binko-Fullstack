@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     is_admin = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     discriptions=models.CharField(max_length=250 , null=True)
-
+    category=models.CharField(max_length=250 , null=True)
 
     def __str__(self):
         return self.username

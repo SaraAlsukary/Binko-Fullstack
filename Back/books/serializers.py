@@ -21,7 +21,7 @@ class BooksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'image', 'description', 'publication_date', 'user', 'categories','is_accept']
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'user', 'categories','is_accept','content']
 
     def get_categories(self, obj):
 
@@ -48,7 +48,7 @@ class BookCatSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
     class Meta:
         model = Book
-        fields = ['id', 'name', 'user','categories' , 'image' ,'description' ]
+        fields = ['id', 'name', 'user','categories' , 'image' ,'description' ,'content']
 
     def get_categories(self, obj):
         categories = Category.objects.filter(bookcategory__book=obj)
@@ -63,11 +63,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'username', 'image']
 
 class BookDetailsSerializer(serializers.ModelSerializer):
-    user = UserSerializer()  # تضمين بيانات المستخدم الذي أضاف الكتاب
+    user = UserSerializer()  
 
     class Meta:
         model = Book
-        fields = [ 'name', 'user','publication_date' ,'image' ,'user']    
+        fields = [ 'name', 'user','publication_date' ,'image' ,'user','content']    
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -102,10 +102,10 @@ class AddBookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['id', 'user', 'name', 'image', 'description', 'publication_date', 'category_id', 'book_categories']
+        fields = ['id', 'user', 'name', 'content','image', 'description', 'publication_date', 'category_id', 'book_categories']
 
     def create(self, validated_data):
-        categories = validated_data.pop('categories')  # استخراج قائمة الفئات
+        categories = validated_data.pop('categories')  
         user = validated_data.pop('user')  
         book = Book.objects.create(user=user, **validated_data)  
 
@@ -135,4 +135,101 @@ class BookLikesSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'name','image','description', 'likes_count'] 
     def get_likes_count(self, obj):
-        return Like.objects.filter(book=obj).count()        
+        return Like.objects.filter(book=obj).count()    
+
+
+class LikeStatusSerializer(serializers.Serializer):
+    is_liked = serializers.BooleanField()
+
+class BookLikeSerializer(serializers.ModelSerializer):
+    is_liked = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'is_liked','content']
+
+    def get_is_liked(self, obj):
+        user_id = self.context['user_id']  
+        return Like.objects.filter(user_id=user_id, book=obj).exists()    
+    
+
+#اضافة حسب اسم الفئة
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class BookCategorySerializer(serializers.ModelSerializer):
+    category = CategorySerializer()  
+    class Meta:
+        model = Book_Category
+        fields = ['category']
+
+class AddBookCatSerializer(serializers.ModelSerializer):
+    category_names = serializers.ListField(
+        child=serializers.CharField(), write_only=True
+    )
+    book_categories = BookCategorySerializer(source='bookcategory_set', many=True, read_only=True)
+
+    class Meta:
+        model = Book
+        fields = ['id', 'user', 'name', 'image', 'description', 'publication_date', 'category_names', 'book_categories','content']
+
+    def create(self, validated_data):
+        category_names = validated_data.pop('category_names')  
+        user = validated_data.pop('user')  
+        book = Book.objects.create(user=user, **validated_data)  
+
+        for name in category_names:
+            category, created = Category.objects.get_or_create(name=name)
+            Book_Category.objects.create(book=book, category=category)
+
+        return book
+    
+
+class ChapterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = ['title', 'content_text', 'audio', 'note']
+
+class BookUpdateSerializer(serializers.ModelSerializer):
+    chapters = ChapterSerializer(many=True)
+    categories = serializers.ListField(child=serializers.CharField(), write_only=True)  # ← استلام أسماء الفئات
+
+    class Meta:
+        model = Book
+        fields = ['name', 'image', 'description', 'publication_date', 'content', 'categories', 'chapters']
+
+    def update(self, instance, validated_data):
+        
+        instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.description = validated_data.get('description', instance.description)
+        instance.publication_date = validated_data.get('publication_date', instance.publication_date)
+        instance.content = validated_data.get('content', instance.content)
+        instance.is_accept = False  
+        instance.save()
+
+        
+        Book_Category.objects.filter(book=instance).delete()
+        category_names = validated_data.get('categories', [])
+        for name in category_names:
+            category, _ = Category.objects.get_or_create(name=name)
+            Book_Category.objects.create(book=instance, category=category)
+
+   
+        Chapter.objects.filter(book=instance).delete()
+
+        
+        chapters_data = validated_data.get('chapters', [])
+        for chapter_data in chapters_data:
+            Chapter.objects.create(
+                book=instance,
+                title=chapter_data['title'],
+                content_text=chapter_data['content_text'],
+                audio=chapter_data.get('audio'),
+                note=chapter_data.get('note'),
+                is_accept=False
+            )
+
+        return instance    

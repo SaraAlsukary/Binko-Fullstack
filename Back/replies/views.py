@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
 from .models import Comment, Reply
-from .serializers import ReplySerializer ,GetReplySerializer
+from .serializers import ReplySerializer ,GetReplySerializer ,Repliesrializer
 
 @api_view(['GET'])
 def get_replies_for_comment(request, comment_id):
@@ -51,7 +51,18 @@ def delete_reply(request, reply_id):
 
     reply.delete()
     return Response({'message': 'Reply deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+@api_view(['GET'])
+def get_replies(request, comment_id):
+    try:
+        # الحصول على التعليق باستخدام ID
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({'error': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
 
-
-
-
+    # الحصول على الردود المرتبطة بالتعليق
+    replies = comment.replies.all()  # استخدام related_name 'replies'
+    
+    # استخدام serializer لتحويل الردود إلى JSON
+    serializer = Repliesrializer(replies, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)

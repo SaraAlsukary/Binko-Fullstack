@@ -23,6 +23,7 @@ interface IAuthState {
             name: string,
             image: string,
             discriptions: string,
+            category?: number
         }
         message: string,
         token: string,

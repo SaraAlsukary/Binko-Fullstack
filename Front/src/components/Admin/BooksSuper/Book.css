@@ -1,0 +1,133 @@
+@import "primereact/resources/themes/lara-light-indigo/theme.css";
+@import "primereact/resources/primereact.min.css";
+@import "primeicons/primeicons.css";
+@import 'bootstrap/dist/css/bootstrap.css';
+
+body {
+    color: var(--color);
+    font-family: BinkoEng;
+    background-color: var(--background);
+}
+
+
+
+[data-lang='Arabic'] .users-page {
+    font-family: BinkoAra;
+
+}
+
+.users-page h1 {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.users-page h3 {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.users-page .users-list {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 30px 0;
+}
+
+.users-page .users-list table .btn {
+    margin: 0 5px;
+}
+
+.users-page .addNewUser {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.users-page .addNewUser .btn i {
+    padding: 0 10px;
+}
+
+.user-view h1 {
+    margin: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.user-view .box {
+    padding: 30px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.user-view p {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.user-view p span {
+    display: inline-block;
+    min-width: 130px;
+}
+
+.user-view p span:first-child {
+    color: #6c757d;
+}
+
+.user-view p span:last-child {
+    color: #333;
+    font-weight: bold;
+}
+
+._add-view p {
+    border-bottom: none;
+}
+
+._add-view p input {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.p-datatable-wrapper {
+    color: var(--color);
+    background: var(--background);
+}
+
+.tableCell td,
+.tableCell th {
+    color: var(--color);
+    font-family: binkoeng;
+    direction: ltr;
+    background: var(--background);
+}
+
+
+
+.p-dialog-header,
+.p-dialog-content {
+    padding: 20px;
+    direction: rtl;
+}
+
+.p-dialog-content span {
+    font-size: 22px;
+    margin: 0 10px;
+
+}
+
+.p-dialog-footer {
+    text-align: center;
+    padding: 10px;
+}
+
+.p-dialog-footer button:nth-of-type(1) {
+    color: var(--main-color);
+}
+
+.p-dialog-footer button:nth-of-type(2) {
+    padding: 2px;
+    margin: 0 20px;
+    background-color: var(--main-color);
+}

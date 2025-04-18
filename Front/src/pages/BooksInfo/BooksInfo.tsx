@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@hooks/app";
-import { useNavigate, useParams } from "react-router-dom";
+import { json, useNavigate, useParams } from "react-router-dom";
 import style from './BooksInfo.module.css';
 import { Container } from "react-bootstrap";
 import HeadingTitle from "@components/feedback/HeadingTitle/HeadingTitle";
@@ -42,6 +42,9 @@ import actGetLikes from "@store/booksSlice/act/actGetLikes";
 import actAddLikes from "@store/booksSlice/act/actAddLike";
 import actDeleteLikes from "@store/booksSlice/act/actDeleteLike";
 import toast, { Toaster } from "react-hot-toast";
+import actGetLikeStatue from "@store/booksSlice/act/actGetLikeStatue";
+import { TCategory } from "@customtypes/categoryType";
+import actGetAcceptedBooksBySuperCate from "@store/booksSlice/act/actGetAcceptedBooksBySuperCate";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
   text, bookCont, warnings, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
@@ -58,7 +61,7 @@ const BooksInfo = () => {
   const { id }: any = useParams();
   const indx = parseInt(id)
   const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks, acceptedBooks, notes, likes } = useAppSelector(state => state.books);
+  const { books, myBooks, acceptedBooks, notes, likes, is_liked } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
     user: userData?.user?.id,
@@ -76,14 +79,24 @@ const BooksInfo = () => {
   // const ExistedComment = commentss.find((comment) => comment.user.id === userData?.user.id) ? true : false;
   const activeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
-    if ((e.target as Element).classList.contains(active)) {
+    if ((e.target as Element).classList.contains(active) && is_liked) {
+      dispatch(actGetLikes(indx))
+      dispatch(actAddLikes(indx));
 
+
+      dispatch(actGetLikeStatue(likeForm))
 
     } else {
+      dispatch(actDeleteLikes(indx))
+
+
+      dispatch(actGetLikes(indx))
+      dispatch(actGetLikeStatue(likeForm))
 
 
     }
   }
+  console.log(is_liked)
   useEffect(() => {
     commentss.forEach(comment => {
       dispatch(actGetReplyByComment(comment?.id))
@@ -105,10 +118,10 @@ const BooksInfo = () => {
   const activeLikeHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active) && !SavedLikeExist) {
-      dispatch(actAddLikes(bookInfo?.id))
+      dispatch(actDeleteLikes(bookInfo?.id))
 
     } else {
-      dispatch(actDeleteLikes(bookInfo?.id))
+      dispatch(actAddLikes(bookInfo?.id))
 
 
     }
@@ -138,6 +151,9 @@ const BooksInfo = () => {
 
   //   })
   // }
+  const editHandler = () => {
+    navigate(`edit`);
+  }
   const deleteHandler = () => {
     dispatch(actDeleteBook(indx)).unwrap().then(() => {
       language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
@@ -212,6 +228,7 @@ const BooksInfo = () => {
     comment: commentText
 
   }
+  // console.log(bookInfo?.is_liked)
   const addCommentHandler = () => {
     const dataCom = {
       id: bookInfo?.id,
@@ -233,21 +250,27 @@ const BooksInfo = () => {
     setReplyy('');
   }
   const dispatch = useAppDispatch();
+  const likeForm = {
+    id_book: indx,
+    id_user: userData?.user.id!,
+  }
   useEffect(
     () => {
       const promiseComment = dispatch(actGetCommentByBook(bookInfo?.id));
       const promiseChapters = dispatch(actGetChapters(bookInfo?.id))
+      const promiseLike = dispatch(actGetLikeStatue(likeForm))
       const promiseLikes = dispatch(actGetLikes(bookInfo?.id))
       const promiseUsers = dispatch(actGetUsers())
       const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id))
       const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
-      const promiseAcceptedBooks = dispatch(actGetBooksToAccept())
+      const promiseAcceptedBooks = userData?.user.is_supervisor ? dispatch(actGetAcceptedBooksBySuperCate(userData?.user?.id!)) : dispatch(actGetBooksToAccept())
       const promiseCategories = dispatch(actGetCategories())
       const promiseFavorite = dispatch(actGetfavorite(userData?.user.id))
       const promiseNotes = dispatch(actGetNotes(bookInfo?.id));
 
       return () => {
         promiseLikes.abort();
+        promiseLike.abort();
         promiseAcceptedChapter.abort();
         promiseAcceptedBooks.abort();
         promiseComment.abort();
@@ -285,18 +308,18 @@ const BooksInfo = () => {
   //     }
 
   // }
-  const categoriesBook = books.map((book) => {
-    const category = book.categories?.map(ct => {
+  var catesss: TCategory[] = [];
+  bookInfo?.categories?.forEach(ca => {
+    categories.forEach(caa => {
+      if (caa.name === ca)
+        catesss.push(caa)
+    })
 
-      const filter = categories.filter((cates) => cates.id === ct)
-      return filter;
-    });
-    return category
   })
-  console.log(bookInfo?.categories);
-  const categoriesBookCard = categoriesBook.map((cate) => <p key={Math.random() * 2}>
-    {/* {language === 'English' ? cate?.name : cate?.name_arabic} */}
-    {cate?.name}
+
+  const categoriesBookCard = catesss.map((cate) => <p onClick={() => navigate(`/Binko/categories/books/${cate?.id}`)} key={Math.random() * 2}>
+    {language === 'English' ? cate?.name : cate?.name_arabic}
+    {/* {cate?.name} */}
   </p>
   )
   const commentsListElements = commentss.map(comment => {
@@ -449,7 +472,8 @@ const BooksInfo = () => {
       </span>
         : ''}
   </li >)
-  const authorData = users.find((user) => user.id === bookInfo?.user.id)
+  console.log(likes?.likes_count)
+  const authorData = users.find((user) => user.id === bookInfo?.user?.id)
   return (
     <Container className={bookCont} >
       <div className={left}>
@@ -492,7 +516,7 @@ const BooksInfo = () => {
                 </div>
               </li>
             }
-            <li onClick={(e) => activeHandler(e)}><p>{language === 'English' ? `Like` : `أعجبني`}</p><div className={icons}>
+            <li className={is_liked?.is_liked ? active : ''} onClick={(e) => activeHandler(e)}><p>{language === 'English' ? `Like` : `أعجبني`}</p><div className={icons}>
               <div className={activeIcon}><LoveFillWhite style={{ width: '20px' }} /> </div><div className={icon}><LoveNotFill style={{ width: '20px' }} /></div></div></li>
             <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
           </ul>
@@ -501,8 +525,10 @@ const BooksInfo = () => {
               display: 'flex', justifyContent: "center",
               alignItems: "center"
             }}>
-              {/* <Button style={{ width: '100%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button> */}
-              <Button onClick={deleteHandler} style={{ marginTop: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+              <Button
+                onClick={editHandler}
+                style={{ margin: '10px', width: '50%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
+              <Button onClick={deleteHandler} style={{ margin: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
             </div>
             : ''}
           {(userData?.user.is_supervisor || userData?.user.is_admin) ?
@@ -518,7 +544,7 @@ const BooksInfo = () => {
             </div>
             : ""}
         </div>
-        {!bookInfo?.is_accept && notes?.note && (ExistedBook || userData?.user.is_supervisor || userData?.user.is_admin) ?
+        {/* {!bookInfo?.is_accept && notes?.note && (ExistedBook || userData?.user.is_supervisor || userData?.user.is_admin) ?
           <div className={warnings}>
 
 
@@ -526,8 +552,12 @@ const BooksInfo = () => {
             <p>{language === 'English' ? "Your book was denied from supervisors with this note:" : "كتابك تم رفضه من المشرفين مع الملاحظة النالية"}</p>
             <p>{notes?.note}</p>
           </div> : ""
-        }
+        } */}
         <div className={down}>
+          <HeadingTitle>{language === 'English' ? `Content` : `المحتوى`}</HeadingTitle>
+          <div className="content">
+            {bookInfo?.content}
+          </div>
           <HeadingTitle>{language === 'English' ? `Chapters` : `الفصول`}</HeadingTitle>
           {ExistedBook ? <Button onClick={() =>
             navigate(`/Binko/books/${bookInfo?.id}/addChapter`)
@@ -537,6 +567,7 @@ const BooksInfo = () => {
               language === 'English' ? 'There is no chapters yet' : 'لا يوجد فصول بعد'}
             {(userData?.user.is_admin || userData?.user.is_supervisor) ? chaptersLists : ""}
           </ul>
+
           <div className={comments}>
 
             <HeadingTitle>{language === 'English' ? `Comments` : `التعليقات`}</HeadingTitle>

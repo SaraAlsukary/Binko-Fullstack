@@ -144,7 +144,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
 import os
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'na9944272@gmail.com' 
+EMAIL_HOST_PASSWORD = 'kdso kmyn ynic ljwk'   
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

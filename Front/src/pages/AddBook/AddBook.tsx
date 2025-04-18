@@ -15,8 +15,9 @@ const AddBook = () => {
     const dataForm = new FormData();
     const [image, setImage] = useState('');
     const [imageFile, setImageFile] = useState('');
-    const [category, setCategory] = useState([]);
+    // const [category, setCategory] = useState([]);
     const [name, setName] = useState('');
+    const [content, setContent] = useState('');
     const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
@@ -46,19 +47,19 @@ const AddBook = () => {
     //     }
     // }
     const selectCate = (e: any) => {
-        const id = parseInt(e.target.value)
-        if (cate.find((catee: any) => catee == id)) {
+        const catename = e.target.value;
+        if (cate.find((catee: any) => catee === catename)) {
             // if (category.find((cate: any) => cate === id)) {
             // console.log('exist')
             // console.log(id)
 
-            cate = cate.filter((ca: any) => ca != id);
+            cate = cate.filter((ca: any) => ca !== catename);
 
             console.log(cate)
 
         } else {
             // const categoryItem = categories.find(cate => cate.id == id)
-            cate.push(id)
+            cate.push(catename)
 
             console.log(cate)
 
@@ -74,6 +75,10 @@ const AddBook = () => {
     const descHandler = (e: any) => {
         setDescription(e.target.value);
     }
+    const contentHandler = (e: any) => {
+        setContent(e.target.value);
+
+    }
     const imageHandler = (e: any) => {
         setImage(URL.createObjectURL(e.target.files[0]));
         // dataForm.append('image', e.target.files[0])
@@ -87,13 +92,15 @@ const AddBook = () => {
 
     const addBookHandler = () => {
 
-        console.log(cate)
-        console.log(category)
-        setCategory(cate)
+        // console.log(cate)
+        // console.log(category)
+        // setCategory(cate)
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
+        dataForm.append('content', content);
         dataForm.append('description', description);
-        category.forEach((ca) => dataForm.append(`category_id[]`, ca))
+        cate.forEach((ca: any) => dataForm.append(`category_names`, ca))
+        // dataForm.append(`category_names`, JSON.stringify(cate))
 
         for (let [key, value] of dataForm.entries()) {
             console.log(key, value)
@@ -108,17 +115,18 @@ const AddBook = () => {
             }
             )
         setDescription('');
+        setContent('');
         setImage('');
         setName('');
         setImageFile('')
-        setCategory([])
+        // // setCategory([])
     }
     const CategoriesSelects = categories.map((cate) =>
         // <div key={cate.id} className={mulch}>
         //     <input onClick={categoryHandler} type="checkbox" value={cate.id} id={cate.name} />
         //     <label htmlFor={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</label>
         // </div>
-        <option key={cate?.id} onClick={selectCate} value={cate?.id}>
+        <option key={cate?.id} onClick={selectCate} value={cate?.name}>
             {language === 'English' ? cate.name : cate.name_arabic}
         </option>
     )
@@ -146,9 +154,10 @@ const AddBook = () => {
                     <div className={input}>
                         <SecondaryInput onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
                         <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
+                        <textarea name="" id="" onChange={contentHandler} placeholder={language === 'English' ? "Book Content" : "محتوى الكتاب"} ></textarea>
                         <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
                         <div className={mul}>
-                            <select name="" multiple id="">
+                            <select name="category_names" multiple id="">
                                 {CategoriesSelects}
 
                             </select>

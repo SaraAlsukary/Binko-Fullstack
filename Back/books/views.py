@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view , parser_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Book_Fav , Book ,Book_Category ,Like
@@ -8,10 +8,13 @@ from account.models import CustomUser
 from account.models import CustomUser
 from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,LikeSerializer,FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
-from .serializers import BookSerializer ,BookLikesSerializer
+from .serializers import BookSerializer ,BookLikesSerializer ,AddBookCatSerializer,BookLikeSerializer
 from categories.models import Category
-from .serializers import  NoteSerializer
+from .serializers import  NoteSerializer ,BookUpdateSerializer
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
+from rest_framework.parsers import MultiPartParser, FormParser ,JSONParser
 @api_view(['GET'])
 def favorite_books(request, user_id):
     try:
@@ -23,10 +26,10 @@ def favorite_books(request, user_id):
 
 @api_view(['DELETE'])
 def delete_book_fav(request, user_id, book_id) :
-    user = get_object_or_404(CustomUser, id=user_id)  # البحث عن المستخدم
-    book = get_object_or_404(Book, id=book_id)  # البحث عن الكتاب
+    user = get_object_or_404(CustomUser, id=user_id)  
+    book = get_object_or_404(Book, id=book_id) 
 
-    favorite = Book_Fav.objects.filter(user=user, book=book).first()  # البحث عن المفضلة
+    favorite = Book_Fav.objects.filter(user=user, book=book).first()  
 
     if favorite:
         favorite.delete()
@@ -132,15 +135,15 @@ def accept_book(request, pk):
 
 @api_view(['POST'])
 def toggle_like(request, user_id, book_id):
-    user = get_object_or_404(CustomUser, id=user_id)  # البحث عن المستخدم
-    book = get_object_or_404(Book, id=book_id)  # البحث عن الكتاب
+    user = get_object_or_404(CustomUser, id=user_id)  
+    book = get_object_or_404(Book, id=book_id) 
 
     like, created = Like.objects.get_or_create(user=user, book=book)
 
     if created:
         return Response({"message": "تم تسجيل الإعجاب بالكتاب "}, status=status.HTTP_201_CREATED)
     else:
-        like.delete()  # إذا كان موجودًا، يتم حذف الإعجاب
+        like.delete()  
         return Response({"message": "تم إلغاء الإعجاب بالكتاب "}, status=status.HTTP_200_OK)
     
 
@@ -178,3 +181,76 @@ def book_likes(request, book_id):
 
     serializer = BookLikesSerializer(book)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+#add
+@api_view(['POST'])
+def add_book_by_cat(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)  
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    data = request.data.copy()  
+    data['user'] = user.id   
+
+    serializer = AddBookCatSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET'])
+def get_like_status(request, user_id, book_id):
+    try:
+        book = Book.objects.get(id=book_id) 
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BookLikeSerializer(book, context={'user_id': user_id}) 
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def reject_book_with_note(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return JsonResponse({'error': 'الكتاب غير موجود'}, status=404)
+
+   
+    book.is_accept = False
+    book.note = request.data.get('note', 'لم يتم تحديد ملاحظة.')
+    book.save()
+    user_email = book.user.username  
+    subject = f'رفض كتابك: {book.name}'
+    message = f"""مرحباً {book.user.name}،\n\n
+نأسف لإبلاغك بأنه تم رفض كتابك "{book.name}".\n
+الملاحظة: {book.note}\n
+يرجى مراجعة الملاحظات وإعادة رفع الكتاب بعد التعديل.\n\n
+شكراً لتفهمك.
+"""
+    try:
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email], fail_silently=False)
+    except Exception as e:
+        return JsonResponse({'error': f'فشل إرسال الإيميل: {str(e)}'}, status=500)
+
+    return JsonResponse({'message': 'تم رفض الكتاب وإرسال الملاحظة بنجاح.'}, status=200)
+
+
+
+@api_view(['PUT'])
+@parser_classes([JSONParser])
+def update_book(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'الكتاب غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BookUpdateSerializer(book, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'تم تحديث الكتاب والفئات والشباتر، وتم رفضه تلقائيًا'}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

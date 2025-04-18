@@ -18,9 +18,9 @@ import actGetComments from '@store/commentsSlice/act/actGetComments';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteComment from '@store/commentsSlice/act/actDeleteComment';
 import { useNavigate } from 'react-router-dom';
-import actGetBooks from '@store/booksSlice/act/actGetBooks';
-import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import toast from 'react-hot-toast';
+import actGetBooksBySuperCate from '@store/booksSlice/act/actGetBooksBySuperCate';
+import actGetAcceptedBooksBySuperCate from '@store/booksSlice/act/actGetAcceptedBooksBySuperCate';
 type TCategory = {
     name: string,
     profile: React.ReactNode,
@@ -41,6 +41,7 @@ function Comment({ rend }: { rend: boolean }) {
     // const [showAddMode, setShowAddMode] = useState(false);
     // const [showEditMode, setShowEditMode] = useState(false);
     const { comments } = useAppSelector(state => state.comments)
+    const { userData } = useAppSelector(state => state.auth)
     const { books, acceptedBooks } = useAppSelector(state => state.books)
     const [selectedUserId, setSelectedUserId] = useState(null)
     const dispatch = useAppDispatch();
@@ -48,8 +49,8 @@ function Comment({ rend }: { rend: boolean }) {
     useEffect(() => {
         dispatch(actGetComments());
         dispatch(actGetUsers());
-        dispatch(actGetBooks());
-        dispatch(actGetBooksToAccept());
+        dispatch(actGetBooksBySuperCate(userData?.user.id));
+        dispatch(actGetAcceptedBooksBySuperCate(userData?.user.id));
     }, []);
 
 

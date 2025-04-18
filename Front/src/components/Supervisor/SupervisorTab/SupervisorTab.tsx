@@ -5,7 +5,7 @@ import Tab from 'react-bootstrap/Tab';
 import AcceptedBooks from '../BooksSuperAccept/Book';
 import Comment from '../CommentsSuper/Comment'
 import Category from '../CategorySuper/Category'
-import Book from '../BooksSuper/Book'
+import Book from '../BooksSuper/Book';
 import './SupervisorTab.css'
 import { useAppSelector } from '@hooks/app';
 import { useState } from 'react';
@@ -37,8 +37,8 @@ function LeftTabsExample() {
                         <Tab.Content>
                             <Tab.Pane eventKey="first"><Category rend={rend} /></Tab.Pane>
                             <Tab.Pane eventKey="second"><Comment rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="fourth"><Book rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="third"><AcceptedBooks rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="third"><Book rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="fourth"><AcceptedBooks rend={rend} /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

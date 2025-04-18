@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import create_user ,login_user ,LogoutView ,get_supervisor_users, update_custom_user ,create_supervisor , get_non_supervisor_users
-from .views import delete_user 
+from .views import delete_user  ,books_by_user_category ,books_by_user_category_is_accept
 urlpatterns = [
     path('create-user/', create_user, name='create_user'),
     path('login/', login_user, name='login'),
@@ -10,5 +10,7 @@ urlpatterns = [
     path('supervisors/', get_supervisor_users, name='get_non_supervisor_users'),
     path('delete-user/<int:user_id>/', delete_user, name='delete-user'),
     path('create-supervisor/', create_supervisor, name='create-supervisor'),
-    
+    path('books/by_user_category/<int:user_id>/', books_by_user_category),
+    path('books/by_user_category/is_accept/<int:user_id>/', books_by_user_category_is_accept),
+
 ]

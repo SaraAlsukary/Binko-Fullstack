@@ -1,10 +1,10 @@
-import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TBooks } from "@customtypes/booksTypes";
 import { RootState } from "@store/index";
+import { TBooks } from "@customtypes/booksTypes";
 
-type TResponse = [];
+type TResponse = TBooks[];
 const actAddBooks = createAsyncThunk(
     "books/actAddBooks",
     async (Formdata: FormData, thunkAPI) => {
@@ -13,7 +13,7 @@ const actAddBooks = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `books/add/${auth?.userData.user.id}/`, Formdata,
+                `/books/catname/${auth?.userData?.user.id}/`, Formdata,
                 {
                     signal,
                     // headers: {
