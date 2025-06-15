@@ -48,7 +48,7 @@ const supervisors = createSlice({
         });
         builder.addCase(actAddSupervisor.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.supervisors = action.payload;
+            state.supervisors.push(action.payload);
         });
         builder.addCase(actAddSupervisor.rejected, (state, action) => {
             state.loading = "failed";

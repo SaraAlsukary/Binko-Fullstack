@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Comment
 from account.models import CustomUser
 from books.models import Book
+from replies.models import Reply
 """class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -44,3 +45,26 @@ class DeleteCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+class ReplySerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+    name = serializers.CharField(source='user.name')
+    image=serializers.ImageField(source='user.image')
+    
+
+    class Meta:
+        model = Reply
+        fields = ['id', 'name','image', 'user', 'content', 'created_at', 'parent', 'children']
+
+    def get_children(self, obj):
+        children = obj.children.all()
+        return ReplySerializer(children, many=True).data     
+class CommentsSerializer(serializers.ModelSerializer):
+    replies = ReplySerializer(many=True, read_only=True)
+    name = serializers.CharField(source='user.name')
+    image=serializers.ImageField(source='user.image')
+    book=serializers.CharField(source='book.name')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'name','image','book','user', 'book', 'comment', 'replies']       

@@ -26,7 +26,9 @@ urlpatterns = [
     path('api/', include('books.urls')),
     path('api/', include('replies.urls')),
     path('api/', include('chapters.urls')),
-    path('api/', include('categories.urls'))
+    path('api/', include('categories.urls')),
+    path('api/', include('ratings.urls'))
+
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

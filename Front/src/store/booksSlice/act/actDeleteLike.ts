@@ -13,13 +13,11 @@ const actDeleteLikes = createAsyncThunk(
         const { auth } = getState() as RootState;
 
         try {
-            const response = await axios.post<TResponse>(
-                `books/like/${auth.userData?.user.id}/${id}/`,
+            const response = await axios.delete<TResponse>(
+                `unlike/${auth.userData?.user.id}/${id}/`,
                 {
                     signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.user?.token}`
-                    // }
+                  
                 },
             );
             console.log(response.data)

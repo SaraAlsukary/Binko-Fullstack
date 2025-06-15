@@ -85,8 +85,6 @@ const categories = createSlice({
         builder.addCase(actDeleteCategory.fulfilled, (state, action) => {
             state.loading = "succeeded";
             state.categories = state.categories.filter((cate) => cate.id !== action.payload)
-
-            // state.categories = action.payload;
         });
         builder.addCase(actDeleteCategory.rejected, (state, action) => {
             state.loading = "failed";

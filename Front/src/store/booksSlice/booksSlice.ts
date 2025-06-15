@@ -223,7 +223,7 @@ const books = createSlice({
         });
         builder.addCase(actDeleteBook.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.acceptedBooks = action.payload;
+            // state.books = action.payload;
         });
         builder.addCase(actDeleteBook.rejected, (state, action) => {
             state.loading = "failed";
@@ -328,7 +328,7 @@ const books = createSlice({
         });
         builder.addCase(actAddLikes.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.likes.likes_count++;
+            state.likes!.likes_count++;
 
             // state.likes.likes_count! = state.likes.likes_count! + 1;
         });
@@ -345,7 +345,7 @@ const books = createSlice({
         });
         builder.addCase(actDeleteLikes.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.likes.likes_count--;
+            state.likes!.likes_count--;
 
         });
         builder.addCase(actDeleteLikes.rejected, (state, action) => {

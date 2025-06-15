@@ -1,11 +1,9 @@
-import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
+import { createAsyncThunk, } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TBooks } from "@customtypes/booksTypes";
 import { RootState } from "@store/index";
 type TForm = {
-    // user: number,
-    // book: number,
+
     comment: number,
     user: number,
     reply: string
@@ -20,7 +18,8 @@ const actAddReply = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `api/comments/${Formdata?.comment}/reply/${auth.userData.user.id}/`, Formdata.reply,
+                `addreply/${Formdata?.comment}/${auth?.userData?.user.id}/`,
+                Formdata.reply,
                 {
                     signal,
                     // headers: {

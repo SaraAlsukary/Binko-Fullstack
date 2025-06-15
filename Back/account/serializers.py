@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'username', 'password', 'confirm_password', 'is_admin', 'is_supervisor', 'image', 'discriptions']
+        fields = ['id', 'name', 'username', 'password', 'confirm_password', 'is_admin', 'is_supervisor', 'image', 'discriptions','category']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, attrs):
@@ -26,7 +26,8 @@ class UserSerializer(serializers.ModelSerializer):
             is_admin=validated_data.get('is_admin', False),
             is_supervisor=validated_data.get('is_supervisor', False),
             image=validated_data.get('image', ""),
-            discriptions=validated_data.get('discriptions', "")
+            discriptions=validated_data.get('discriptions', ""),
+            category=validated_data.get('category')
         )
         user.set_password(validated_data['password'])
         user.save()

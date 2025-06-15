@@ -10,7 +10,7 @@ from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,Lik
 from account.models import CustomUser
 from .serializers import BookSerializer ,BookLikesSerializer ,AddBookCatSerializer,BookLikeSerializer
 from categories.models import Category
-from .serializers import  NoteSerializer ,BookUpdateSerializer
+from .serializers import  NoteSerializer ,BookUpdateSerializer ,BookLikedSerializer
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
@@ -254,3 +254,47 @@ def update_book(request, book_id):
         serializer.save()
         return Response({'message': 'تم تحديث الكتاب والفئات والشباتر، وتم رفضه تلقائيًا'}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def like_book(request, user_id, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    
+    like, created = Like.objects.get_or_create(user=user, book=book)
+
+    if created:
+        return Response({'message': 'Book liked successfully'}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'message': 'You already liked this book'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['DELETE'])
+def unlike_book(request, user_id, book_id):
+    try:
+
+        like = Like.objects.get(user_id=user_id, book_id=book_id)
+        like.delete()
+        return Response({'message': 'Like removed successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except Like.DoesNotExist:
+        return Response({'error': 'Like not found'}, status=status.HTTP_404_NOT_FOUND)    
+    
+
+
+@api_view(['GET'])
+def liked_books(request, user_id):
+    try:
+        likes = Like.objects.filter(user_id=user_id)
+        books = Book.objects.filter(like__in=likes)
+        serializer = BookLikedSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    

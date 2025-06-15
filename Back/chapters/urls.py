@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import get_book_chapters_if_accept ,add_chapter,unaccepted_chapters ,delete_chapter,accept_chapter
-from .views import manage_note
+from .views import manage_note ,reject_chapter , search_books
 
 urlpatterns = [
     path('books/<int:book_id>/chapters/', get_book_chapters_if_accept, name='get_book_chapters_if_accept'),
@@ -9,5 +9,9 @@ urlpatterns = [
     path('delete-chapter/<int:chapter_id>/', delete_chapter, name='delete-chapter'),
     path('accept-chapter/<int:chapter_id>/', accept_chapter, name='accept-chapter'),
     path('chapters/<int:chapter_id>/note/', manage_note, name='manage_note'),
+    path('reject-chapter/<int:chapter_id>/', reject_chapter, name='reject_chapter'),
+    path('books/search/', search_books),
+    
+
 
 ]

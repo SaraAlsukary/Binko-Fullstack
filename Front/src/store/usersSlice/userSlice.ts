@@ -40,14 +40,16 @@ const users = createSlice({
                 state.error = action.payload;
             }
         });
-        // get users
+        // delete users
         builder.addCase(actDeleteUser.pending, (state) => {
             state.loading = "pending";
             state.error = null;
         });
-        builder.addCase(actDeleteUser.fulfilled, (state) => {
+        builder.addCase(actDeleteUser.fulfilled, (state,action) => {
             state.loading = "succeeded";
-            // state.users = action.payload;
+            state.users = state.users.filter((cate) => cate.id !== action.payload);
+
+            
         });
         builder.addCase(actDeleteUser.rejected, (state, action) => {
             state.loading = "failed";

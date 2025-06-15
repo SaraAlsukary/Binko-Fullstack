@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import BookCardSquare from '@components/Books/BookCardSquare/BookCardSquare';
 import { useEffect, useState } from 'react';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
+import actGetBooks from '@store/booksSlice/act/actGetBooks';
 const { booksCardList, searchCont } = style;
 const BooksSearch = () => {
     const [filt, setFilt] = useState('');
@@ -12,16 +13,16 @@ const BooksSearch = () => {
     const { books } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
 
-    const result = books.filter((book => book?.name.toLowerCase().includes(filt) || book?.user.toLowerCase().includes(filt.toLowerCase())));
+    const result = books.filter((book => book?.name?.toLowerCase().includes(filt) || book?.user?.name.toLowerCase().includes(filt.toLowerCase())));
     const booksList = result.map((book) => {
-        const userInfo = users.find(use => use.id === book.user);
         return (<Col className='mb-3'>
-            <BookCardSquare id={book.id} key={book.id} image={book.image} name={book.name} description={book.description} user={userInfo?.name} />
+            <BookCardSquare id={book.id} key={book.id} image={book.image} name={book.name} description={book.description} user={book?.user} />
         </Col>)
     });
     const dispatch = useAppDispatch()
     useEffect(() => {
         dispatch(actGetUsers())
+        dispatch(actGetBooks())
     }, [])
     return (
         <Container className='mt-4'>

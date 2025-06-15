@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
-import ViewUser from './View/View';
 import { ConfirmDialog as ConfirmUser } from 'primereact/confirmdialog';
 import { confirmDialog as confirm } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
-import { Dialog } from 'primereact/dialog';
 import './Users.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 type TCategory = {
     name: string | null,
     profile: React.ReactNode,
@@ -21,49 +19,45 @@ type TCategoryAra = {
     الصورة: React.ReactNode,
     الوصف: string | null
 };
-function Comment({ rend }: { rend: boolean }) {
+function Comment() {
     const { language } = useAppSelector(state => state.language);
     const userss = useAppSelector(state => state.users);
     const dispatch = useAppDispatch();
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
-    const [showViewMode, setShowViewMode] = useState(false);
-    const [show, setShow] = useState(false);
-    // const [showAddMode, setShowAddMode] = useState(false);
-    // const [showEditMode, setShowEditMode] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null)
     useEffect(() => {
         dispatch(actGetUsers())
-
-    }, [])
+    }, [language])
     useEffect(() => {
+        if (userss) {
         const getAllUsers = () => {
-            const category: TCategory[] = userss.users.map((user) => {
-                return ({
-                    id: user.id,
-                    name: user.name,
-                    bio: user.discriptions,
-                    profile: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+                const category: TCategory[] = userss.users.map((user) => {
+                    return ({
+                        id: user.id,
+                        name: user.name,
+                        bio: user.discriptions,
+                        profile: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+
+                    })
 
                 })
+                const categoryAra: TCategoryAra[] = userss.users.map((user) => {
+                    return ({
+                        id: user.id,
+                        الاسم: user.name,
+                        الوصف: user.discriptions,
+                        الصورة: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
 
-            })
-            const categoryAra: TCategoryAra[] = userss.users.map((user) => {
-                return ({
-                    id: user.id,
-                    الاسم: user.name,
-                    الوصف: user.discriptions,
-                    الصورة: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
-
+                    })
                 })
-            })
-            const data = language === 'Arabic' ? categoryAra : category
-            setUsersList(data);
+                const data = language === 'Arabic' ? categoryAra : category
+                setUsersList(data);
 
 
 
+            }
+            getAllUsers();
         }
-        getAllUsers();
-    }, [language, rend]);
+    }, [userss]);
 
     const navigate = useNavigate();
 
@@ -78,15 +72,8 @@ function Comment({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
-                {/* <button className='btn btn-primary' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
-                    setShowEditMode(true)
-                }}>
-                    <i className='pi pi-file-edit'></i>
-                </button> */}
+
                 <button className='btn btn-danger' onClick={() => {
-                    setShow(true)
-                    console.log(rowDate?.id)
                     deleteConfirm(rowDate?.id)
                 }}>
                     <i className='pi pi-trash'></i>
@@ -113,15 +100,6 @@ function Comment({ rend }: { rend: boolean }) {
                 language === 'English' ? toast.success('user deleted succesfully!') : toast.success('تم حذف المستخدم !')
 
             })
-        // try {
-        //     const response = await axios.delete('http://localhost:4000/users/' + userId);
-        //     if (response) {
-        //         getAllUsers();
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
     }
 
     return (
@@ -137,11 +115,7 @@ function Comment({ rend }: { rend: boolean }) {
                     </h3>
 
                     <div className='users-list'>
-                        {/* <div className='addNewUser'>
-                            <button className='btn btn-success' onClick={() => setShowAddMode(true)}>
-                                Add New User <i className='pi pi-plus'></i>
-                            </button>
-                        </div> */}
+                       
                         <DataTable className='tableCell' value={users}>
                             <Column field={language === 'English' ? "profile" : "الصورة"} header={language === 'English' ? "profile" : "الصورة"}></Column>
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
@@ -151,37 +125,8 @@ function Comment({ rend }: { rend: boolean }) {
                     </div>
                 </div>
 
-                <Dialog header="View User Data"
-                    visible={showViewMode}
-                    style={{ width: '70vw' }}
-                    onHide={() => setShowViewMode(false)}>
 
-                    <ViewUser userId={selectedUserId} />
-                </Dialog>
-
-                {/* <Dialog header="Add New User"
-                    visible={showAddMode}
-                    style={{ width: '70vw' }}
-                    onHide={() => setShowAddMode(false)}>
-
-                    <AddUser setUserAdded={() => {
-                        setShowAddMode(false);
-                        getAllUsers();
-                    }} />
-                </Dialog> */}
-
-                {/* <Dialog header="Edit Exist User"
-                    visible={showEditMode}
-                    style={{ width: '70vw' }}
-                    onHide={() => setShowEditMode(false)}>
-
-                    <EditUser userId={selectedUserId} setUserEdited={() => {
-                        setShowEditMode(false);
-                        getAllUsers();
-                    }} />
-                </Dialog> */}
-
-                {show ? <ConfirmUser /> : ''}
+                    <ConfirmUser />
 
             </div>
         </>

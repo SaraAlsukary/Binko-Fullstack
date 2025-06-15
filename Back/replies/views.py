@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
 from .models import Comment, Reply
-from .serializers import ReplySerializer ,GetReplySerializer ,Repliesrializer
+from .serializers import ReplySerializer ,GetReplySerializer ,Repliesrializer ,ReplysSerializer
 
 @api_view(['GET'])
 def get_replies_for_comment(request, comment_id):
@@ -66,3 +66,44 @@ def get_replies(request, comment_id):
     serializer = Repliesrializer(replies, many=True)
     
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def add_reply(request, comment_id, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "المستخدم غير موجود."}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({"error": "التعليق غير موجود."}, status=status.HTTP_404_NOT_FOUND)
+
+    parent_id = request.data.get('parent')  # رقم الرد الأب (اختياري)
+    content = request.data.get('content')
+
+    if not content:
+        return Response({"error": "يجب إدخال نص الرد."}, status=status.HTTP_400_BAD_REQUEST)
+
+    parent = None
+    if parent_id:
+        try:
+            parent = Reply.objects.get(id=parent_id)
+        except Reply.DoesNotExist:
+            return Response({"error": "الرد الأب غير موجود."}, status=status.HTTP_404_NOT_FOUND)
+
+    reply = Reply.objects.create(
+        user=user,
+        comment=comment,
+        parent=parent,
+        content=content
+    )
+
+    serializer = ReplysSerializer(reply)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+@api_view(['GET'])
+def get_reply(request, comment_id):
+    replies = Reply.objects.filter(comment_id=comment_id, parent=None)  # الردود الجذرية فقط
+    serializer = ReplysSerializer(replies, many=True)
+    return Response(serializer.data)

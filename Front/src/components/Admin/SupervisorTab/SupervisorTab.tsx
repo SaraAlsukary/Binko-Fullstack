@@ -10,10 +10,10 @@ import Users from '../../Admin/Users/Users';
 import { useAppSelector } from '@hooks/app';
 import Supervisors from '../Supervisors/Supervisors';
 import './SupervisorTab.css'
-import { useState } from 'react';
+
 function LeftTabsExample() {
     const { language } = useAppSelector(state => state.language);
-    const [rend, setRend] = useState(false);
+   
 
     return (
         <div className='tabCont'>
@@ -22,34 +22,34 @@ function LeftTabsExample() {
                 <Row>
                     <Col sm={3}>
                         <Nav variant="pills" className="flex-column">
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="first">{language === 'English' ? 'Categories' : 'التصنيفات'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="second">{language === 'English' ? 'Comments' : 'التعليقات'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="third">{language === 'English' ? 'Accepted Books' : 'الكتب المنشورة'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="six">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="fourth">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="fifth">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
                     <Col sm={9}>
                         <Tab.Content>
-                            <Tab.Pane eventKey="first"><Category rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="second"><Comment rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="third"><Book rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="six"><AcceptedBooks rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="fourth"><Supervisors rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="fifth"><Users rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="first"><Category  /></Tab.Pane>
+                            <Tab.Pane eventKey="second"><Comment /></Tab.Pane>
+                            <Tab.Pane eventKey="third"><Book/></Tab.Pane>
+                            <Tab.Pane eventKey="six"><AcceptedBooks /></Tab.Pane>
+                            <Tab.Pane eventKey="fourth"><Supervisors /></Tab.Pane>
+                            <Tab.Pane eventKey="fifth"><Users /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

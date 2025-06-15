@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
+import actGetBooks from '@store/booksSlice/act/actGetBooks';
 const { up, text, bookUp, book, listMenu, icon, activeIcon, active, icons, chapterList, photo, title, author, arrow } = style;
 
 const ChapterMenu = () => {
@@ -36,6 +37,7 @@ const ChapterMenu = () => {
     useEffect(() => {
         dispatch(actGetfavorite(userData?.user.id))
         dispatch(actGetBooksToAccept())
+        dispatch(actGetBooks())
     }, [])
     return (
         <>
@@ -50,7 +52,7 @@ const ChapterMenu = () => {
                                 {bookInfo?.name}
                             </div>
                             <div className={author}>
-                                {language === 'English' ? `Written By ` : `كُتِب بواسطة `} <span>{bookInfo?.user.name}</span>
+                                {language === 'English' ? `Written By ` : `كُتِب بواسطة `} <span>{bookInfo?.user?.name!}</span>
                             </div>
                         </div>
                         <div onClick={() => activeHandler()} className={arrow}>

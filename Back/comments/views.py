@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import CommentSerializer  ,GetCommentSerializer,DeleteCommentSerializer
+from .serializers import CommentSerializer  ,GetCommentSerializer,DeleteCommentSerializer ,CommentsSerializer
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from account.models import CustomUser
@@ -46,3 +46,9 @@ def delete_comment(request, comment_id):
 
     comment.delete()
     return Response({'message': 'Comment deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def comments_with_replies(request, book_id):
+    comments = Comment.objects.filter(book_id=book_id)
+    serializer = CommentsSerializer(comments, many=True)
+    return Response(serializer.data)

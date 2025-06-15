@@ -1,7 +1,7 @@
 export type TBooks = {
     id?: number,
     content?: string,
-    is_liked: boolean,
+    is_liked?: boolean,
     is_accept?: boolean,
     user?: {
         name: string,

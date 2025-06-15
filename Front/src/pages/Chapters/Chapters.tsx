@@ -77,17 +77,7 @@ const Chapters = () => {
     return (
         <Container className={chapterCont}>
             <ChapterMenu />
-            {!chapterInfo?.is_accept && notes?.note && ((myBooks.find(book => book.id === idBook)) || userData?.user.is_supervisor || userData?.user.is_admin) ? <div className={warnings}>
 
-                <h5>{language === 'English' ? "Warnings" : "تحذير"}</h5>
-                <div className="text">
-                    <p>{language === 'English' ? "Your chapter was denied from supervisors with this note: " : "كتابك تم رفضه من المشرفين مع الملاحظة النالية "}
-                        <span>{notes.note}</span>
-
-                    </p>
-
-                </div>
-            </div> : ""}
             <div style={{
                 display: 'flex',
                 justifyContent: 'center',

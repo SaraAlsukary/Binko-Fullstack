@@ -1,10 +1,8 @@
 import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TBooks } from "@customtypes/booksTypes";
-import { RootState } from "@store/index";
 
-// type TResponse = [];
+
 const actDeleteBook = createAsyncThunk(
     "books/actDeleteBook",
     async (id: number, thunkAPI) => {
@@ -16,13 +14,10 @@ const actDeleteBook = createAsyncThunk(
                 `delete/books/${id}/`,
                 {
                     signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.user?.token}`
-                    // }
+                 
                 },
             );
-            console.log(response.data)
-            return response.data;
+            return id;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));
         }

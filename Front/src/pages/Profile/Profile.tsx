@@ -16,6 +16,7 @@ import { settingsBox } from '@utils/settingsForSlick';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
 import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
+import toast from 'react-hot-toast';
 
 const { profileContainer, settings, userName, inputs, info } = styles;
 function Profile() {
@@ -32,15 +33,6 @@ function Profile() {
     const navigate = useNavigate();
 
     const logoutHandler = async () => {
-        // dispatch(actLogout())
-        //     .unwrap()
-        //     .then(
-        //         () => {
-        //             navigate('/Binko/');
-
-        //         }
-        //     )
-
         try {
             await new Promise((resolve) => setTimeout(resolve, 1000))
             dispatch(authLogout())
@@ -72,8 +64,10 @@ function Profile() {
         dataform.append('image', imageFile)
         dataform.append('discriptions', des)
         dataform.append('name', name)
-        dispatch(actUpdateProfile(dataform)).unwrap().then(() => {
-            alert('successfully updated profile!')
+        dispatch(actUpdateProfile(dataform))
+            .unwrap()
+            .then(() => {
+                 toast.success('successfully updated profile!')
         })
     }
     useEffect(() => {

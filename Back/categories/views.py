@@ -4,7 +4,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category
-from .serializers import CategorySerializer
+from books.models import Book
+from chapters.models import  Chapter
+from account.models import CustomUser
+from .serializers import CategorySerializer , BookSerializer
 
 @api_view(['GET'])
 def getallcat(request):
@@ -47,3 +50,19 @@ def update_category(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+
+
+@api_view(['GET'])
+def books_with_rejected_chapters_by_user_category_match(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'المستخدم غير موجود'}, status=404)
+
+    books = Book.objects.filter(
+        book_category__category__name=user.category,
+        chapters__is_accept=False
+    ).distinct()
+
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)

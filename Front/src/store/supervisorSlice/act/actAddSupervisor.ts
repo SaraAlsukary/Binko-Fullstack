@@ -24,7 +24,7 @@ const actAddSupervisor = createAsyncThunk(
             const res = await axios.post<TResponse>("create-supervisor/", JSON.stringify(formData), {
                 headers: { 'Content-Type': 'application/json' },
             });
-            return res.data;
+            return formData;
 
 
         } catch (error) {

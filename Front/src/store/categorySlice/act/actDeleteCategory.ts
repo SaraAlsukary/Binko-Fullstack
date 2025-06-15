@@ -1,9 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TCategory } from "@customtypes/categoryType";
 
-// type TResponse = TCategory[];
+
 
 const actDeleteCategory = createAsyncThunk(
     "categories/actDeleteCategory",
@@ -16,7 +15,7 @@ const actDeleteCategory = createAsyncThunk(
                     signal,
                 }
             );
-            return response.data;
+            return id;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));
         }

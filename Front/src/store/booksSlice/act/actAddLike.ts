@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-// import { TBooks } from "@customtypes/booksTypes";
 import { RootState } from "@store/index";
 import { TLikes } from "@customtypes/LikesType";
 
@@ -14,12 +13,10 @@ const actAddLikes = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `books/like/${auth.userData?.user.id}/${id}/`,
+                `like/${auth.userData?.user.id}/${id}/`,
                 {
                     signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.user?.token}`
-                    // }
+                   
                 },
             );
             console.log(response.data)

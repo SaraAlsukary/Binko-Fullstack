@@ -6,6 +6,7 @@ import { TLoading } from "@customtypes/loadingType";
 import { isString } from "@customtypes/isString";
 import actGetReplyByComment from "./act/actGetReplyByComment";
 import actAddReply from "./act/actAddReply";
+import actDeleteReply from "./act/actDeleteReply";
 // import actDeleteComment from "./act/actDeleteComment";
 // import actGetComments from "./act/actGetComments";
 
@@ -117,23 +118,24 @@ const replies = createSlice({
                 state.error = action.payload;
             }
         });
-        // //Delete comment
-        // builder.addCase(actDeleteComment.pending, (state) => {
-        //     state.loading = "pending";
-        //     state.error = null;
-        // });
-        // builder.addCase(actDeleteComment.fulfilled, (state, action) => {
-        //     state.loading = "succeeded";
-        //     state.comments = state.comments.filter((cate) => cate.id !== action.payload)
+        // //Delete reply
+        builder.addCase(actDeleteReply.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actDeleteReply.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.replies = state.replies.filter((cate) => cate.id !== action.payload)
 
 
-        // });
-        // builder.addCase(actDeleteComment.rejected, (state, action) => {
-        //     state.loading = "failed";
-        //     if (isString(action.payload)) {
-        //         state.error = action.payload;
-        //     }
-        // });
+
+        });
+        builder.addCase(actDeleteReply.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
         // //Get all comments
         // builder.addCase(actGetComments.pending, (state) => {
         //     state.loading = "pending";

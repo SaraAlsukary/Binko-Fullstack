@@ -6,10 +6,25 @@
     position: relative;
 }
 
+.mul {
+    display: flex;
+    flex-direction: column;
+}
+
+.mul label {
+    cursor: pointer;
+}
+
+.mul input[type="checkbox"] {
+    accent-color: var(--main-color);
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .bookInfo {
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     /* height: 500px; */
 }
 
@@ -176,7 +191,13 @@
 @media screen and (max-width:767px) {
     .bookInfo {
         flex-direction: column;
-        justify-content: initial;
+        justify-content: center;
         align-items: center;
+
+    }
+
+    .input {
+        display: flex;
+        flex-direction: column;
     }
 }

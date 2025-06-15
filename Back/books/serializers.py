@@ -233,3 +233,7 @@ class BookUpdateSerializer(serializers.ModelSerializer):
             )
 
         return instance    
+class BookLikedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'note', 'content']

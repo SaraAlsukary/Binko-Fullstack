@@ -8,7 +8,7 @@ class GetReplySerializer(serializers.ModelSerializer):
     image=serializers.ImageField(source='user.image')
     class Meta:
         model = Reply
-        fields = ['reply' , 'name' ,'image']  
+        fields = ['content' , 'name' ,'image']  
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +20,7 @@ class ReplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reply
-        fields = ['id', 'comment','user', 'reply', 'created_at']
+        fields = ['id', 'comment','user', 'content', 'created_at']
 
 
 class DeleteReplySerializer(serializers.ModelSerializer):
@@ -38,5 +38,17 @@ class Repliesrializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reply
-        fields = ['id', 'reply', 'user', 'created_at']  
+        fields = ['id', 'content', 'user', 'created_at']  
     
+
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+class ReplysSerializer(serializers.ModelSerializer):
+    children = RecursiveField(many=True, read_only=True)
+
+    class Meta:
+        model = Reply
+        fields = ['id', 'user', 'content', 'created_at', 'parent', 'children']    

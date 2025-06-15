@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
-import axios from 'axios';
 import ViewUser from './View/View';
 import AddUser from './Add/Add';
 import EditUser from './Edit/Edit';
@@ -9,26 +8,25 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import './Category.css'
-import LottieHandler from '@components/feedback/lottieHandler/lottieHandler';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
-import Lottie from 'lottie-react';
 import actDeleteCategory from '@store/categorySlice/act/actDeleteCategory';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 type TCategory = {
+    id:number,
     name: string,
     name_ar: string,
-    file: string
+    file: React.ReactNode
 }
 type TCategoryAra = {
+    id:number,
     الاسم: string,
-    الاسم_العربي: React.ReactNode,
-    الملف: string
+    الاسم_العربي: string,
+    الملف: React.ReactNode
 }
-function Category({ rend }: { rend: boolean }) {
+function Category() {
     const { language } = useAppSelector(state => state.language);
     const { categories } = useAppSelector(state => state.categories);
-    const [show, setShow] = useState(false);
     const dispatch = useAppDispatch();
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -38,23 +36,12 @@ function Category({ rend }: { rend: boolean }) {
 
     useEffect(() => {
         dispatch(actGetCategories())
-    }, []);
+    }, [language]);
     useEffect(() => {
-        const getAllUsers = async () => {
-            // try {
-            //     const response = await axios.get('http://localhost:4000/users');
-            //     if (response) {
-            //         setUsersList(response.data);
-            //     }
-            // }
-            // catch (e) {
-            //     console.log(e)
-            // }
-            // const category = categories.map((cate) => {
-            //     name: cate.name,
-            //         name_ar: cate.name_arabic,
-            //             file: <Lottie animationData={cate.file} style={{ width: '50px', height: '50px' }} loop={loop} />
-            // })
+        if(categories)
+        {           
+            const getAllUsers = async () => {
+     
             const category: TCategory[] = categories?.map((cate) => {
                 return ({
                     id: cate.id,
@@ -63,36 +50,10 @@ function Category({ rend }: { rend: boolean }) {
                     file: <video width='100' height='100' autoPlay loop >
                         <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
                     </video>
-                    // file: <LottieHandler type={cate.name} loop={true} style={{ width: '50px', height: '50px' }} />
 
-                })
+                }) 
             })
-            // const category: TCategory = [{
-            //     name: 'Action',
-            //     name_ar: 'أكشن',
-            //     file: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }, {
-            //     name: 'Romance',
-            //     name_ar: 'عاطفي',
-            //     file: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }, {
-            //     name: 'Poem',
-            //     name_ar: 'شعر',
-            //     file: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }]
-            // const categoryAra: TCategoryAra = [{
-            //     الاسم: 'Action',
-            //     الاسم_العربي: 'أكشن',
-            //     الملف: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }, {
-            //     الاسم: 'Romance',
-            //     الاسم_العربي: 'عاطفي',
-            //     الملف: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }, {
-            //     الاسم: 'Poem',
-            //     الاسم_العربي: 'شعر',
-            //     الملف: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-            // }]
+   
             const categoryAra: TCategoryAra[] = categories?.map((cate) => {
                 return ({
                     id: cate.id,
@@ -108,75 +69,16 @@ function Category({ rend }: { rend: boolean }) {
         }
 
 
-        getAllUsers();
-    }, [language, rend]);
+            getAllUsers();
+        }
+    }, [categories]);
 
-    const getAllUsers = async () => {
-        // try {
-        //     const response = await axios.get('http://localhost:4000/users');
-        //     if (response) {
-        //         setUsersList(response.data);
-        //     }
-        // }
-        // catch (e) {
-        //     console.log(e)
-        // }
-        // const category = categories.map((cate) => {
-        //     name: cate.name,
-        //         name_ar: cate.name_arabic,
-        //             file: <Lottie animationData={cate.file} style={{ width: '50px', height: '50px' }} loop={loop} />
-        // })
-        const category: TCategory[] = categories?.map((cate) => {
-            return ({
-                name: cate.name,
-                name_ar: cate.name_arabic,
-                file: <Lottie animationData={`http://127.0.0.1:8000${cate.file}`} style={{ width: '50px', height: '50px' }} loop={true} />
-
-            })
-        })
-        // const category: TCategory = [{
-        //     name: 'Action',
-        //     name_ar: 'أكشن',
-        //     file: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }, {
-        //     name: 'Romance',
-        //     name_ar: 'عاطفي',
-        //     file: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }, {
-        //     name: 'Poem',
-        //     name_ar: 'شعر',
-        //     file: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }]
-        // const categoryAra: TCategoryAra = [{
-        //     الاسم: 'Action',
-        //     الاسم_العربي: 'أكشن',
-        //     الملف: <LottieHandler type='Action' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }, {
-        //     الاسم: 'Romance',
-        //     الاسم_العربي: 'عاطفي',
-        //     الملف: <LottieHandler type='Romance' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }, {
-        //     الاسم: 'Poem',
-        //     الاسم_العربي: 'شعر',
-        //     الملف: <LottieHandler type='Poem' loop={true} style={{ width: '50px', height: '50px' }} />,
-        // }]
-        const categoryAra: TCategoryAra[] = categories?.map((cate) => {
-            return ({
-                الاسم: cate.name,
-                الاسم_العربي: cate.name_arabic,
-                الملف: <Lottie animationData={`http://127.0.0.1:8000${cate.file}`} style={{ width: '50px', height: '50px' }} loop={true} />
-
-            })
-        })
-        const data = language === 'Arabic' ? categoryAra : category
-        setUsersList(data);
-    }
-
+ 
     const actionsTemplate = (rowDate: object) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate)
+                    setSelectedUserId(rowDate?.id)
                     setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>
@@ -188,7 +90,6 @@ function Category({ rend }: { rend: boolean }) {
                     <i className='pi pi-file-edit'></i>
                 </button>
                 <button className='btn btn-danger' onClick={() => {
-                    setShow(true)
                     deleteUserConfirm(rowDate?.id)
                 }}>
                     <i className='pi pi-trash'></i>
@@ -238,48 +139,42 @@ function Category({ rend }: { rend: boolean }) {
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
                             <Column field={language === 'English' ? "name_ar" : "الاسم_العربي"} header={language === 'English' ? "name_ar" : "الاسم_العربي"}></Column>
                             <Column field={language === 'English' ? "file" : "الملف"} header={language === 'English' ? "file" : "الملف"}></Column>
-                            {/* <Column field="name" header="Name"></Column>
-                            <Column field="username" header="Username"></Column>
-                            <Column field="email" header="Email Adress"></Column>
-                            <Column field="phone" header="Phone Number"></Column>
-                            <Column field="website" header="Website"></Column> */}
+                     
                             <Column header={language === 'English' ? "Actions" : "العمليات"} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
                 </div>
 
-                <Dialog header="View User Data"
+                <Dialog header={language==="English"?"View Category Data":"عرض بيانات الصنف"}
                     visible={showViewMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowViewMode(false)}>
 
-                    <ViewUser userId={selectedUserId} />
+                    <ViewUser id={selectedUserId} />
                 </Dialog>
 
-                <Dialog header="Add New User"
+                <Dialog header={language === "English" ? "Add New Category" : "اضافة صنف"}
                     visible={showAddMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowAddMode(false)}>
 
                     <AddUser setUserAdded={() => {
                         setShowAddMode(false);
-                        getAllUsers();
                     }} />
                 </Dialog>
 
-                <Dialog header="Edit Exist User"
+                <Dialog header={language === "English" ? "Edit Exist Category" : "تعديل صنف موجود"}
                     visible={showEditMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowEditMode(false)}>
 
                     <EditUser id={selectedUserId} setUserEdited={() => {
                         setShowEditMode(false);
-                        getAllUsers();
+                      
                     }} />
                 </Dialog>
 
-                {show ? <ConfirmCategory />
-                    : ''}
+                    <ConfirmCategory />
             </div >
         </>
     )

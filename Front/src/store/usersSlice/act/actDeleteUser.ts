@@ -11,12 +11,9 @@ const actDeleteUser = createAsyncThunk(
         try {
             const response = await axios.delete(
                 `delete-user/${user_id}  `,
-                // {
-                //     signal,
-                // }
+                
             );
-            // console.log(response)
-            return response;
+            return user_id;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));
         }

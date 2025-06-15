@@ -4,68 +4,44 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@hooks/app";
 import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButton";
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
-import actAddBooks from "@store/booksSlice/act/actAddBooks";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
 import { useNavigate, useParams } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import actEditBook from "@store/booksSlice/act/actEditBook";
+import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
+import { TCategory } from "@customtypes/categoryType";
 
 
 const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
 const EditBook = () => {
     const dataForm = new FormData();
     const { id } = useParams()
-    const [image, setImage] = useState('');
-    const [imageFile, setImageFile] = useState('');
+    const [image, setImage] = useState<string>('');
+    const [imageFile, setImageFile] = useState<string>('');
+    const [newImage, setNewImage] = useState<string>('');
     // const [category, setCategory] = useState([]);
-    const [name, setName] = useState('');
-    const [content, setContent] = useState('');
-    const [description, setDescription] = useState('');
+    const [name, setName] = useState<string>('');
+    const [content, setContent] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
-    // const { user } = useAppSelector(state => state.auth);
-    const { books } = useAppSelector(state => state.books);
+    const { myBooks } = useAppSelector(state => state.books);
+    const idx = parseInt(id as string)
+
+    const book = myBooks.find(book => book.id === idx);
     const { categories } = useAppSelector(state => state.categories);
     const navigate = useNavigate()
     var cate: any = [];
-    // const categoryHandler = (e: any) => {
-    //     const id = parseInt(e.target.value);
-    //     console.log(id)
-    //     if (category.find((cate: any) => cate == e.target.value)) {
-    //         // if (category.find((cate: any) => cate === id)) {
-    //         // console.log('exist')
-    //         // console.log(id)
-    //         const cate = category.filter(cate => cate != e.target.value);
-    //         setCategory(cate);
-    //         console.log(category)
-
-    //     } else {
-    //         // const categoryItem = categories.find(cate => cate.id == id)
-    //         setCategory([...category, e.target.value])
-    //         console.log(category)
-
-    //         // setCategory([...category, id])
-
-    //     }
-    // }
     const selectCate = (e: any) => {
         const catename = e.target.value;
         if (cate.find((catee: any) => catee === catename)) {
-            // if (category.find((cate: any) => cate === id)) {
-            // console.log('exist')
-            // console.log(id)
 
             cate = cate.filter((ca: any) => ca !== catename);
 
-            console.log(cate)
 
         } else {
-            // const categoryItem = categories.find(cate => cate.id == id)
             cate.push(catename)
 
-            console.log(cate)
-
-            // setCategory([...category, id])
 
         }
 
@@ -83,9 +59,8 @@ const EditBook = () => {
     }
     const imageHandler = (e: any) => {
         setImage(URL.createObjectURL(e.target.files[0]));
-        // dataForm.append('image', e.target.files[0])
         setImageFile(e.target.files[0])
-        // console.log(e.target.files[0])
+        setNewImage(URL.createObjectURL(e.target.files[0]))
 
     }
 
@@ -94,16 +69,12 @@ const EditBook = () => {
 
     const addBookHandler = () => {
 
-        // console.log(cate)
-        // console.log(category)
-        // setCategory(cate)
-        dataForm.append('id', id)
+        dataForm.append('id', id as string)
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
         dataForm.append('content', content);
         dataForm.append('description', description);
         cate.forEach((ca: any) => dataForm.append(`category_names`, ca))
-        // dataForm.append(`category_names`, JSON.stringify(cate))
 
         for (let [key, value] of dataForm.entries()) {
             console.log(key, value)
@@ -122,20 +93,35 @@ const EditBook = () => {
         setImage('');
         setName('');
         setImageFile('');
-        // // setCategory([])
     }
-    const CategoriesSelects = categories.map((cate) =>
-        // <div key={cate.id} className={mulch}>
-        //     <input onClick={categoryHandler} type="checkbox" value={cate.id} id={cate.name} />
-        //     <label htmlFor={cate.name}>{language === 'English' ? cate.name : cate.name_arabic}</label>
-        // </div>
-        <option key={cate?.id} onClick={selectCate} value={cate?.name}>
+    const CategoriesSelects = categories.map((cate) => {
+       
+        const newCate: TCategory = book?.categories?.find(ca => cate.name === ca)!;
+        return (
+            <option
+                selected={newCate ? true : false}
+                key={cate?.id} onClick={selectCate} value={cate?.name}>
             {language === 'English' ? cate.name : cate.name_arabic}
-        </option>
+        </option>)
+    }
     )
     useEffect(() => {
         dispatch(actGetCategories())
-    }, [])
+        dispatch(actGetMyBooks(idx))
+    }, [language])
+    useEffect(() => {
+        if (book) {
+            book.categories?.forEach((ca:string[]) =>
+                cate.push(ca)
+            )
+            setContent(book?.content as string)
+            setName(book?.name as string)
+            setImage(book?.image as string)
+            setImageFile(book?.image as string)
+            setDescription(book?.description as string)
+        }
+    }, [book])
+
     return (
         <div className={addBooksContainer}>
 
@@ -146,7 +132,11 @@ const EditBook = () => {
                         <input id="img" type="file" onChange={imageHandler} />
                         <label htmlFor="img">
                             <div className={img}>
-                                <img src={image} />
+                                {newImage ?
+                                  <img src={`${newImage}`} />
+                                  :
+                                  <img src={`http://127.0.0.1:8000/${image}`} />
+                                }
                                 <label htmlFor="img">
                                     <span>+</span>
                                 </label>
@@ -155,9 +145,9 @@ const EditBook = () => {
                         </label>
                     </div>
                     <div className={input}>
-                        <SecondaryInput onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
-                        <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
-                        <textarea name="" id="" onChange={contentHandler} placeholder={language === 'English' ? "Book Content" : "محتوى الكتاب"} ></textarea>
+                        <SecondaryInput value={name} onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
+                        <textarea value={description} name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
+                        <textarea value={content} name="" id="" onChange={contentHandler} placeholder={language === 'English' ? "Book Content" : "محتوى الكتاب"} ></textarea>
                         <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
                         <div className={mul}>
                             <select name="category_names" multiple id="">
@@ -165,22 +155,7 @@ const EditBook = () => {
 
                             </select>
 
-                            {/* <div className={mulch}>
-                                <input onClick={categoryHandler} type="checkbox" value={1} id="Action" />
-                                <label htmlFor="Action" >Action</label>
-                            </div>
-                            <div className={mulch}>
-                                <input type="checkbox" onClick={categoryHandler} value={2} id="Advanture" />
-                                <label htmlFor="Advanture" >Advanture</label>
-                            </div>
-                            <div className={mulch}>
-                                <input type="checkbox" onClick={categoryHandler} value={3} id="Romance" />
-                                <label htmlFor="Romance" >Romance</label>
-                            </div>
-                            <div className={mulch}>
-                                <input type="checkbox" onClick={categoryHandler} value={4} id="Fantasy" />
-                                <label htmlFor="Fantasy" >Fantasy</label>
-                            </div> */}
+                            
                         </div>
 
                     </div>

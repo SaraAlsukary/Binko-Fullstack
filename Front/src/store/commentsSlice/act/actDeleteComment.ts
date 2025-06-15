@@ -1,11 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "@store/index";
 
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TComment } from "@customtypes/commentType";
 
-// type TResponse = TComment[];
 
 const actDeleteComment = createAsyncThunk(
     "comments/actDeleteComment",
@@ -14,7 +11,7 @@ const actDeleteComment = createAsyncThunk(
 
         try {
             const response = await axios.delete(`comments/${id}/`, { signal });
-            return response;
+            return id;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));
         }

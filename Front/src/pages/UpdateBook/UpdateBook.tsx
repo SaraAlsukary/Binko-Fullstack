@@ -1,56 +1,137 @@
 import { Container } from "react-bootstrap"
 import Styles from './AddBook.module.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@hooks/app";
 import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButton";
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
-import { addBook } from "@store/addBookSlice/addBookSlice";
-import { useParams } from "react-router-dom";
+import actGetCategories from "@store/categorySlice/act/actGetCategories";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import actEditBook from "@store/booksSlice/act/actEditBook";
 
-const { addBooksContainer, cont, controlBtn, input, pic, img, bookInfo, } = Styles;
-const UpdateBook = () => {
-    const id: any = useParams();
-    const { user } = useAppSelector(state => state.auth);
-    const { books } = useAppSelector(state => state.addBook);
-    const myBook = books.find((book) => book.id == id.id)
-    console.log(id.id)
-    const [imageFile, setImageFile] = useState();
-    const [image, setImage] = useState(myBook?.image);
-    const [category, setCategory] = useState(myBook?.category);
-    const [name, setName] = useState(myBook?.name);
-    const [description, setDescription] = useState(myBook?.description);
+
+const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
+const EditBook = () => {
+    const dataForm = new FormData();
+    const [image, setImage] = useState('');
+    const [imageFile, setImageFile] = useState('');
+    // const [category, setCategory] = useState([]);
+    const [name, setName] = useState('');
+    const [content, setContent] = useState('');
+    const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
-    const data = {
-        user: user?.user_id,
-        image: image,
-        name,
-        description,
-        category: category
+    // const { user } = useAppSelector(state => state.auth);
+    const { books } = useAppSelector(state => state.books);
+    const { categories } = useAppSelector(state => state.categories);
+    const navigate = useNavigate()
+    var cate: any = [];
+    // const categoryHandler = (e: any) => {
+    //     const id = parseInt(e.target.value);
+    //     console.log(id)
+    //     if (category.find((cate: any) => cate == e.target.value)) {
+    //         // if (category.find((cate: any) => cate === id)) {
+    //         // console.log('exist')
+    //         // console.log(id)
+    //         const cate = category.filter(cate => cate != e.target.value);
+    //         setCategory(cate);
+    //         console.log(category)
+
+    //     } else {
+    //         // const categoryItem = categories.find(cate => cate.id == id)
+    //         setCategory([...category, e.target.value])
+    //         console.log(category)
+
+    //         // setCategory([...category, id])
+
+    //     }
+    // }
+    const selectCate = (e: any) => {
+        const catename = e.target.value;
+        if (cate.find((catee: any) => catee === catename)) {
+            // if (category.find((cate: any) => cate === id)) {
+            // console.log('exist')
+            // console.log(id)
+
+            cate = cate.filter((ca: any) => ca !== catename);
+
+            console.log(cate)
+
+        } else {
+            // const categoryItem = categories.find(cate => cate.id == id)
+            cate.push(catename)
+
+            console.log(cate)
+
+            // setCategory([...category, id])
+
+        }
+
+
     }
-
-    console.log(books);
-
     const titleHandler = (e: any) => {
         setName(e.target.value);
     }
     const descHandler = (e: any) => {
         setDescription(e.target.value);
     }
+    const contentHandler = (e: any) => {
+        setContent(e.target.value);
+
+    }
     const imageHandler = (e: any) => {
         setImage(URL.createObjectURL(e.target.files[0]));
-    }
-    const addBookToMem = (data: Object) => {
+        // dataForm.append('image', e.target.files[0])
+        setImageFile(e.target.files[0])
+        // console.log(e.target.files[0])
 
-        dispatch(addBook({ ...data, id: Math.floor(Math.random() * 100) }));
+    }
+
+
+
+
+    const addBookHandler = () => {
+
+        // console.log(cate)
+        // console.log(category)
+        // setCategory(cate)
+        dataForm.append('image', imageFile)
+        dataForm.append('name', name);
+        dataForm.append('content', content);
+        dataForm.append('description', description);
+        cate.forEach((ca: any) => dataForm.append(`category_names`, ca))
+        // dataForm.append(`category_names`, JSON.stringify(cate))
+
+        for (let [key, value] of dataForm.entries()) {
+            console.log(key, value)
+        }
+        dispatch(actEditBook(dataForm))
+            .unwrap()
+            .then(() => {
+                language === 'English' ? toast.success('Your Book published successfully!') : toast.success('تم نشر كتابك بنجاح!')
+                navigate(-2)
+
+
+            }
+            )
         setDescription('');
+        setContent('');
         setImage('');
         setName('');
-        setCategory(0)
+        setImageFile('')
     }
-    console.log(myBook?.image)
+    const CategoriesSelects = categories.map((cate) =>
+
+        <option key={cate?.id} onClick={selectCate} value={cate?.name}>
+            {language === 'English' ? cate.name : cate.name_arabic}
+        </option>
+    )
+    useEffect(() => {
+        dispatch(actGetCategories())
+    }, [])
     return (
         <div className={addBooksContainer}>
+
             <Container className={cont}>
                 <div className={bookInfo}>
                     <div className={pic}>
@@ -58,7 +139,7 @@ const UpdateBook = () => {
                         <input id="img" type="file" onChange={imageHandler} />
                         <label htmlFor="img">
                             <div className={img}>
-                                <img src={image} crossOrigin="anonymous" />
+                                <img src={image} />
                                 <label htmlFor="img">
                                     <span>+</span>
                                 </label>
@@ -67,24 +148,27 @@ const UpdateBook = () => {
                         </label>
                     </div>
                     <div className={input}>
-                        <SecondaryInput value={name} onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
-                        <textarea value={description} name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
-                        <select value={category} onChange={(e: any) => setCategory(e.target.value)} name="" id="">
-                            <option value={1}>Horror</option>
-                            <option value={2}>Action</option>
-                            <option value={3}>Advanture</option>
-                            <option value={4}>Romance</option>
-                            <option value={5}>Fantasy</option>
-                        </select>
+                        <SecondaryInput onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
+                        <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
+                        <textarea name="" id="" onChange={contentHandler} placeholder={language === 'English' ? "Book Content" : "محتوى الكتاب"} ></textarea>
+                        <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
+                        <div className={mul}>
+                            <select name="category_names" multiple id="">
+                                {CategoriesSelects}
+
+                            </select>
+
+                        </div>
+
                     </div>
                 </div>
                 <div className={controlBtn}>
-                    <SecondaryButton onClick={() => addBookToMem(data)}>{language === 'English' ? 'Save' : 'حفظ'}</SecondaryButton>
-                    <SecondaryButton>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
+                    <SecondaryButton onClick={() => addBookHandler()}>{language === 'English' ? 'Publish' : 'نشر'}</SecondaryButton>
                 </div>
             </Container>
+
         </div >
     )
 }
 
-export default UpdateBook
+export default EditBook

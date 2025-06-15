@@ -8,10 +8,10 @@ import Category from '../CategorySuper/Category'
 import Book from '../BooksSuper/Book';
 import './SupervisorTab.css'
 import { useAppSelector } from '@hooks/app';
-import { useState } from 'react';
+
 function LeftTabsExample() {
     const { language } = useAppSelector(state => state.language);
-    const [rend, setRend] = useState(false);
+    
     return (
         <div className='tabCont'>
             <Tab.Container id="left-tabs-example" defaultActiveKey="first" >
@@ -19,26 +19,26 @@ function LeftTabsExample() {
                 <Row>
                     <Col sm={3}>
                         <Nav variant="pills" className="flex-column">
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="first">{language === 'English' ? 'Categories' : 'التصنيفات'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item >
                                 <Nav.Link eventKey="second">{language === 'English' ? 'Comments' : 'التعليقات'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item>
                                 <Nav.Link eventKey="third">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item onClick={() => setRend(!rend)}>
+                            <Nav.Item>
                                 <Nav.Link eventKey="fourth">{language === 'English' ? 'Accepted Books' : 'الكتب المنشورة'}</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
                     <Col sm={9}>
                         <Tab.Content>
-                            <Tab.Pane eventKey="first"><Category rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="second"><Comment rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="third"><Book rend={rend} /></Tab.Pane>
-                            <Tab.Pane eventKey="fourth"><AcceptedBooks rend={rend} /></Tab.Pane>
+                            <Tab.Pane eventKey="first"><Category /></Tab.Pane>
+                            <Tab.Pane eventKey="second"><Comment  /></Tab.Pane>
+                            <Tab.Pane eventKey="third"><Book /></Tab.Pane>
+                            <Tab.Pane eventKey="fourth"><AcceptedBooks  /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

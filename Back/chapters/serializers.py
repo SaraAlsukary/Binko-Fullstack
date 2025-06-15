@@ -3,6 +3,7 @@ from .models import  Chapter
 from books.models import Book
 from categories.models import Category
 import base64
+from account.models import CustomUser
 from django.core.files.base import ContentFile
 
 
@@ -70,3 +71,26 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'note']
 
+
+
+# serializers.py
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'name', 'username']
+
+class BooksSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    categories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'description', 'publication_date', 'user', 'categories']
+
+    def get_categories(self, obj):
+        return [cat.category.name for cat in obj.book_category_set.all()]

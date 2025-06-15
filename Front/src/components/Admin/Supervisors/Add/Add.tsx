@@ -48,30 +48,24 @@ function Add(props: { setUserAdded: () => void }) {
             <div className='box'>
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Name:</span>
                             <input
                                 type='text'
                                 className='form-control'
-                                placeholder='Enter Name'
+                                placeholder={language === 'English' ? 'Enter Name' : "الاسم"}
                                 onChange={e => setName(e.target.value)}
                             />
-                        </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Email:</span>
+                        
                             <input
                                 type='text'
                                 className='form-control'
-                                placeholder='Enter Email'
+                                placeholder={language === 'English' ? 'Enter Email' : "الايميل"}
                                 onChange={e => setUsername(e.target.value)}
                             />
-                        </p>
+                  
                     </div>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Category:</span>
                             {/* <input
                                 type='text'
                                 className='form-control'
@@ -81,47 +75,44 @@ function Add(props: { setUserAdded: () => void }) {
                             <select onChange={(e) => setCategory(e.target.value)}>
                                 {cateOptions}
                             </select>
-                        </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
-                        <p >
-                            <span>password:</span>
+                          
                             <div style={{ position: "relative" }}>
                                 <input
-                                    type={showEye1 ? 'password' : 'text'}
+                                    type={!showEye1 ? 'password' : 'text'}
                                     className='form-control'
-                                    placeholder='Enter Password'
+                                    placeholder={language === 'English' ? 'Enter Password' : "كلمة المرور"}
                                     onChange={e => setPassword(e.target.value)}
                                 />
                                 <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
                                     {!showEye1 ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
                                 </div>
                             </div>
-                        </p>
                     </div>
 
                     <div className='col-sm-12 col-md-6'>
-                        <p >
-                            <span>Confirm Password:</span>
+                           
                             <div style={{ position: "relative" }}>
                                 <input
-                                    type={showEye ? 'password' : 'text'}
+                                    type={!showEye ? 'password' : 'text'}
                                     className='form-control'
-                                    placeholder='Enter Confirm Password'
+                                    placeholder={language === 'English' ? 'Enter Confirm Password' : "تأكيد كلمة المرور"}
                                     onChange={e => setConfirmPassword(e.target.value)}
                                 />
                                 <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
                                     {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
                                 </div>
                             </div>
-                        </p>
                     </div>
 
 
                 </div>
             </div>
 
-            <button className='btn btn-success' onClick={() => addNewUser()}>Add New Supervisor</button>
+            <button className='btn btn-success' onClick={() => addNewUser()}>
+                {language === 'English' ? 'Add New Supervisor' : "اضافة مشرف جديد"}
+                </button>
         </div>
     )
 }

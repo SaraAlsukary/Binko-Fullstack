@@ -16,7 +16,6 @@ const actGetBooksBySuperCate = createAsyncThunk(
                     signal,
                 }
             );
-            console.log(response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

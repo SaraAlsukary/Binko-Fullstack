@@ -8,6 +8,7 @@ import Search from '@components/feedback/Search/Search';
 import SearchGreen from '@assets/svgs/searchGreen.svg?react';
 import { changeThemeToDark, changeThemeToLight } from '@store/themeSlice/themeSlice'
 import Sun from '@assets/svgs/sun.svg?react'
+import ProfileIcon from '@assets/svgs/profile.svg?react'
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@components/feedback';
 import { useEffect, useState } from 'react';
@@ -86,13 +87,11 @@ const Header = () => {
                             </select>
                         </li>
                         {userData ?
-                            <li><NavLink to='profile' ><div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}>
-
-
-                                {userData?.user.image ?
-                                    <img src={`http://127.0.0.1:8000${userData?.user.image}`} />
-                                    : ""}
-                            </div></NavLink></li>
+                            <li><NavLink to='profile' >
+                                {/* <div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}>
+                                </div> */}
+                                <ProfileIcon style={{ width: "35px", height:"35px" }} />
+                            </NavLink></li>
 
                             : <li><Button ><NavLink to='Login' style={{ color: 'black' }}>{language === 'Arabic' ? 'تسجبل الدخول' : "login"}</NavLink></Button></li>
                         }</ul>

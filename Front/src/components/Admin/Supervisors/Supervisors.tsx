@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
-import axios from 'axios';
-import img from '@assets/imgs/night-adventure-with-fairy-glowing-object-generative-ai_188544-12605.avif'
-import img2 from '@assets/imgs/thought-you-guys-might-like-these-ghibli-inspired-library-v0-byeryvq215wb1.webp'
-import img3 from '@assets/imgs/illustration-bookshelf-with-books_961004-3667.avif'
 import ViewUser from './View/View';
 import AddUser from './Add/Add';
 import EditUser from './Edit/Edit';
@@ -15,18 +11,18 @@ import './Users.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 type TCategory = {
     id: Number,
     name: string,
     profile: React.ReactNode | null
-    bio: string | null
+    category: string | null
 }
 type TCategoryAra = {
     id: Number,
     الاسم: string,
     الصورة: React.ReactNode | null,
-    الوصف: string | null
+    الصنف: string | null
 }
 function Supervisors({ rend }: { rend: boolean }) {
     const { language } = useAppSelector(state => state.language);
@@ -40,37 +36,38 @@ function Supervisors({ rend }: { rend: boolean }) {
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(actGetSupervisor())
-
-    }, [])
+    }, [language])
     useEffect(() => {
-        const getAllUsers = () => {
-            const category: TCategory[] = supervisors.map((user) => {
-                return ({
-                    id: user.id,
-                    name: user.name,
-                    bio: user.discriptions,
-                    profile: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+        if (supervisors) {
+            const getAllUsers = () => {
+                const category: TCategory[] = supervisors.map((user) => {
+                    return ({
+                        id: user.id,
+                        name: user.name,
+                        category: user.category,
+                        profile: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
+
+                    })
 
                 })
+                const categoryAra: TCategoryAra[] = supervisors.map((user) => {
+                    return ({
+                        id: user.id,
+                        الاسم: user.name,
+                        الصنف: user.category,
+                        الصورة: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
 
-            })
-            const categoryAra: TCategoryAra[] = supervisors.map((user) => {
-                return ({
-                    id: user.id,
-                    الاسم: user.name,
-                    الوصف: user.discriptions,
-                    الصورة: <img src={`http://127.0.0.1:8000${user.image}`} style={{ marginTop: '10px', width: '50px', height: '50px', borderRadius: '50%' }} />
-
+                    })
                 })
-            })
-            const data = language === 'Arabic' ? categoryAra : category
-            setUsersList(data);
+                const data = language === 'Arabic' ? categoryAra : category
+                setUsersList(data);
 
 
 
+            }
+            getAllUsers();
         }
-        getAllUsers();
-    }, [language, rend]);
+    }, [supervisors]);
 
 
 
@@ -83,12 +80,12 @@ function Supervisors({ rend }: { rend: boolean }) {
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
-                {/* <button className='btn btn-primary' onClick={() => {
+                <button className='btn btn-primary' onClick={() => {
                     setSelectedUserId(rowDate?.id)
                     setShowEditMode(true)
                 }}>
                     <i className='pi pi-file-edit'></i>
-                </button> */}
+                </button>
                 <button className='btn btn-danger' onClick={() => {
                     setShow(true)
                     deleteUserConfirm(rowDate?.id)
@@ -122,11 +119,11 @@ function Supervisors({ rend }: { rend: boolean }) {
             <div className='users-page'>
                 <div className='container'>
                     <h1>
-                        {language === 'Arabic' ? 'المستخدمين في النظام' : 'The Users in the System'}
+                        {language === 'Arabic' ? 'المشرفين في النظام' : 'The Supervisors in the System'}
 
                     </h1>
                     <h3>
-                        {language === 'Arabic' ? 'العمليات على المستخدمين' : 'Operations on Users'}
+                        {language === 'Arabic' ? 'العمليات على المشرفين' : 'Operations on Supervisors'}
                     </h3>
 
                     <div className='users-list'>
@@ -140,12 +137,8 @@ function Supervisors({ rend }: { rend: boolean }) {
                         <DataTable className='tableCell' value={users}>
                             <Column field={language === 'English' ? "profile" : "الصورة"} header={language === 'English' ? "profile" : "الصورة"}></Column>
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
-                            <Column field={language === 'English' ? "bio" : "الوصف"} header={language === 'English' ? "bio" : "الوصف"}></Column>
-                            {/* <Column field="name" header="Name"></Column>
-                            <Column field="username" header="Username"></Column>
-                            <Column field="email" header="Email Adress"></Column>
-                            <Column field="phone" header="Phone Number"></Column>
-                            <Column field="website" header="Website"></Column> */}
+                            <Column field={language === 'English' ? "category" : "الصنف"} header={language === 'English' ? "category" : "الصنف"}></Column>
+
                             <Column header={language === 'English' ? "Actions" : "العمليات"} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
@@ -179,7 +172,7 @@ function Supervisors({ rend }: { rend: boolean }) {
                     }} />
                 </Dialog>
 
-                {show ? <ConfirmSuper /> : ""}
+                <ConfirmSuper />
 
             </div>
 

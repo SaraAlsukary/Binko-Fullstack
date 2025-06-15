@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useAppSelector } from '@hooks/app';
+import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { TUser } from '@customtypes/userType';
+import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
 
 const initialUserInfo: TUser = {
     name: '',
@@ -13,10 +14,16 @@ function View({ userId }: { userId: number }) {
     const [userInfo, setUserInfo] = useState(initialUserInfo);
     const { supervisors } = useAppSelector(state => state.supervisors);
     const { language } = useAppSelector(state => state.language);
+    const dispatch = useAppDispatch()
     const user = supervisors.find((user) => user.id == userId)
     useEffect(() => {
+        dispatch(actGetSupervisor())
+    },[language])
+    useEffect(() => {
+        if(supervisors)
         fetchUserData()
-    }, []);
+
+    }, [supervisors]);
 
     const fetchUserData = () => {
         setUserInfo(user as TUser);
