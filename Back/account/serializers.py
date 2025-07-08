@@ -105,7 +105,9 @@ class SupervisorUserSerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.name', read_only=True)
+    image_user=serializers.ImageField(source='user.image')
+
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'image', 'description', 'publication_date', 'username', 'is_accept']
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'username', 'is_accept','image_user','user']

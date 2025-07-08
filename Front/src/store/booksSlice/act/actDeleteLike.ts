@@ -11,7 +11,7 @@ const actDeleteLikes = createAsyncThunk(
     async (id: number, thunkAPI) => {
         const { rejectWithValue, getState, signal } = thunkAPI;
         const { auth } = getState() as RootState;
-
+       
         try {
             const response = await axios.delete<TResponse>(
                 `unlike/${auth.userData?.user.id}/${id}/`,
@@ -20,7 +20,6 @@ const actDeleteLikes = createAsyncThunk(
                   
                 },
             );
-            console.log(response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

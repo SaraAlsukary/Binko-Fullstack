@@ -10,7 +10,8 @@ const actGetCommentByBook = createAsyncThunk(
     async (id: number, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
         try {
-            const response = await axios.get<TResponse>(`books/${id}/comments`, { signal });
+            const response = await axios.get<TResponse>(`books/${id}/comments/`, { signal });
+            console.log(response.data)
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));

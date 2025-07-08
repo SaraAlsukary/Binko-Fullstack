@@ -66,11 +66,9 @@ const categories = createSlice({
         });
         builder.addCase(actUpdateCategory.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.categories = state.categories.filter((cate) => cate.id !== action.payload)
-
-            state.categories.push(action.payload)
+            state.categories = state.categories.map(st => st.id === action.payload.id ? action.payload : st)
         })
-        // state.categories = action.payload;
+        
         builder.addCase(actUpdateCategory.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {

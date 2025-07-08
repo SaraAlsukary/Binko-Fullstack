@@ -27,13 +27,8 @@ const AddBook = () => {
         const catename = e.target.value;
         if (cate.find((catee: any) => catee === catename)) {
             cate = cate.filter((ca: any) => ca !== catename);
-
-
         } else {
             cate.push(catename)
-
-
-
         }
 
 
@@ -117,10 +112,8 @@ const AddBook = () => {
                         <div className={mul}>
                             <select name="category_names" multiple id="">
                                 {CategoriesSelects}
-
                             </select>
                         </div>
-
                     </div>
                 </div>
                 <div className={controlBtn}>

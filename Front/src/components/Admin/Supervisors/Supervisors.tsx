@@ -24,9 +24,8 @@ type TCategoryAra = {
     الصورة: React.ReactNode | null,
     الصنف: string | null
 }
-function Supervisors({ rend }: { rend: boolean }) {
+function Supervisors() {
     const { language } = useAppSelector(state => state.language);
-    const [show, setShow] = useState(false);
     const { supervisors } = useAppSelector(state => state.supervisors);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -172,7 +171,6 @@ function Supervisors({ rend }: { rend: boolean }) {
                     }} />
                 </Dialog>
 
-                <ConfirmSuper />
 
             </div>
 

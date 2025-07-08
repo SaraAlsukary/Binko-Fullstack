@@ -3,7 +3,6 @@ import { DataTable } from 'primereact/datatable';
 import ViewUser from './View/View';
 import AddUser from './Add/Add';
 import EditUser from './Edit/Edit';
-import { ConfirmDialog as ConfirmCategory } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -174,7 +173,6 @@ function Category() {
                     }} />
                 </Dialog>
 
-                    <ConfirmCategory />
             </div >
         </>
     )

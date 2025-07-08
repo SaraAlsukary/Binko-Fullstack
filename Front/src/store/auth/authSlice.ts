@@ -9,12 +9,7 @@ import actUpdateProfile from "./act/actUpdateProfile";
 interface IAuthState {
     userData:
     {
-        //     id: number,
-        //     name: string,
-        //     username: string,
-        //     is_admin: boolean,
-        //     is_supervisor: boolean
-        // } | {
+    
         user: {
             id: number,
             is_supervisor: boolean,
@@ -86,7 +81,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actLogout.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.user = action.payload;
+            // state.user = action.payload;  
         });
         builder.addCase(actLogout.rejected, (state, action) => {
             state.loading = "failed";

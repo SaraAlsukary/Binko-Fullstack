@@ -3,12 +3,10 @@ import axios from "axios";
 
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
-
 const actDeleteComment = createAsyncThunk(
     "comments/actDeleteComment",
     async (id: number, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
-
         try {
             const response = await axios.delete(`comments/${id}/`, { signal });
             return id;

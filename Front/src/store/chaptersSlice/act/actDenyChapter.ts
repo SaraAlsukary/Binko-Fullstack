@@ -14,13 +14,11 @@ const actDenyChapters = createAsyncThunk(
         // const { auth } = getState() as RootState;
 
         try {
-            const response = await axios.patch<TNote>(
-                `chapters/${form.id}/note/`, form,
+            const response = await axios.post<TNote>(
+                `reject-chapter/${form.id}/`, form,
                 {
                     signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.user?.token}`
-                    // }
+
                 },
             );
             console.log(response.data)

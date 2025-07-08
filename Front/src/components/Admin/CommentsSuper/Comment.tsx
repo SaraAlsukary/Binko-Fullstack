@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 
@@ -71,7 +70,7 @@ function Comment() {
                     return ({
                         id: comment.id,
                         book: bookId?.id,
-                        الكتاب: bookId?.id,
+                        الكتاب: bookId?.name,
                         الاسم: comment.name,
                         التعليق: comment.comment,
                         الصورة: <img src={`http://127.0.0.1:8000${comment.image}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
@@ -147,7 +146,6 @@ function Comment() {
                     </div>
                 </div>
 
-                <ConfirmDialog />
 
             </div>
         </>

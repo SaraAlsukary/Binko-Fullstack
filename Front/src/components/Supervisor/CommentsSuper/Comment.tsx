@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 
 
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import './Comment.css'
@@ -149,7 +148,6 @@ function Comment() {
                 </div>
 
 
-               <ConfirmDialog />
 
             </div>
         </>

@@ -4,8 +4,15 @@ export type TComment = {
     name?: string,
     book_id?: number,
     image: string
-    user: {
-        id: number,
-        name: string
-    }
+    user: number,
+    replies: [{
+        content?: string,
+        id?: number,
+        name?: string,
+        book_id?: number,
+        image: string
+        user: number,
+        parent: number,
+        children: []
+    }]
 }

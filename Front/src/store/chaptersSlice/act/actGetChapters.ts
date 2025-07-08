@@ -7,7 +7,7 @@ type TResponse = TChapters[];
 
 const actGetChapters = createAsyncThunk(
     "chapters/actGetChapters",
-    async (id, thunkAPI) => {
+    async (id:number, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.get<TResponse>(

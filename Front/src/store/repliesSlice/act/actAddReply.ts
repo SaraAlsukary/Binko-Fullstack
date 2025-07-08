@@ -1,32 +1,26 @@
 import { createAsyncThunk, } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { RootState } from "@store/index";
+
 type TForm = {
 
     comment: number,
     user: number,
-    reply: string
+    content: string
 }
 type TResponse = [];
 const actAddReply = createAsyncThunk(
     "replies/actAddReply",
     async (Formdata: TForm, thunkAPI) => {
-        const { rejectWithValue, getState, signal } = thunkAPI;
-        const { auth } = getState() as RootState;
+        const { rejectWithValue } = thunkAPI;
+
 
 
         try {
             const response = await axios.post<TResponse>(
-                `addreply/${Formdata?.comment}/${auth?.userData?.user.id}/`,
-                Formdata.reply,
-                {
-                    signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.userData?.user.token}`,
-                    //     'Content-Type': 'application/json'
-                    // },
-                },
+                `addreply/${Formdata?.comment}/${Formdata?.user}/`,
+                { content: Formdata.content }
+              
             );
             return response.data;
         } catch (error) {

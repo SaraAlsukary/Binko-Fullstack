@@ -27,7 +27,7 @@ const Chapters = () => {
     const index = parseInt(param.idChapter);
     const idBook = parseInt(param.id);
     const chapterInfoItem = (userData?.user.is_supervisor || userData?.user.is_admin || myBooks.find(book => book.id === idBook)) ? acceptedchapters.find(ch => ch.id === index) : chapters.find(ch => ch.id === index);
-    // console.log(userData?.user.is_admin)
+
     const chapterInfo = (userData?.user.is_supervisor || userData?.user.is_admin) && (!chapterInfoItem) ? chapters.find(ch => ch.id === index) : chapterInfoItem;
 
     useEffect(() => {
@@ -71,8 +71,7 @@ const Chapters = () => {
 
 
     }
-    // console.log(chapterInfo?.content_text)
-    // const [value, setValue] = useState(chapterInfo?.content_text);
+
     const [show, setShow] = useState(false);
     return (
         <Container className={chapterCont}>

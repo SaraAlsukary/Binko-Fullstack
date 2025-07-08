@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@hooks/app";
-import {  useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import style from './BooksInfo.module.css';
 import { Container } from "react-bootstrap";
 import HeadingTitle from "@components/feedback/HeadingTitle/HeadingTitle";
@@ -43,8 +43,9 @@ import toast from "react-hot-toast";
 import actGetLikeStatue from "@store/booksSlice/act/actGetLikeStatue";
 import { TCategory } from "@customtypes/categoryType";
 import actGetAcceptedBooksBySuperCate from "@store/booksSlice/act/actGetAcceptedBooksBySuperCate";
+import actDeleteReply from "@store/repliesSlice/act/actDeleteReply";
 const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
-  text, bookCont, warnings, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
+  text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
   const [commentText, setCommentText] = useState('');
   const [replyy, setReplyy] = useState('');
@@ -67,7 +68,7 @@ const BooksInfo = () => {
     user: userData?.user?.id,
     book: indx
   }
-  // const SavedLikeExist = 
+
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
   const AcceptedBook = acceptedBooks.find((book) => book.id === indx) ? true : false;
   const ExistedBook = myBooks.find((book) => (book.id === indx)) ? true : false;
@@ -75,27 +76,15 @@ const BooksInfo = () => {
   const bookInfo = (userData?.user.is_supervisor || userData?.user.is_admin) ? AcceptedBook ?
     acceptedBooks.find(book => book.id === indx) : books.find((book) => book.id === indx) : ExistedBook ? myBooks.find(book => book.id === indx)
     : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
-  // const ExistedComment = commentss.find((comment) => comment.user.id === userData?.user.id) ? true : false;
-  const activeHandler = async(e: any) => {
+  const activeHandler = async (e: any) => {
     (e.target as Element).classList.toggle(active);
-    if ((e.target as Element).classList.contains(active) && likesStatue) {
-      // dispatch(actGetLikes(indx))
-      try {
-        dispatch(actDeleteLikes(indx))
-        // dispatch(actGetLikeStatue(likeForm))
-      } catch(e) {
-        console.log(e)
-     }
+    if ((e.target as Element).classList.contains(active) && is_liked) {
+      dispatch(actAddLikes(indx));
     } else {
-      try {
-        dispatch(actAddLikes(indx));
-      } catch (e) {
-        console.log(e)
-      }
+      dispatch(actDeleteLikes(indx))
 
     }
   }
-
   useEffect(() => {
     commentss.forEach(comment => {
       dispatch(actGetReplyByComment(comment?.id))
@@ -110,22 +99,20 @@ const BooksInfo = () => {
 
     } else {
       dispatch(actDeleteFavorite(favoriteData.book))
-
-
     }
   }
-  console.log(likes)
-  const activeLikeHandler = (e: any) => {
-    (e.target as Element).classList.toggle(active);
-    if ((e.target as Element).classList.contains(active) && !SavedLikeExist) {
-      dispatch(actDeleteLikes(bookInfo?.id as number))
 
-    } else {
-      dispatch(actAddLikes(bookInfo?.id as number))
+  // const activeLikeHandler = (e: any) => {
+  //   (e.target as Element).classList.toggle(active);
+  //   if ((e.target as Element).classList.contains(active) && !SavedLikeExist) {
+  //     dispatch(actDeleteLikes(bookInfo?.id as number))
+
+  //   } else {
+  //     dispatch(actAddLikes(bookInfo?.id as number))
 
 
-    }
-  }
+  //   }
+  // }
   const activeMoreHandler = () => {
     var el = document.getElementById('com');
     el?.classList.add(active);
@@ -138,6 +125,8 @@ const BooksInfo = () => {
 
     el?.classList.add(active);
     (e.target as Element).classList.add(active);
+
+
 
   }
 
@@ -190,22 +179,21 @@ const BooksInfo = () => {
       if (span?.contains(e.target) || inpActive?.contains(e.target)) {
         inp?.classList.add(active);
         span?.classList.add(active);
-
-
       } else if (!spanActive?.contains(e.target)) {
-
         inpActive?.classList.remove(active);
         spanActive?.classList.remove(active);
 
       }
-
     })
   }
   const deleteCommentHandler = (id: number) => {
     dispatch(actDeleteComment(id)).unwrap().then(() => {
       language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
-
-
+    })
+  }
+  const deleteReplyHandler = (id: number) => {
+    dispatch(actDeleteReply(id)).unwrap().then(() => {
+      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
     })
   }
   const commentData = {
@@ -223,12 +211,11 @@ const BooksInfo = () => {
   const ReplyData = {
     user: userData?.user?.id,
     comment: commentId,
-    reply: {
-      reply: replyy
-    }
+    content: replyy
 
   }
   const addReplyHandler = () => {
+    console.log(ReplyData)
     dispatch(actAddReply(ReplyData))
     setReplyy('');
   }
@@ -239,16 +226,16 @@ const BooksInfo = () => {
   }
   useEffect(
     () => {
-      const promiseComment = dispatch(actGetCommentByBook(bookInfo?.id));
-      const promiseChapters = dispatch(actGetChapters(bookInfo?.id))
+      const promiseComment = dispatch(actGetCommentByBook(indx));
+      const promiseChapters = dispatch(actGetChapters(indx))
       const promiseLike = dispatch(actGetLikeStatue(likeForm))
-      const promiseLikes = dispatch(actGetLikes(bookInfo?.id))
+      const promiseLikes = dispatch(actGetLikes(indx))
       const promiseUsers = dispatch(actGetUsers())
-      const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id))
+      const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id!))
       const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
       const promiseAcceptedBooks = userData?.user.is_supervisor ? dispatch(actGetAcceptedBooksBySuperCate(userData?.user?.id!)) : dispatch(actGetBooksToAccept())
       const promiseCategories = dispatch(actGetCategories())
-      const promiseFavorite = dispatch(actGetfavorite(userData?.user.id))
+      const promiseFavorite = dispatch(actGetfavorite(userData?.user.id!))
 
       return () => {
         promiseLikes.abort();
@@ -286,13 +273,13 @@ const BooksInfo = () => {
   useEffect(() => {
     if (likes) {
       setLikeCount(likes.likes_count)
-      }
+    }
   }, [likes])
   useEffect(() => {
     if (is_liked) {
       setLikeStatue(is_liked?.is_liked)
     }
-  }, [is_liked,likes])
+  }, [is_liked, likes])
 
   const categoriesBookCard = catesss.map((cate) => <p onClick={() => navigate(`/Binko/categories/books/${cate?.id}`)} key={Math.random() * 2}>
     {language === 'English' ? cate?.name : cate?.name_arabic}
@@ -304,11 +291,11 @@ const BooksInfo = () => {
       <div key={comment?.id} className={boxCont}>
         <div className={box}>
           <div className={commenter}>
-            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user.id}`)} className={pic}>
-              <img src={`http://127.0.0.1:8000${comment.user.image}`} alt="" />
+            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user}`)} className={pic}>
+              <img src={`http://127.0.0.1:8000${comment.image}`} alt="" />
             </div>
-            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user.id}`)} className={commenterName}>
-              {comment?.user.name}
+            <div onClick={() => navigate(`/Binko/userInfo/${comment?.user}`)} className={commenterName}>
+              {comment?.name}
             </div>
           </div>
           <div className={text}>
@@ -319,11 +306,11 @@ const BooksInfo = () => {
           </div>
           {
 
-            (comment.user.id === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
+            (comment.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
               <div className={commentBtns}>
                 {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
                 <Button
-                  onClick={() => deleteCommentHandler(comment?.id)}
+                  onClick={() => deleteCommentHandler(comment?.id!)}
                   style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
               </div> : ""
           }
@@ -332,7 +319,7 @@ const BooksInfo = () => {
             id={`inp-${comment?.id}`} >
             <div className={input}>
               <Input onChange={(e) => {
-                setCommentId(comment?.id)
+                setCommentId(comment?.id!)
                 setReplyy(e.target.value)
               }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
             </div>
@@ -344,43 +331,103 @@ const BooksInfo = () => {
 
         {
 
-          (replies.filter((re) => re.comment === comment.id)) ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
-            {language === 'English' ? `There are ${replies.length} replies` : `   هناك ${replies.length} رد`}
+          comment.replies?.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
+            {language === 'English' ? `There are ${comment.replies?.length} replies` : `   هناك ${replies.length} رد`}
           </div> : ''
         }
         {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
-          {replies.filter((re) => re.comment === comment.id).map(rep => {
-            // const replyInfo = replies?.find((reply => reply.comment === comment.id))
-
+          {comment.replies?.map(rep => {
             return (
-              <div className={replyBox}>
-                <div className={replyer}>
-                  <div className={pic}>
-                    <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
+              <>
+                <div key={rep.id} className={replyBox}>
+                  <div className={replyer}>
+                    <div className={pic}>
+                      <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
+                    </div>
+                    <div className={replyerName}>
+                      {rep?.name}
+                    </div>
                   </div>
-                  <div className={replyerName}>
-                    {rep?.name}
+                  <div className={text}>
+                    <p>{rep?.content} <span
+                      className={`${rep?.id}`}
+                      id={`span-${rep?.id}`}
+                    >{language === 'English' ? `REPLY` : `الرد`}</span></p>
+                  </div>
+                  {
+
+                    (rep.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
+                      <div className={commentBtns}>
+                        {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
+                        <Button
+                          onClick={() => deleteReplyHandler(rep?.id!)}
+                          style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
+                      </div> : ""
+                  }
+                  <div
+                    className={` ${inputField}`}
+                    id={`inp-${rep?.id}`} >
+                    <div className={input} >
+                      <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                    </div>
+                    <div className={icon}>
+                      {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+                    </div>
                   </div>
                 </div>
-                <div className={text}>
-                  <p>{rep?.reply} <span
-                    className={`${rep?.id}`}
-                    id={`span-${rep?.id}`}
-                  >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-                </div>
-                <div
-                  className={` ${inputField}`}
-                  id={`inp-${rep?.id}`} >
-                  <div className={input} >
-                    <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-                  </div>
-                  <div className={icon}>
-                    {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-                  </div>
-                </div>
-              </div>
+
+                {
+                  rep.children?.length ?
+                    rep.children?.map(rep => {
+                      return (
+                        <>
+                          <div className={replyBox}>
+                            <div className={replyer}>
+                              <div className={pic}>
+                                <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
+                              </div>
+                              <div className={replyerName}>
+                                {rep?.name}
+                              </div>
+                            </div>
+                            <div className={text}>
+                              <div className={replyerName} id="parent">
+                                @{rep?.parent}
+                              </div>
+                              <p>{rep?.content} <span
+                                className={`${rep?.id}`}
+                                id={`span-${rep?.id}`}
+                              >{language === 'English' ? `REPLY` : `الرد`}</span></p>
+                            </div>
+                            {
+
+                              (rep?.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
+                                <div className={commentBtns}>
+                                  {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
+                                  <Button
+                                    onClick={() => deleteReplyHandler(rep?.id)}
+                                    style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
+                                </div> : ""
+                            }
+                            <div
+                              className={` ${inputField}`}
+                              id={`inp-${rep?.id}`} >
+                              <div className={input} >
+                                <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                              </div>
+                              <div className={icon}>
+                                {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+                              </div>
+                            </div>
+                          </div>
+                        </>)
+                    })
+                    : ""}
+              </>
             )
           })}
+
+
         </div> : ''}
       </div >)
   });
@@ -449,7 +496,6 @@ const BooksInfo = () => {
       </span>
         : ''}
   </li >)
-  const authorData = users.find((user) => user.id === bookInfo?.user.id)
   return (
     <Container className={bookCont} >
       <div className={left}>
@@ -460,12 +506,9 @@ const BooksInfo = () => {
           <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
           <div className={authInfo}>
             <div className={photo}>
-              <img src={`http://127.0.0.1:8000${authorData?.image}`} alt="" />
+              <img src={`http://127.0.0.1:8000${bookInfo?.image_user}`} alt="" />
             </div>
             <div className={nameAuth}>{bookInfo?.username}</div>
-          </div>
-          <div className={descAuth}>
-            {authorData?.discriptions}
           </div>
         </div>
       </div>

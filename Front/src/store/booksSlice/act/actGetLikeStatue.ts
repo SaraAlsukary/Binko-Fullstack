@@ -10,19 +10,14 @@ const actGetLikeStatue = createAsyncThunk(
     "books/actGetLikeStatue",
     async (form: TLike, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
-        // const { auth } = getState() as RootState;
-
         try {
             const response = await axios.get<TResponse>(
                 `like-status/${form?.id_user}/${form?.id_book}/`,
                 {
                     signal,
-                    // headers: {
-                    //     Authorization: `Bearer ${auth.user?.token}`
-                    // }
                 },
             );
-            console.log(response.data)
+        
             return response.data;
         } catch (error) {
             return rejectWithValue(axiosErrorHandler(error));
