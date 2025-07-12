@@ -16,17 +16,29 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']  
 
 class BooksSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True) 
-    categories = serializers.SerializerMethodField() 
+    user = UserSerializer(read_only=True)
+    categories = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()  # حقل جديد
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'image', 'description', 'publication_date', 'user', 'categories','is_accept','content']
+        fields = [
+            'id', 'name', 'image', 'description', 'publication_date',
+            'user', 'categories', 'is_accept', 'content',
+            'average_rating'  # نضيفه هنا أيضًا
+        ]
 
     def get_categories(self, obj):
+        return [
+            book_category.category.name
+            for book_category in Book_Category.objects.filter(book=obj)
+        ]
 
-        return [book_category.category.name for book_category in Book_Category.objects.filter(book=obj)]
-
+    def get_average_rating(self, obj):
+        ratings = obj.ratings.all()
+        if ratings.exists():
+            return round(sum(r.value for r in ratings) / ratings.count(), 2)
+        return 0
 
 class FavoriteBookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -192,7 +204,7 @@ class ChapterSerializer(serializers.ModelSerializer):
         model = Chapter
         fields = ['title', 'content_text', 'audio', 'note']
 
-class BookUpdateSerializer(serializers.ModelSerializer):
+class BookUpdatesSerializer(serializers.ModelSerializer):
     chapters = ChapterSerializer(many=True)
     categories = serializers.ListField(child=serializers.CharField(), write_only=True)  # ← استلام أسماء الفئات
 
@@ -237,3 +249,36 @@ class BookLikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'image', 'description', 'publication_date', 'note', 'content']
+
+class BookUpdateSerializer(serializers.ModelSerializer):
+    categories = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True
+    )
+    user = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Book
+        fields = ['user', 'name', 'image', 'description', 'publication_date', 'note', 'content', 'categories']
+
+    def update(self, instance, validated_data):
+        category_ids = validated_data.pop('categories', [])
+        user_id = validated_data.pop('user')
+
+        # تأكد أن المستخدم هو صاحب الكتاب
+        if instance.user.id != user_id:
+            raise serializers.ValidationError("You are not the owner of this book.")
+
+        # تعديل الحقول
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # إعادة تعيين is_accept إلى False
+        instance.is_accept = False
+        instance.save()
+
+        # حذف الفئات القديمة وتحديث الجديدة
+        Book_Category.objects.filter(book=instance).delete()
+        for cat_id in category_ids:
+            Book_Category.objects.create(book=instance, category_id=cat_id)
+
+        return instance

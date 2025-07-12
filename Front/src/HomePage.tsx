@@ -11,9 +11,7 @@ const HomePage = () => {
   return (
     <>
       <Header />
-      {/* <div> */}
       <Outlet />
-      {/* </div> */}
       {userData ? <Menu /> : ''}
 
       <Footer />

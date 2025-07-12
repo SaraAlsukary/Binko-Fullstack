@@ -64,6 +64,21 @@ class CommentsSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='user.name')
     image=serializers.ImageField(source='user.image')
     book=serializers.CharField(source='book.name')
+
     class Meta:
         model = Comment
         fields = ['id', 'name','image','book','user', 'book', 'comment', 'replies']       
+
+
+
+class CommentRepliesCountSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.name', read_only=True)
+    user_image = serializers.ImageField(source='user.image', read_only=True)
+    reply_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'comment', 'user_name', 'user_image', 'reply_count']
+
+    def get_reply_count(self, obj):
+        return obj.replies.count()       

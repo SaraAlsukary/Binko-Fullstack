@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import CommentSerializer  ,GetCommentSerializer,DeleteCommentSerializer ,CommentsSerializer
+from .serializers import CommentSerializer, CommentRepliesCountSerializer ,GetCommentSerializer,DeleteCommentSerializer ,CommentsSerializer
 from django.shortcuts import get_object_or_404
 from books.models import Book
 from account.models import CustomUser
@@ -52,3 +52,15 @@ def comments_with_replies(request, book_id):
     comments = Comment.objects.filter(book_id=book_id)
     serializer = CommentsSerializer(comments, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def book_comments_with_replies(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'الكتاب غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+
+    comments = Comment.objects.filter(book=book).prefetch_related('replies', 'user')
+    serializer = CommentRepliesCountSerializer(comments, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

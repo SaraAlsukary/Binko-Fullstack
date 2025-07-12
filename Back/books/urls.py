@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import update_note ,get_note ,book_likes ,add_book_by_cat,get_like_status ,reject_book_with_note
-from .views import update_book , like_book , unlike_book ,liked_books
+from .views import update_book , like_book , unlike_book ,liked_books 
 from .views import favorite_books , add_favorite_book ,get_books_by_category , get_all_books ,get_my_book
 from .views import delete_book ,add_book ,get_all_books_to_accept, delete_book_fav ,accept_book,toggle_like
 urlpatterns = [
@@ -25,5 +25,7 @@ urlpatterns = [
     path('like/<int:user_id>/<int:book_id>/', like_book, name='like-book'),
     path('unlike/<int:user_id>/<int:book_id>/', unlike_book, name='unlike-book'),
     path('liked-books/<int:user_id>/', liked_books, name='liked-books'),
+    path('api/books/<int:book_id>/update/', update_book),
+    
 
 ]

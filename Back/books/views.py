@@ -64,17 +64,17 @@ def add_favorite_book(request):
 
 
 
+@api_view(['GET'])
 def get_books_by_category(request, category_id):
     try:
         category = Category.objects.get(id=category_id)
         book_ids = Book_Category.objects.filter(category=category).values_list('book_id', flat=True)
-        books = Book.objects.filter(id__in=book_ids , is_accept=True )
+        books = Book.objects.filter(id__in=book_ids, is_accept=True).prefetch_related('ratings')
         serializer = BooksSerializer(books, many=True)
         return JsonResponse(serializer.data, safe=False)
     except Category.DoesNotExist:
         return JsonResponse({"error": "Category not found."}, status=404)
     
-
 api_view(['GET'])
 def get_all_books(request):
     books = Book.objects.filter(is_accept=True)
@@ -236,6 +236,7 @@ def reject_book_with_note(request, book_id):
         send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email], fail_silently=False)
     except Exception as e:
         return JsonResponse({'error': f'فشل إرسال الإيميل: {str(e)}'}, status=500)
+    book.delete()
 
     return JsonResponse({'message': 'تم رفض الكتاب وإرسال الملاحظة بنجاح.'}, status=200)
 
@@ -243,7 +244,7 @@ def reject_book_with_note(request, book_id):
 
 @api_view(['PUT'])
 @parser_classes([JSONParser])
-def update_book(request, book_id):
+def update_books(request, book_id):
     try:
         book = Book.objects.get(id=book_id)
     except Book.DoesNotExist:
@@ -297,4 +298,20 @@ def liked_books(request, user_id):
         serializer = BookLikedSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['PUT'])
+def update_book(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BookUpdateSerializer(book, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Book updated successfully'})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+    
+    

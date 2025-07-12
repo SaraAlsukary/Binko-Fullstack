@@ -94,7 +94,6 @@ def reject_chapter(request, chapter_id):
         chapter.is_accept = False
         chapter.note = note
         chapter.save()
-
         # جلب إيميل المستخدم
         user_email = chapter.book.user.username  # حسب ما ذكرت username هو الإيميل
         user_name = chapter.book.user.name
@@ -112,11 +111,11 @@ def reject_chapter(request, chapter_id):
         مع التحية،
         فريق الموقع
         """
-
         send_mail(subject, message, None, [user_email])
+        chapter.delete()
 
         return Response({"message": "تم رفض الشابتر وإرسال الملاحظة عبر الإيميل."}, status=status.HTTP_200_OK)
-
+              
     except Chapter.DoesNotExist:
         return Response({"error": "الشابتر غير موجود."}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:

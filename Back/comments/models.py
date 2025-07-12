@@ -6,4 +6,4 @@ class Comment(models.Model):
     user=models.ForeignKey(CustomUser , on_delete=models.CASCADE)
     book=models.ForeignKey(Book ,related_name='comments', on_delete=models.CASCADE)
     comment=models.CharField(max_length=250)
-
+    """created_at=models.DateTimeField(auto_now_add=True)"""
