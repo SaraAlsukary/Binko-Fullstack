@@ -1,0 +1,166 @@
+
+.comments {
+    margin-top: 20px;
+}
+.comments .inputField {
+    position: relative;
+}
+
+ .comments .icon {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    width: 40px;
+    border-radius: 50%;
+    padding: 1px;
+    border: 2px solid var(--secondary-color);
+    cursor: pointer;
+}
+
+[data-lang='Arabic']  .comments .icon {
+    right: calc(100% - 50px);
+}
+
+.comments .input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+ .comments .input input {
+    width: 100%;
+}
+
+ .comments .commentsList {
+    margin-top: 20px;
+}
+
+ .comments .commentsList .boxCont {
+    display: none;
+}
+
+ .comments .commentsList .boxCont:first-child,
+ .comments .commentsList .boxCont:nth-child(2) {
+    display: block;
+}
+
+ .comments .commentsList.active .boxCont {
+    display: block;
+}
+
+
+ .comments .commentsList .box {
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 0 10px 1px var(--secondary-color);
+    margin-top: 10px;
+    padding: 20px;
+}
+
+ .comments .commentsList .box .commenter,
+ .comments .replyList .replyBox .replyer {
+    display: flex;
+    align-items: center;
+}
+
+ .comments .commentsList .box .commenter .pic,
+ .comments .replyList .replyBox .replyer .pic {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+
+ .comments .commentsList .box .commenter .pic img,
+ .comments .replyList .replyBox .replyer .pic img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+ .comments .commentsList .box .commenter .commenterName,
+ .comments .replyList .replyBox .replyer .replyerName {
+    color: gray;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+ .comments .commentsList .box .text p span,
+ .comments .replyList .replyBox .text p span {
+    color: #f35151;
+    cursor: pointer;
+
+}
+
+ .comments .commentsList .buttn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+ .comments .commentsList .buttn button {
+    width: 80%;
+    background-color: transparent;
+    color: var(--main-color);
+    transition: .3s;
+    border: 2px solid var(--main-color);
+}
+
+ .comments .commentsList .buttn button:hover {
+    background-color: var(--main-color);
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+ .comments .commentsList.active .buttn {
+    display: none;
+}
+
+ .comments .commentsList .reply {
+    color: var(--main-color);
+    font-size: 22px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    font-family: binko2eng;
+}
+
+ .comments .commentsList .reply.active,
+ .comments .commentsList span.active,
+ .comments .commentsList .inputField,
+ .comments .replyList span.active,
+ .comments .replyList .inputField {
+    display: none;
+}
+
+ .comments .replyList .inputField.active,
+ .comments .commentsList .inputField.active {
+    display: block;
+}
+
+[data-lang='Arabic']  .comments .commentsList .reply {
+    font-family: binkoara;
+}
+
+ .comments .replyList {
+    display: none;
+    width: calc(100% - 100px);
+
+}
+
+ .comments .replyList .replyBox {
+    border: 1px solid #f35151;
+    box-shadow: 0 0 10px 1px #f35151;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+ .comments .replyList.active {
+    display: block;
+}
+
+.commentBtns {
+    display: flex;
+    justify-content: flex-end;
+}

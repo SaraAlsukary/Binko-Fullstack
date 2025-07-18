@@ -18,7 +18,7 @@ import actGetUsers from "@store/usersSlice/act/actGetUsers";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
 import actAddFavorite from "@store/Favorite/act/actAddFavorite";
 import actGetfavorite from "@store/Favorite/act/actGetfavorite";
-import { actClearComments } from "@store/commentsSlice/commentsSlice";
+import { actClearComments, changeReplyCount } from "@store/commentsSlice/commentsSlice";
 import { actClearUsers } from "@store/usersSlice/userSlice";
 import { actClearFavoriteBook } from "@store/Favorite/favoriteSlice";
 import { actClearCategories } from "@store/categorySlice/categorySlice";
@@ -27,7 +27,6 @@ import actAddComments from "@store/commentsSlice/act/actAddComment";
 import actDeleteBook from "@store/booksSlice/act/actDeleteBooks";
 import actDeleteComment from "@store/commentsSlice/act/actDeleteComment";
 import actDeleteFavorite from "@store/Favorite/act/actDeleteFavorite";
-import actGetReplyByComment from "@store/repliesSlice/act/actGetReplyByComment";
 import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
 import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
@@ -43,10 +42,12 @@ import toast from "react-hot-toast";
 import actGetLikeStatue from "@store/booksSlice/act/actGetLikeStatue";
 import { TCategory } from "@customtypes/categoryType";
 import actGetAcceptedBooksBySuperCate from "@store/booksSlice/act/actGetAcceptedBooksBySuperCate";
-import actDeleteReply from "@store/repliesSlice/act/actDeleteReply";
-const { left, pic, author, boxCont, photo, commentBtns, reply, replyBox, replyer, replyerName, replyList, commentsList, authInfo, icons, commenter, commenterName,
-  text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, descAuth, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
+import { confirmDialog } from "primereact/confirmdialog";
+import RatingStars from "@components/common/RatingStars/RatingStars";
+const { left, pic, author, boxCont, photo, commentBtns, reply, commentsList, authInfo, icons, commenter, commenterName,
+  text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, ratings, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
+ 
   const [commentText, setCommentText] = useState('');
   const [replyy, setReplyy] = useState('');
   const [likesCount, setLikeCount] = useState(0);
@@ -68,7 +69,6 @@ const BooksInfo = () => {
     user: userData?.user?.id,
     book: indx
   }
-
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
   const AcceptedBook = acceptedBooks.find((book) => book.id === indx) ? true : false;
   const ExistedBook = myBooks.find((book) => (book.id === indx)) ? true : false;
@@ -85,12 +85,6 @@ const BooksInfo = () => {
 
     }
   }
-  useEffect(() => {
-    commentss.forEach(comment => {
-      dispatch(actGetReplyByComment(comment?.id))
-    })
-  }, [])
-
 
   const activeFavHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
@@ -102,47 +96,50 @@ const BooksInfo = () => {
     }
   }
 
-  // const activeLikeHandler = (e: any) => {
-  //   (e.target as Element).classList.toggle(active);
-  //   if ((e.target as Element).classList.contains(active) && !SavedLikeExist) {
-  //     dispatch(actDeleteLikes(bookInfo?.id as number))
-
-  //   } else {
-  //     dispatch(actAddLikes(bookInfo?.id as number))
-
-
-  //   }
-  // }
   const activeMoreHandler = () => {
     var el = document.getElementById('com');
     el?.classList.add(active);
   }
-  const activeReplyHandler = (e: any) => {
-    if (e.target.id !== null)
-      var nameId = e.target.id;
-
-    var el = document.querySelector(`.${nameId}`);
-
-    el?.classList.add(active);
-    (e.target as Element).classList.add(active);
-
-
+  const activeReplyHandler = (commentId: number,) => {
+    navigate(`comments/${commentId}/replies`)
 
   }
+    console.log(bookInfo)
 
   const editHandler = () => {
     navigate(`edit`);
   }
-  const deleteHandler = () => {
-    dispatch(actDeleteBook(indx)).unwrap().then(() => {
-      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
+  const deleteChapterConfirm = (id: number) => {
+    confirmDialog({
+      message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف الفصل' : 'Are you sure you want to delete this chapter?',
+      header: language === 'English' ? 'Confirmation' : "التأكيد",
+      icon: 'pi pi-trash',
+      acceptLabel: language === 'English' ? 'Yes' : "نعم",
+      rejectLabel: language === 'English' ? 'No' : " لا",
+      accept: () => {
+        deleteChapterHandler(id)
+      },
+    });
+  }
+  const deleteBookConfirm = () => {
+    confirmDialog({
+      message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف الكتاب؟' : 'Are you sure you want to delete this book?',
+      header: language === 'English' ? 'Confirmation' : "التأكيد",
+      icon: 'pi pi-trash',
+      acceptLabel: language === 'English' ? 'Yes' : "نعم",
+      rejectLabel: language === 'English' ? 'No' : " لا",
+      accept: () => {
+        deleteBook(bookInfo?.id!)
+      },
+    });
+  }
 
-
+  const deleteBook = (userId: number) => {
+    dispatch(actDeleteBook(userId)).unwrap().then(() => {
+      language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
       navigate(-1)
     })
   }
-
-
   const deleteChapterHandler = (id: number) => {
     dispatch(actDeleteChapters(id)).unwrap().then(() => {
       language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
@@ -191,11 +188,7 @@ const BooksInfo = () => {
       language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
     })
   }
-  const deleteReplyHandler = (id: number) => {
-    dispatch(actDeleteReply(id)).unwrap().then(() => {
-      language === 'English' ? toast.success('Deleted successfully!') : toast.success('تم الحذف بنجاح!')
-    })
-  }
+
   const commentData = {
     comment: commentText
 
@@ -214,9 +207,11 @@ const BooksInfo = () => {
     content: replyy
 
   }
-  const addReplyHandler = () => {
-    console.log(ReplyData)
+  const addReplyHandler = (id:number) => {
+
     dispatch(actAddReply(ReplyData))
+    dispatch(changeReplyCount(id))
+    language === 'English' ? toast.success(' Added successfully! ') : toast.success('تم الاضافة بنجاح !')
     setReplyy('');
   }
   const dispatch = useAppDispatch();
@@ -260,6 +255,7 @@ const BooksInfo = () => {
       }
     }, [language]
   )
+
   unactiveInputHandler();
 
   var catesss: TCategory[] = [];
@@ -292,10 +288,10 @@ const BooksInfo = () => {
         <div className={box}>
           <div className={commenter}>
             <div onClick={() => navigate(`/Binko/userInfo/${comment?.user}`)} className={pic}>
-              <img src={`http://127.0.0.1:8000${comment.image}`} alt="" />
+              <img src={`http://127.0.0.1:8000/${comment.user_image}`} alt="" />
             </div>
             <div onClick={() => navigate(`/Binko/userInfo/${comment?.user}`)} className={commenterName}>
-              {comment?.name}
+              {comment?.user_name}
             </div>
           </div>
           <div className={text}>
@@ -306,9 +302,9 @@ const BooksInfo = () => {
           </div>
           {
 
-            (comment.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
+            (comment.user_name === userData?.user.name || userData?.user.is_admin || userData?.user.is_supervisor) ?
               <div className={commentBtns}>
-                {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
+
                 <Button
                   onClick={() => deleteCommentHandler(comment?.id!)}
                   style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
@@ -323,7 +319,7 @@ const BooksInfo = () => {
                 setReplyy(e.target.value)
               }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
             </div>
-            <div className={icon} onClick={addReplyHandler}>
+            <div className={icon} onClick={()=>addReplyHandler(comment?.id)}>
               {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
             </div>
           </div>
@@ -331,104 +327,11 @@ const BooksInfo = () => {
 
         {
 
-          comment.replies?.length ? <div onClick={(e) => activeReplyHandler(e)} id={`${reply}-${comment.id}`} className={reply}>
-            {language === 'English' ? `There are ${comment.replies?.length} replies` : `   هناك ${replies.length} رد`}
+          comment.reply_count > 0 ? <div onClick={() => activeReplyHandler(comment.id)} id={`${reply}-${comment.id}`} className={reply}>
+            {language === 'English' ? `There are ${comment.reply_count} replies` : `   هناك ${replies.length} رد`}
           </div> : ''
         }
-        {replies.length ? <div className={`${replyList} ${reply}-${comment.id}`}>
-          {comment.replies?.map(rep => {
-            return (
-              <>
-                <div key={rep.id} className={replyBox}>
-                  <div className={replyer}>
-                    <div className={pic}>
-                      <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
-                    </div>
-                    <div className={replyerName}>
-                      {rep?.name}
-                    </div>
-                  </div>
-                  <div className={text}>
-                    <p>{rep?.content} <span
-                      className={`${rep?.id}`}
-                      id={`span-${rep?.id}`}
-                    >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-                  </div>
-                  {
 
-                    (rep.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
-                      <div className={commentBtns}>
-                        {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
-                        <Button
-                          onClick={() => deleteReplyHandler(rep?.id!)}
-                          style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
-                      </div> : ""
-                  }
-                  <div
-                    className={` ${inputField}`}
-                    id={`inp-${rep?.id}`} >
-                    <div className={input} >
-                      <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-                    </div>
-                    <div className={icon}>
-                      {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-                    </div>
-                  </div>
-                </div>
-
-                {
-                  rep.children?.length ?
-                    rep.children?.map(rep => {
-                      return (
-                        <>
-                          <div className={replyBox}>
-                            <div className={replyer}>
-                              <div className={pic}>
-                                <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
-                              </div>
-                              <div className={replyerName}>
-                                {rep?.name}
-                              </div>
-                            </div>
-                            <div className={text}>
-                              <div className={replyerName} id="parent">
-                                @{rep?.parent}
-                              </div>
-                              <p>{rep?.content} <span
-                                className={`${rep?.id}`}
-                                id={`span-${rep?.id}`}
-                              >{language === 'English' ? `REPLY` : `الرد`}</span></p>
-                            </div>
-                            {
-
-                              (rep?.user === userData?.user.id || userData?.user.is_admin || userData?.user.is_supervisor) ?
-                                <div className={commentBtns}>
-                                  {/* {ExistedComment ? <Button style={{ width: '60px', }}>{language === 'English' ? 'Edit' : 'تعديل'}</Button> : ""} */}
-                                  <Button
-                                    onClick={() => deleteReplyHandler(rep?.id)}
-                                    style={{ width: '60px', margin: "10px", backgroundColor: "#f35151" }}>{language === 'English' ? 'Delete' : 'حذف'}</Button>
-                                </div> : ""
-                            }
-                            <div
-                              className={` ${inputField}`}
-                              id={`inp-${rep?.id}`} >
-                              <div className={input} >
-                                <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-                              </div>
-                              <div className={icon}>
-                                {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-                              </div>
-                            </div>
-                          </div>
-                        </>)
-                    })
-                    : ""}
-              </>
-            )
-          })}
-
-
-        </div> : ''}
       </div >)
   });
   const chaptersLists = chapters?.map((chapter, idx) => <li key={chapter.id} style={{ position: 'relative' }}><span onClick={() => navigate(`${chapter.id}`)}>{chapter.title}</span> <span
@@ -438,7 +341,7 @@ const BooksInfo = () => {
     <Button
       style={{ backgroundColor: '#f35151', margin: '0 1px' }
       }
-      onClick={() => deleteChapterHandler(chapter.id)}
+      onClick={() => deleteChapterConfirm(chapter.id)}
 
 
     >
@@ -487,7 +390,7 @@ const BooksInfo = () => {
         <Button
           style={{ backgroundColor: '#f35151', margin: '0 1px' }
           }
-          onClick={() => deleteChapterHandler(chapter.id)}
+          onClick={() => deleteChapterConfirm(chapter.id)}
 
 
         >
@@ -496,6 +399,7 @@ const BooksInfo = () => {
       </span>
         : ''}
   </li >)
+  const userProfile = users.find(user=>user.id===bookInfo?.user?.id)
   return (
     <Container className={bookCont} >
       <div className={left}>
@@ -506,22 +410,24 @@ const BooksInfo = () => {
           <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
           <div className={authInfo}>
             <div className={photo}>
-              <img src={`http://127.0.0.1:8000${bookInfo?.image_user}`} alt="" />
+              <img src={`http://127.0.0.1:8000${userProfile?.image}`} alt="" />
             </div>
-            <div className={nameAuth}>{bookInfo?.username}</div>
+            <div className={nameAuth}>{bookInfo?.user?.name}</div>
           </div>
         </div>
       </div>
       <div className={right}>
         <div className={up}>
           <h1>{bookInfo?.name}</h1>
-          <span>{bookInfo?.username}</span>
+          <span>{bookInfo?.user?.name}</span>
           <div className={cate}>
             {categoriesBookCard}
           </div>
           <p className={loves}>{language === 'English' ? `${likesCount} Likes` : ` ${likesCount} اعجاب `} </p>
+          <p >{language === 'English' ? ` Book Ratings` : ` تقييم الكتاب`} : <span className={ratings}>{bookInfo?.average_rating/2}/5 </span></p>
           <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
           <p className={desc}>{bookInfo?.description}</p>
+       { (userData?.user.id!==bookInfo?.user?.id)?  <RatingStars bookId={bookInfo?.id!} userId={userData?.user.id!} />:""}
           <ul>
             {ExistedBook ? '' :
               <li className={SavedExist ? active : ''} onClick={(e) => activeFavHandler(e)}><p>{language === 'English' ? `Save` : `حفظ`} </p>
@@ -547,7 +453,7 @@ const BooksInfo = () => {
               <Button
                 onClick={editHandler}
                 style={{ margin: '10px', width: '50%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
-              <Button onClick={deleteHandler} style={{ margin: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
+              <Button onClick={deleteBookConfirm} style={{ margin: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
             </div>
             : ''}
           {(userData?.user.is_supervisor || userData?.user.is_admin) ?

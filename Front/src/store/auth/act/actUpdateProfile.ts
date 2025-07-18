@@ -18,7 +18,7 @@ import { RootState } from "@store/index";
 type TResponse = {}
 const actUpdateProfile = createAsyncThunk(
     "auth/actUpdateProfile",
-    async (formData, thunk) => {
+    async (formData:FormData, thunk) => {
         const { rejectWithValue, getState } = thunk;
         const { auth } = getState() as RootState;
         try {

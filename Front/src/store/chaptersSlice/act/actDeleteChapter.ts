@@ -1,14 +1,14 @@
-import { createAsyncThunk, GetState } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
 const actDeleteChapters = createAsyncThunk(
     "chapters/actDeleteChapters",
     async (id: number, thunkAPI) => {
-        const { rejectWithValue, getState, signal } = thunkAPI;
+        const { rejectWithValue, signal } = thunkAPI;
 
         try {
-            const response = await axios.delete(
+             await axios.delete(
                 `delete-chapter/${id}/`,
                 {
                     signal,

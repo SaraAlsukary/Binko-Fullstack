@@ -10,13 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
 type TCategory = {
-    id: Number,
+    id: number,
     name: string | null,
     Image: React.ReactNode,
     author: string | null
 }
 type TCategoryAra = {
-    id: Number,
+    id: number,
     الاسم: string | null,
     الصورة: React.ReactNode,
     الكاتب: string | null
@@ -65,7 +65,7 @@ function Book() {
         }
     }, [books]);
 
-    const actionsTemplate = (rowDate: object) => {
+    const actionsTemplate = (rowDate: TCategory | TCategoryAra) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {

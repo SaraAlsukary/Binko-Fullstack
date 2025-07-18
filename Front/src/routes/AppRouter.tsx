@@ -18,6 +18,7 @@ const BooksCategory = lazy(() => import('@pages/BooksCategory/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
 const EditBook = lazy(() => import('@pages/EditBook/EditBook'));
 const DenyNote = lazy(() => import('@pages/DenyNote/DenyNote'));
+const Comments = lazy(() => import('@pages/Comments/Comments'));
 const DenyNoteChapter = lazy(() => import('@pages/DenyNoteChapter/DenyNote'));
 const AddBook = lazy(() => import('@pages/AddBook/AddBook'));
 const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
@@ -102,6 +103,11 @@ const AppRouter = () => {
         {
             path: 'books/:id',
             element: <SuspendPage><BooksInfo /></SuspendPage>,
+
+        },
+        {
+            path: 'books/:id/comments/:idComment/replies',
+            element: <SuspendPage><Comments /></SuspendPage>,
 
         },
         {

@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from .models import Rating
 from books.models import Book
-
-class RatingSerializer(serializers.ModelSerializer):  
+class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ['user', 'book', 'value']
-
+        fields = ['value']
 
 class BookWithRatingSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField()

@@ -5,21 +5,17 @@ import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 type FormData = {
     user: number,
     book: number,
-    value:number
+    value: number
 }
 const actAddRating = createAsyncThunk(
     "books/actAddRating",
     async (Formdata: FormData, thunkAPI) => {
-        const { rejectWithValue, signal } = thunkAPI;
-    
+        const { rejectWithValue } = thunkAPI;
+
 
         try {
             const response = await axios.post(
-                `books/rate/`, Formdata,
-                {
-                    signal,
-              
-                },
+                `rate/${Formdata.user}/${Formdata.book}/`, { value: Formdata.value }
             );
             return response.data;
         } catch (error) {

@@ -48,7 +48,6 @@ function LeftTabsExample() {
                         </Tab.Content>
                     </Col>
                 </Row>
-                <ConfirmDialog />
 
             </Tab.Container>
         </div>

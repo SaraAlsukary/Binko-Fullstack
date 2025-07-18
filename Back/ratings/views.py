@@ -5,26 +5,29 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializer import RatingSerializer  , BookWithRatingSerializer
 from .models import Rating
+from account.models import CustomUser
 from books.models import Book
+from rest_framework import status
 @api_view(['POST'])
-def add_rating(request):
+def rate_book(request, user_id, book_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        book = Book.objects.get(id=book_id)
+    except CustomUser.DoesNotExist:
+        return Response({'error': 'المستخدم غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+    except Book.DoesNotExist:
+        return Response({'error': 'الكتاب غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+
     serializer = RatingSerializer(data=request.data)
     if serializer.is_valid():
-        user = serializer.validated_data['user']
-        book = serializer.validated_data['book']
-        value = serializer.validated_data['value']
+        # احذف التقييم السابق (إن وجد)
+        Rating.objects.filter(user=user, book=book).delete()
+        # احفظ التقييم الجديد
+        Rating.objects.create(user=user, book=book, value=serializer.validated_data['value'])
+        return Response({'message': 'تم حفظ التقييم بنجاح'}, status=status.HTTP_201_CREATED)
 
-        rating, created = Rating.objects.update_or_create(
-            user=user,
-            book=book,
-            defaults={'value': value}
-        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({
-            'message': 'تم إضافة التقييم' if created else 'تم تحديث التقييم',
-            'rating': RatingSerializer(rating).data
-        }, status=200)
-    return Response(serializer.errors, status=400)
 
 @api_view(['GET'])
 def top_books_rated_7_to_10(request):

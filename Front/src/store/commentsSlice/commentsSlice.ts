@@ -8,63 +8,7 @@ import actAddComments from "./act/actAddComment";
 import actDeleteComment from "./act/actDeleteComment";
 import actGetComments from "./act/actGetComments";
 
-// const initialState = [, {
-//     id: 3,
-//     commenterName: 'Commenter Name',
-//     img: bookImage,
-//     reply: [],
-//     text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-// }, {
-//         id: 4,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 2,
-//         commenterName: 'Commenter Name',
-//         img: bookImage,
-//         reply: [{
-//             id: 20,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }, {
-//             id: 29,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }],
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 5,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 6,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 10,
-//         commenterName: 'Commenter Name',
-//         img: bookImage,
-//         reply: [{
-//             id: 8,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }, {
-//             id: 9,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }],
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }];
+
 interface IBooksState {
     comments: TComment[];
     loading: TLoading;
@@ -82,6 +26,10 @@ const comments = createSlice({
     reducers: {
         actClearComments: (state) => {
             state.comments = []
+        },
+        changeReplyCount: (state,action) => {
+            const findIndex = state.comments.findIndex(comment => comment.id === action.payload)
+            state.comments[findIndex].reply_count++;
         }
     },
     extraReducers(builder) {
@@ -153,5 +101,5 @@ const comments = createSlice({
     },
 
 })
-export const { actClearComments } = comments.actions
+export const { actClearComments,changeReplyCount } = comments.actions
 export default comments.reducer

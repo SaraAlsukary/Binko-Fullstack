@@ -3,7 +3,7 @@ import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle'
 import { useAppDispatch, useAppSelector } from '@hooks/app'
 import actDenyBooks from '@store/booksSlice/act/actDenyBook'
 import { useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const DenyNote = () => {
@@ -17,7 +17,6 @@ const DenyNote = () => {
         id: indx,
         note: note
     }
-    console.log(DenyNote)
     const denyHandler = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -45,7 +44,6 @@ const DenyNote = () => {
 
             }}
                 onChange={(e) => {
-                    console.log(e.target.value)
                     SetNote(e.target.value)
                 }} type="text" placeholder={language === 'English' ? 'Note' : 'ملاحظة'} />
             <Button

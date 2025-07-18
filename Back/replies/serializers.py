@@ -48,7 +48,14 @@ class RecursiveField(serializers.Serializer):
 
 class ReplysSerializer(serializers.ModelSerializer):
     children = RecursiveField(many=True, read_only=True)
+    name = serializers.CharField(source='user.name')
+    image=serializers.ImageField(source='user.image')
 
     class Meta:
         model = Reply
-        fields = ['id', 'user', 'content', 'created_at', 'parent', 'children']    
+        fields = ['id', 'user', 'content', 'created_at', 'parent', 'children','name','image']    
+
+class ReplyToReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reply
+        fields = ['content']        

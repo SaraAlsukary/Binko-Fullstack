@@ -4,7 +4,9 @@ var settingsBox = {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 3,
-    initialSlide: 0,
+    initialSlide: 0, adaptiveHeight: true,
+    variableWidth: false,
+    centerMode: false,
     responsive: [
         {
             breakpoint: 1024,

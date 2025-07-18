@@ -7,68 +7,10 @@ import { isString } from "@customtypes/isString";
 import actGetReplyByComment from "./act/actGetReplyByComment";
 import actAddReply from "./act/actAddReply";
 import actDeleteReply from "./act/actDeleteReply";
-// import actDeleteComment from "./act/actDeleteComment";
-// import actGetComments from "./act/actGetComments";
-
-// const initialState = [, {
-//     id: 3,
-//     commenterName: 'Commenter Name',
-//     img: bookImage,
-//     reply: [],
-//     text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-// }, {
-//         id: 4,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 2,
-//         commenterName: 'Commenter Name',
-//         img: bookImage,
-//         reply: [{
-//             id: 20,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }, {
-//             id: 29,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }],
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 5,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 6,
-//         commenterName: 'Commenter Name',
-//         reply: [],
-//         img: bookImage,
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }, {
-//         id: 10,
-//         commenterName: 'Commenter Name',
-//         img: bookImage,
-//         reply: [{
-//             id: 8,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }, {
-//             id: 9,
-//             commenterName: 'Commenter Name',
-//             img: bookImage,
-//             text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//         }],
-//         text: ' Lorem ipsum dolor, sit amet consectetur adipisicing elit.Itaque enim veniam hic! Omnis fuga, facere eos ullam voluptates neque esse.Deserunt sapiente id perferendis nostrum explicabo facere deleniti praesentium quis'
-//     }];
+import actAddReplyToComment from "./act/actAddReplyToComment";
+import { TReplies } from "@customtypes/replyType";
 interface IBooksState {
-    replies: TComment[];
+    replies: TReplies[];
     loading: TLoading;
     error: string | null;
 }
@@ -97,6 +39,22 @@ const replies = createSlice({
             state.replies = action.payload;
         });
         builder.addCase(actGetReplyByComment.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //Add reply to a comment
+        builder.addCase(actAddReplyToComment.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAddReplyToComment.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.replies.push(action.payload);
+
+        });
+        builder.addCase(actAddReplyToComment.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

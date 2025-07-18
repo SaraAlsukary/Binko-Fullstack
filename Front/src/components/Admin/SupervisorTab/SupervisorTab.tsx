@@ -11,7 +11,7 @@ import Users from '../../Admin/Users/Users';
 import { useAppSelector } from '@hooks/app';
 import Supervisors from '../Supervisors/Supervisors';
 import './SupervisorTab.css'
-import { ConfirmDialog } from 'primereact/confirmdialog';
+
 
 function LeftTabsExample() {
     const { language } = useAppSelector(state => state.language);
@@ -31,10 +31,10 @@ function LeftTabsExample() {
                                 <Nav.Link eventKey="second">{language === 'English' ? 'Comments' : 'التعليقات'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="third">{language === 'English' ? 'Books' : 'الكتب'}</Nav.Link>
+                                <Nav.Link eventKey="third">{language === 'English' ? 'Accepted Books' : 'الكتب المقبولة'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="fourth">{language === 'English' ? 'Accepted Books' : 'الكتب المنشورة'}</Nav.Link>
+                                <Nav.Link eventKey="fourth">{language === 'English' ? 'Books' : 'الكتب '}</Nav.Link>
                             </Nav.Item>
 
                             <Nav.Item>
@@ -61,7 +61,6 @@ function LeftTabsExample() {
                         </Tab.Content>
                     </Col>
                 </Row>
-                <ConfirmDialog />
 
             </Tab.Container>
         </div >

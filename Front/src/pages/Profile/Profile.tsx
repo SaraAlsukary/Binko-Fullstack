@@ -7,10 +7,10 @@ import { Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 // import actGetfavorite from '@store/Favorite/act/actGetfavorite';
-import { Button, Input } from '@components/feedback';
+import { Input } from '@components/feedback';
 import Picture from '@components/common/Picture/Picture';
 import SecondaryButton from '@components/feedback/SecondaryButton/SecondaryButton';
-import { actLogout, actUpdateProfile, authLogout } from '@store/auth/authSlice';
+import {  actUpdateProfile, authLogout } from '@store/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { settingsBox } from '@utils/settingsForSlick';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
@@ -49,13 +49,13 @@ function Profile() {
     // const booksCardsWrite = addBook.books.map((book => <BookCard image={book.image} name={book.name} id={book.id} user={auth.user?.username} />))
     const booksCardsFavorite = favorite.books.map((book => {
         const userName = users.users.find(user => user.id == book.user.id)?.name;
-        return <BookCard name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
+        return <BookCard key={book.id} name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
 
     }))
 
     const booksCardsPublished = books.myBooks.map((book => {
         const userName = users.users.find(user => user.id === book.user.id)?.name;
-        return <BookCard name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
+        return <BookCard key={book.id}  name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
 
     }))
     const dataform = new FormData
@@ -71,11 +71,11 @@ function Profile() {
         })
     }
     useEffect(() => {
-        dispatch(actGetfavorite(auth.userData.user?.id));
-        dispatch(actGetMyBooks(auth.userData.user?.id));
+        dispatch(actGetfavorite(auth.userData!.user?.id));
+        dispatch(actGetMyBooks(auth.userData!.user?.id));
         dispatch(actGetUsers());
     }, [])
-    const userData = users.users.find(user => auth.userData.user?.id === user.id);
+    const userData = users.users.find(user => auth.userData!.user?.id === user.id);
     return (
         <div className={profileContainer}>
             <Container>
