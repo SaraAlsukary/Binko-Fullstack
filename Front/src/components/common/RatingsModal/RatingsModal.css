@@ -1,0 +1,20 @@
+.rating-modal {
+    width: 120px;
+    margin: 10px auto;
+}
+
+.rating-modal span {
+    color: #000 !important;
+}
+
+.rating-modal button {
+    border: none !important;
+    outline: none !important;
+    background-color: var(--main-color);
+    padding: 5px 10px;
+}
+
+.rating-modal button:focus {
+    border: none !important;
+    outline: none !important;
+}

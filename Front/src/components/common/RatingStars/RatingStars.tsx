@@ -25,7 +25,7 @@ const RatingStars = ({ bookId, userId }: { bookId: number, userId: number }) => 
             book: bookId,
             value: currentRating
         }
-        console.log(formStars.value)
+      
         dispatch(actAddRating(formStars))
         language === 'English' ? toast.success(' Added Rating successfully! ') : toast.success('تم اضافة التقييم بنجاح !')
 

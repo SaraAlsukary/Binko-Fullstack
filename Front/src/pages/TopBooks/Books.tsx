@@ -1,11 +1,13 @@
 import BookCard from '@components/Books/BookCard/BookCard';
 import styles from './Books.module.css';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { useEffect } from 'react';
 import actTopBooks from '@store/booksSlice/act/actTopBooks';
 import { TBooks } from '@customtypes/booksTypes';
 import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle';
+import BookCardList from '@components/Books/BookCardList/BookCardList';
+import { settingsBox } from '@utils/settingsForSlick';
 const { bookContainer } = styles;
 
 const Books = () => {
@@ -27,11 +29,14 @@ const Books = () => {
         <div className={bookContainer}>
 
             <Container>
-                <HeadingTitle>{language === 'English' ? "Top Books" : "أفضل الكتب"}</HeadingTitle>
-                <Row style={{ marginTop: "30px" }}>
+                <div className='mb-4'>
+                    <HeadingTitle>{language === 'English' ? "Top Books" : "أفضل الكتب"}</HeadingTitle>
+                </div>                {/* <Row style={{ marginTop: "30px" }}>
                     {booksCards}
-                </Row>
-
+                </Row> */}
+                <BookCardList settings={settingsBox} type={'box'}>
+                    {booksCards}
+                </BookCardList>
             </Container>
         </div >
     )

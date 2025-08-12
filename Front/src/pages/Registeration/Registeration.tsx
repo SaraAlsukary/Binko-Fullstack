@@ -67,16 +67,10 @@ const Registeration = () => {
             dispatch(actCreateAccount(userData))
                 .unwrap()
                 .then((res) => {
-                    if (res.is_admin) {
-                        console.log('admin')
-                        navigate('/Binko/supervisor')
-                    } else if (res.is_supervisor) {
-                        console.log('supervisor')
-                        navigate('/Binko/supervisor')
-                    } else {
-                        console.log(res)
-                        navigate('/Binko/')
+                    if (res) {
+                        navigate('/Binko/addProfile')
                     }
+
                 })
                 .catch(err => err)
             console.log(userData)

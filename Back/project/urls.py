@@ -27,7 +27,11 @@ urlpatterns = [
     path('api/', include('replies.urls')),
     path('api/', include('chapters.urls')),
     path('api/', include('categories.urls')),
-    path('api/', include('ratings.urls'))
+    path('api/', include('ratings.urls')),
+    path('api/', include('dislikes.urls')),
+    path('api/', include('readbooks.urls'))
+
+
 
 
 

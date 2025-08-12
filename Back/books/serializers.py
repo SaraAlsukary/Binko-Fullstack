@@ -3,6 +3,8 @@ from .models import Book_Fav ,Book , Book_Category ,Like
 from account.models import CustomUser
 from chapters.models import Chapter
 from categories.models import Category 
+from comments.models import Comment
+from dislikes.models import Dislike
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -19,13 +21,16 @@ class BooksSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     categories = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()  # حقل جديد
+    likes_count = serializers.SerializerMethodField()
+    dislikes_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
         fields = [
             'id', 'name', 'image', 'description', 'publication_date',
             'user', 'categories', 'is_accept', 'content',
-            'average_rating'  # نضيفه هنا أيضًا
+            'average_rating' , 'likes_count', 'dislikes_count', 'comments_count' # نضيفه هنا أيضًا
         ]
 
     def get_categories(self, obj):
@@ -39,6 +44,15 @@ class BooksSerializer(serializers.ModelSerializer):
         if ratings.exists():
             return round(sum(r.value for r in ratings) / ratings.count(), 2)
         return 0
+    
+    def get_likes_count(self, obj):
+        return Like.objects.filter(book=obj).count()
+
+    def get_dislikes_count(self, obj):
+        return Dislike.objects.filter(book=obj).count()
+
+    def get_comments_count(self, obj):
+        return Comment.objects.filter(book=obj).count()
 
 class FavoriteBookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -282,3 +296,9 @@ class BookUpdateSerializer(serializers.ModelSerializer):
             Book_Category.objects.create(book=instance, category_id=cat_id)
 
         return instance
+    
+
+class LatestBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'image', 'publication_date', 'description']

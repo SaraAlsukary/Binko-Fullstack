@@ -1,0 +1,16 @@
+.stars .hide {
+    display: none;
+}
+
+.stars .starsText {
+    color: white !important;
+}
+.stars .st{
+    margin: 0 5px;
+}
+@media (max-width:767px) {
+    .stars {
+        display: flex;
+        flex-direction: column;
+    }
+}

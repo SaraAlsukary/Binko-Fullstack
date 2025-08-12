@@ -10,7 +10,7 @@ import BookCardList from '@components/Books/BookCardList/BookCardList';
 import { Input } from '@components/feedback';
 import Picture from '@components/common/Picture/Picture';
 import SecondaryButton from '@components/feedback/SecondaryButton/SecondaryButton';
-import {  actUpdateProfile, authLogout } from '@store/auth/authSlice';
+import { actUpdateProfile, authLogout } from '@store/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { settingsBox } from '@utils/settingsForSlick';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
@@ -55,7 +55,7 @@ function Profile() {
 
     const booksCardsPublished = books.myBooks.map((book => {
         const userName = users.users.find(user => user.id === book.user.id)?.name;
-        return <BookCard key={book.id}  name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
+        return <BookCard key={book.id} name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
 
     }))
     const dataform = new FormData
@@ -67,8 +67,8 @@ function Profile() {
         dispatch(actUpdateProfile(dataform))
             .unwrap()
             .then(() => {
-                 toast.success('successfully updated profile!')
-        })
+                toast.success('successfully updated profile!')
+            })
     }
     useEffect(() => {
         dispatch(actGetfavorite(auth.userData!.user?.id));
@@ -97,8 +97,8 @@ function Profile() {
                                 <div className={info}>
                                     {language === 'English' ? "Change My informations" : "تغيير معلوماتي "}
                                 </div>
-                                <Input onChange={(e: any) => setDes(e.target.value)} type='text' value={auth.user?.discriptions} placeholder={language === 'Arabic' ? 'info' : 'نبذة'} />
-                                <Input onChange={(e: any) => setName(e.target.value)} type='text' value={auth.user?.discriptions} placeholder={language === 'Arabic' ? 'userame' : 'اسم المستخدم'} />
+                                <Input onChange={(e: any) => setDes(e.target.value)} type='text' value={auth?.user?.discriptions} placeholder={language === 'English' ? 'info' : 'نبذة'} />
+                                <Input onChange={(e: any) => setName(e.target.value)} type='text' value={auth?.user?.name} placeholder={language === 'English' ? 'userame' : 'اسم المستخدم'} />
                                 {/* <Input type='email' value={auth.user?.username} placeholder={language === 'Arabic' ? 'email' : 'ايميل'} /> */}
                                 {/* <Input type='password' value={auth.user?.password} placeholder={language === 'Arabic' ? 'password' : 'كلمة المرور'} /> */}
                                 <Input onClick={updateHandler} type='submit' value={language === 'Arabic' ? 'تغيير' : 'Change'} />

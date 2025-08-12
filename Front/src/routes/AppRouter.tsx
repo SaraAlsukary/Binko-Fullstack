@@ -21,6 +21,7 @@ const DenyNote = lazy(() => import('@pages/DenyNote/DenyNote'));
 const Comments = lazy(() => import('@pages/Comments/Comments'));
 const DenyNoteChapter = lazy(() => import('@pages/DenyNoteChapter/DenyNote'));
 const AddBook = lazy(() => import('@pages/AddBook/AddBook'));
+const AddProfile = lazy(() => import('@pages/AddProfile/AddProfile'));
 const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
 const AddChapter = lazy(() => import('@pages/AddChapter/AddChapter'));
 const Favorite = lazy(() => import('@pages/Favorite/Favorite'));
@@ -45,6 +46,9 @@ const AppRouter = () => {
         }, {
             path: '/Binko/home',
             element: <SuspendPage> <Home /></SuspendPage>
+        }, {
+            path: "/Binko/addProfile",
+            element: <SuspendPage><AddProfile /></SuspendPage>
         }, {
             path: 'profile/:id',
             element: <SuspendPage><UpdateBook /></SuspendPage>

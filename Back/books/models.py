@@ -30,7 +30,7 @@ class Book_Fav(models.Model):
         unique_together = ('user', 'book')
 
 class Like(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     class Meta:

@@ -123,6 +123,10 @@
 }
 
 .bookCont .right .up .loves {
+    color: var(--main-color);
+}
+
+.bookCont .right .up .dis {
     color: #f35151;
 }
 
@@ -428,6 +432,7 @@
     }
 
 }
-.bookCont .ratings{
-    color:yellow
+
+.bookCont .ratings {
+    color: yellow
 }

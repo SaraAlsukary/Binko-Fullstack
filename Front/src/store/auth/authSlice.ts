@@ -5,11 +5,12 @@ import actLogin from "./act/actLogin";
 import { isString } from "@customtypes/isString";
 import actLogout from "./act/actLogout";
 import actUpdateProfile from "./act/actUpdateProfile";
+import actAddProfile from "./act/actAddProfile";
 
 interface IAuthState {
     userData:
     {
-    
+
         user: {
             id: number,
             is_supervisor: boolean,
@@ -89,7 +90,21 @@ const authSlice = createSlice({
                 state.error = action.payload;
             }
         });
-
+        //Add Profile
+        builder.addCase(actAddProfile.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actAddProfile.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            // state.user = action.payload;
+        });
+        builder.addCase(actAddProfile.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
         //update profile
         builder.addCase(actUpdateProfile.pending, (state) => {
             state.loading = "pending";

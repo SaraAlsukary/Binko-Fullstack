@@ -6,8 +6,10 @@ import HeadingTitle from "@components/feedback/HeadingTitle/HeadingTitle";
 import { Button, Input } from "@components/feedback";
 import Send from '@assets/svgs/send.svg?react';
 import SendArabic from '@assets/svgs/sendArabic.svg?react';
-import LoveNotFill from '@assets/svgs/loveNotFill.svg?react';
-import LoveFillWhite from '@assets/svgs/loveFillWhite.svg?react';
+import Like from '@assets/svgs/like.svg?react';
+import LikeWhite from '@assets/svgs/like-white.svg?react';
+import Dislike from '@assets/svgs/dislike.svg?react';
+import DislikeWhite from '@assets/svgs/dislike-white.svg?react';
 import BookMark from '@assets/svgs/bookMarkGreen.svg?react';
 import BookMarkWhite from '@assets/svgs/bookMarkWhite.svg?react';
 import Read from '@assets/svgs/read.svg?react';
@@ -16,6 +18,7 @@ import actGetCommentByBook from "@store/commentsSlice/act/actGetCommentByBook";
 import actGetChapters from "@store/chaptersSlice/act/actGetChapters";
 import actGetUsers from "@store/usersSlice/act/actGetUsers";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
+import RatingShowStars from "@components/common/RatingShowStars/RatingShowStars";
 import actAddFavorite from "@store/Favorite/act/actAddFavorite";
 import actGetfavorite from "@store/Favorite/act/actGetfavorite";
 import { actClearComments, changeReplyCount } from "@store/commentsSlice/commentsSlice";
@@ -31,7 +34,7 @@ import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
 import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
 import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
-import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook } from "@store/booksSlice/booksSlice";
+import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook, actSetDisLike } from "@store/booksSlice/booksSlice";
 import actGetBooksToAccept from "@store/booksSlice/act/actGetBooksToAccept";
 import actDeleteChapters from "@store/chaptersSlice/act/actDeleteChapter";
 import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
@@ -43,11 +46,16 @@ import actGetLikeStatue from "@store/booksSlice/act/actGetLikeStatue";
 import { TCategory } from "@customtypes/categoryType";
 import actGetAcceptedBooksBySuperCate from "@store/booksSlice/act/actGetAcceptedBooksBySuperCate";
 import { confirmDialog } from "primereact/confirmdialog";
-import RatingStars from "@components/common/RatingStars/RatingStars";
+import RatingsModal from "@components/common/RatingsModal/RatingsModal";
+import actAddDislike from "@store/booksSlice/act/actAddDislike";
+import actRemoveDislike from "@store/booksSlice/act/actRemoveDislike";
+type TDisForm = {
+  book_id: number,
+  user_id: number
+}
 const { left, pic, author, boxCont, photo, commentBtns, reply, commentsList, authInfo, icons, commenter, commenterName,
-  text, bookCont, nameAuth, buttn, icon, activeIcon, inputField, ratings, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
+  text, bookCont, nameAuth, buttn, icon, activeIcon, dis, inputField, ratings, right, list, up, down, active, cate, loves, input, desc, comments, box } = style;
 const BooksInfo = () => {
- 
   const [commentText, setCommentText] = useState('');
   const [replyy, setReplyy] = useState('');
   const [likesCount, setLikeCount] = useState(0);
@@ -63,7 +71,7 @@ const BooksInfo = () => {
   const { id }: any = useParams();
   const indx = parseInt(id)
   const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks, acceptedBooks, likes, is_liked } = useAppSelector(state => state.books);
+  const { books, myBooks, acceptedBooks, likes, is_liked, dislikes } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
     user: userData?.user?.id,
@@ -85,7 +93,20 @@ const BooksInfo = () => {
 
     }
   }
+  const activeDisHandler = async (e: any) => {
+    const disForm: TDisForm = {
+      user_id: userData?.user.id!,
+      book_id: bookInfo?.id!
+    };
 
+    (e.target as Element).classList.toggle(active);
+    if ((e.target as Element).classList.contains(active) && is_liked) {
+    dispatch(actAddDislike(disForm));
+    } else {
+    dispatch(actRemoveDislike(disForm))
+
+    }
+  }
   const activeFavHandler = (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active) && !SavedExist) {
@@ -104,7 +125,6 @@ const BooksInfo = () => {
     navigate(`comments/${commentId}/replies`)
 
   }
-    console.log(bookInfo)
 
   const editHandler = () => {
     navigate(`edit`);
@@ -207,7 +227,7 @@ const BooksInfo = () => {
     content: replyy
 
   }
-  const addReplyHandler = (id:number) => {
+  const addReplyHandler = (id: number) => {
 
     dispatch(actAddReply(ReplyData))
     dispatch(changeReplyCount(id))
@@ -272,6 +292,11 @@ const BooksInfo = () => {
     }
   }, [likes])
   useEffect(() => {
+    console.log(bookInfo)
+    actSetDisLike(bookInfo?.dislikes_count)
+
+  }, [bookInfo, dislikes])
+  useEffect(() => {
     if (is_liked) {
       setLikeStatue(is_liked?.is_liked)
     }
@@ -319,7 +344,7 @@ const BooksInfo = () => {
                 setReplyy(e.target.value)
               }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
             </div>
-            <div className={icon} onClick={()=>addReplyHandler(comment?.id)}>
+            <div className={icon} onClick={() => addReplyHandler(comment?.id)}>
               {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
             </div>
           </div>
@@ -399,7 +424,7 @@ const BooksInfo = () => {
       </span>
         : ''}
   </li >)
-  const userProfile = users.find(user=>user.id===bookInfo?.user?.id)
+  const userProfile = users.find(user => user.id === bookInfo?.user?.id)
   return (
     <Container className={bookCont} >
       <div className={left}>
@@ -421,13 +446,21 @@ const BooksInfo = () => {
           <h1>{bookInfo?.name}</h1>
           <span>{bookInfo?.user?.name}</span>
           <div className={cate}>
+
             {categoriesBookCard}
           </div>
-          <p className={loves}>{language === 'English' ? `${likesCount} Likes` : ` ${likesCount} اعجاب `} </p>
-          <p >{language === 'English' ? ` Book Ratings` : ` تقييم الكتاب`} : <span className={ratings}>{bookInfo?.average_rating/2}/5 </span></p>
+          <div className="d-flex align-items-center justify-content-center">
+            <p className={`m-2 d-flex align-center ${loves}`}> {language === 'English' ? ` ${likesCount}  Likes ` : ` ${likesCount}  اعجاب `}  <i className="mx-2 pi pi-thumbs-up-fill" style={{ color: 'var(--main-color)' }}></i> </p>
+            <p className={`m-2 d-flex align-center ${dis}`}> {language === 'English' ? ` ${dislikes}  Dislikes ` : ` ${dislikes} عدم اعجاب `}  <i className=" m-2 pi pi-thumbs-down-fill" style={{ color: 'var(--red)' }}></i> </p>
+
+          </div>
+          <RatingShowStars text={language === 'English' ? ` Book Ratings ` : `  تقييم الكتاب`} ratingStars={bookInfo?.average_rating! / 2} />
+          {/* <span className={ratings}>{bookInfo?.average_rating/2}/5 </span> */}
           <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
-          <p className={desc}>{bookInfo?.description}</p>
-       { (userData?.user.id!==bookInfo?.user?.id)?  <RatingStars bookId={bookInfo?.id!} userId={userData?.user.id!} />:""}
+          <p className={desc}> {language === 'English' ? `Description ` : ` الوصف  `} : {bookInfo?.description}</p>
+          {(userData?.user.id !== bookInfo?.user?.id) ?
+            <RatingsModal bookId={bookInfo?.id!} userId={userData?.user.id!} />
+            : ""}
           <ul>
             {ExistedBook ? '' :
               <li className={SavedExist ? active : ''} onClick={(e) => activeFavHandler(e)}><p>{language === 'English' ? `Save` : `حفظ`} </p>
@@ -441,9 +474,35 @@ const BooksInfo = () => {
                 </div>
               </li>
             }
-            <li className={likesStatue ? active : ''} onClick={(e) => activeHandler(e)}><p>{language === 'English' ? `Like` : `أعجبني`}</p><div className={icons}>
-              <div className={activeIcon}><LoveFillWhite style={{ width: '20px' }} /> </div><div className={icon}><LoveNotFill style={{ width: '20px' }} /></div></div></li>
-            <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
+            <li className={likesStatue ? active : ''} onClick={(e) => activeHandler(e)}>
+              <p>
+                {language === 'English' ? `Like` : `أعجبني`}
+              </p>
+              <div className={icons}>
+                <div className={activeIcon}>
+                  <LikeWhite style={{ width: '20px' }} />
+                </div>
+                <div className={icon}>
+                  <Like style={{ width: '20px' }} />
+                </div>
+              </div>
+            </li>
+            <li className={likesStatue ? active : ''} onClick={(e) => activeDisHandler(e)}>
+              <p>
+                {language === 'English' ? `Dislike` : `لم يعجبني`}
+              </p>
+              <div className={icons}>
+                <div className={activeIcon}>
+                  <DislikeWhite style={{ width: '20px' }} />
+                </div>
+                <div className={icon}>
+                  <Dislike style={{ width: '20px' }} />
+                </div>
+              </div>
+            </li>
+            {chapters.length?
+              <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
+           :"" }
           </ul>
           {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
             <div style={{

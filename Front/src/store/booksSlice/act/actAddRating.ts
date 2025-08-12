@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
-type FormData = {
+type IForm = {
     user: number,
     book: number,
     value: number
 }
 const actAddRating = createAsyncThunk(
     "books/actAddRating",
-    async (Formdata: FormData, thunkAPI) => {
+    async (Formdata: IForm, thunkAPI) => {
         const { rejectWithValue } = thunkAPI;
 
 

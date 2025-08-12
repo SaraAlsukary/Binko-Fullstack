@@ -10,7 +10,7 @@ from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,Lik
 from account.models import CustomUser
 from .serializers import BookSerializer ,BookLikesSerializer ,AddBookCatSerializer,BookLikeSerializer
 from categories.models import Category
-from .serializers import  NoteSerializer ,BookUpdateSerializer ,BookLikedSerializer
+from .serializers import  NoteSerializer ,BookUpdateSerializer ,BookLikedSerializer , LatestBookSerializer
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
@@ -314,4 +314,15 @@ def update_book(request, book_id):
         return Response({'message': 'Book updated successfully'})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
     
+
+
+
+@api_view(['GET'])
+def latest_books(request):
+    books = (
+        Book.objects.filter(is_accept=True)
+        .order_by('-publication_date')  # ترتيب تنازلي بالأحدث
+    )
+    serializer = LatestBookSerializer(books, many=True)
+    return Response(serializer.data)    
     

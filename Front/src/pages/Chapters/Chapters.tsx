@@ -13,6 +13,7 @@ import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
 import { Button } from '@components/feedback';
 import actGetChaptersNotes from '@store/chaptersSlice/act/actGetChaptersNotes';
 import actGetAcceptedChapters from '@store/chaptersSlice/act/actGetAcceptedChapter';
+import actAddBookReading from '@store/booksSlice/act/actAddBookReading';
 const { warnings, text, down, buttn, chapterCont } = style;
 const Chapters = () => {
     const [disNext, setDisNext] = useState(false);
@@ -29,12 +30,15 @@ const Chapters = () => {
     const chapterInfoItem = (userData?.user.is_supervisor || userData?.user.is_admin || myBooks.find(book => book.id === idBook)) ? acceptedchapters.find(ch => ch.id === index) : chapters.find(ch => ch.id === index);
 
     const chapterInfo = (userData?.user.is_supervisor || userData?.user.is_admin) && (!chapterInfoItem) ? chapters.find(ch => ch.id === index) : chapterInfoItem;
-
+    const formRead:{book_id:number} = {
+        book_id: idBook
+    }
     useEffect(() => {
         dispatch(actGetChapters(param.id))
         dispatch(actGetAcceptedChapters())
         dispatch(actGetMyBooks(userData?.user.id))
         dispatch(actGetChaptersNotes(index))
+        dispatch(actAddBookReading(formRead))
 
     }, [])
 
@@ -53,7 +57,6 @@ const Chapters = () => {
 
 
     }
-    console.log(notes)
 
     const nextNavigateHandler = () => {
         var nextChapter;

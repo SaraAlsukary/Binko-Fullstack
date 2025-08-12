@@ -3,7 +3,7 @@ const { pic, img } = styles;
 type TPicture = {
     imageHandler?: (e: any) => void,
     file: string,
-    image: string
+    image?: string
 }
 const Picture = ({ imageHandler, file, image }: TPicture) => {
     return (

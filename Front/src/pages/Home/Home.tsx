@@ -3,6 +3,8 @@ import TopBooks from '@pages/TopBooks/Books'
 import { useAppSelector } from "@hooks/app";
 import About from "@pages/About/About"
 import News from "@pages/News/News"
+import TopReadingsBooks from "@pages/TopReadingsBooks/TopReadingsBooks";
+import LastBooks from "@pages/LastBooks/LastBooks";
 
 const Home = () => {
     const { userData } = useAppSelector(state => state.auth);
@@ -10,7 +12,11 @@ const Home = () => {
     return (
 
         <>
-            {userData ? <TopBooks /> : <Landing />}
+            {userData ? <>
+                <TopBooks />
+                <TopReadingsBooks />
+                <LastBooks />
+            </> : <Landing />}
             <News />
             <About />
         </>

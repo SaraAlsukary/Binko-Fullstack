@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'massages',
     'groups',
     'ratings',
+    'dislikes',
+    'readbooks'
 ]
 
 MIDDLEWARE = [
