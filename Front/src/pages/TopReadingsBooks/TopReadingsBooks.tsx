@@ -32,9 +32,7 @@ const TopReadingsBooks = () => {
                 <div className='mb-4'>
                     <HeadingTitle>{language === 'English' ? "Most Readings Books" : "أكثر الكتب قراءة"}</HeadingTitle>
                 </div>
-                {/* <Row style={{ marginTop: "30px" }}>
-                    {booksCards}
-                </Row> */}
+
                 <BookCardList settings={settingsBox} type={'box'}>
                     {booksCards}
                 </BookCardList>

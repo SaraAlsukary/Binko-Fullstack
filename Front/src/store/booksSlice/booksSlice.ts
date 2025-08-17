@@ -27,37 +27,50 @@ import actAddDislike from "./act/actAddDislike";
 import actMostReadingsBooks from "./act/actMostReadingsBook";
 import actLatestBooks from "./act/actLatestBooks";
 import actAddBookReading from "./act/actAddBookReading";
+import actGetRecommendations from "./act/actGetRecommendations";
+import actShowBook from "./act/actShowBook";
+import actGetDislikeStatue from "./act/actGetDislikeStatue";
+import actGetDisLikes from "./act/actGetDisLikes ";
 type TNote = {
     id: number,
     note: string
 }
+type TDislikes = {
+    book_id: number,
+    dislike_count: number
+}
 interface IBooksState {
     books: TBooks[];
+    book: TBooks | null;
     topBooks: TBooks[];
     latestBooks: TBooks[];
     mostBooks: TBooks[];
     notes: TNote | null;
     likes: TLikes | null,
-    dislikes: number | 0,
+    dislikes: TDislikes | null,
     acceptedBooks: TBooks[];
     myBooks: TBooks[];
+    recomBooks: TBooks[];
     loading: TLoading;
     is_liked: { is_liked: boolean } | null,
+    is_disliked: { dis_liked: boolean } | null,
     error: string | null;
 }
 
 const initialState: IBooksState = {
     books: [],
+    book: null,
     topBooks: [],
     mostBooks: [],
+    recomBooks: [],
     latestBooks: [],
     likes: null,
-    dislikes: 0,
+    dislikes: null,
     acceptedBooks: [],
     notes: null,
     myBooks: [],
     loading: "idle",
-    error: null, is_liked: null
+    error: null, is_liked: null, is_disliked: null
 };
 
 const books = createSlice({
@@ -79,10 +92,7 @@ const books = createSlice({
             state.notes = null;
 
         },
-        actSetDisLike: (state, action) => {
-            state.dislikes = action.payload
-            console.log(action.payload)
-        }
+    
     },
     extraReducers: (builder) => {
         // get books
@@ -100,7 +110,21 @@ const books = createSlice({
                 state.error = action.payload;
             }
         });
-
+        // get show
+        builder.addCase(actShowBook.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actShowBook.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.book = action.payload;
+        });
+        builder.addCase(actShowBook.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
         // add books
         builder.addCase(actAddBooks.pending, (state) => {
             state.loading = "pending";
@@ -333,8 +357,8 @@ const books = createSlice({
         builder.addCase(actAddLikes.fulfilled, (state, action) => {
             state.loading = "succeeded";
             state.likes!.likes_count = state.likes!.likes_count + 1;
+            state.is_liked!.is_liked = true;
 
-            // state.likes.likes_count! = state.likes.likes_count! + 1;
         });
         builder.addCase(actAddLikes.rejected, (state, action) => {
             state.loading = "failed";
@@ -351,6 +375,7 @@ const books = createSlice({
         builder.addCase(actDeleteLikes.fulfilled, (state, action) => {
             state.loading = "succeeded";
             state.likes!.likes_count = state.likes!.likes_count - 1;
+            state.is_liked!.is_liked = false;
 
 
         });
@@ -368,7 +393,8 @@ const books = createSlice({
         });
         builder.addCase(actRemoveDislike.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.dislikes = state.dislikes! - 1;
+            state.dislikes!.dislike_count = state.dislikes!.dislike_count! - 1;
+            state.is_disliked!.dis_liked = false;
 
 
         });
@@ -385,8 +411,8 @@ const books = createSlice({
         });
         builder.addCase(actAddDislike.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.dislikes = state.dislikes! + 1;
-
+            state.dislikes!.dislike_count = state.dislikes!.dislike_count + 1;
+            state.is_disliked!.dis_liked = true;
 
         });
         builder.addCase(actAddDislike.rejected, (state, action) => {
@@ -406,6 +432,38 @@ const books = createSlice({
 
         });
         builder.addCase(actGetLikeStatue.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //get Dislike statue
+        builder.addCase(actGetDislikeStatue.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetDislikeStatue.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.is_disliked = action.payload;
+
+        });
+        builder.addCase(actGetDislikeStatue.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //get Dislikes
+        builder.addCase(actGetDisLikes.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetDisLikes.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.dislikes = action.payload;
+
+        });
+        builder.addCase(actGetDisLikes.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;
@@ -435,6 +493,21 @@ const books = createSlice({
             state.topBooks = action.payload
         });
         builder.addCase(actTopBooks.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        //get recommendations books
+        builder.addCase(actGetRecommendations.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetRecommendations.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.recomBooks = action.payload
+        });
+        builder.addCase(actGetRecommendations.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

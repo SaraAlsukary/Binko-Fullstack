@@ -26,7 +26,7 @@ const RatingShowStars = ({ ratingStars, text }: { ratingStars: number, text: str
                         const currentStar = idx + 1
                         return (
                             <label key={idx}>
-                                <input className='hide' type="radio" name='ratings' value={ratingStars} />
+                                <input className='hide' type="radio" name='ratings' value={ratingStars?ratingStars:""} />
 
                                 <FaStar size={35}
                                     color={currentStar <= (rateColor || ratings) ? 'yellow' : 'grey'}

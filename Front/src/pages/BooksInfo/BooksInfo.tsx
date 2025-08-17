@@ -34,7 +34,7 @@ import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
 import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
 import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
-import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook, actSetDisLike } from "@store/booksSlice/booksSlice";
+import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook } from "@store/booksSlice/booksSlice";
 import actGetBooksToAccept from "@store/booksSlice/act/actGetBooksToAccept";
 import actDeleteChapters from "@store/chaptersSlice/act/actDeleteChapter";
 import actGetMyBooks from "@store/booksSlice/act/actGetMyBooks";
@@ -49,6 +49,9 @@ import { confirmDialog } from "primereact/confirmdialog";
 import RatingsModal from "@components/common/RatingsModal/RatingsModal";
 import actAddDislike from "@store/booksSlice/act/actAddDislike";
 import actRemoveDislike from "@store/booksSlice/act/actRemoveDislike";
+import actShowBook from "@store/booksSlice/act/actShowBook";
+import actGetDislikeStatue from "@store/booksSlice/act/actGetDislikeStatue";
+import actGetDisLikes from "@store/booksSlice/act/actGetDisLikes ";
 type TDisForm = {
   book_id: number,
   user_id: number
@@ -58,8 +61,11 @@ const { left, pic, author, boxCont, photo, commentBtns, reply, commentsList, aut
 const BooksInfo = () => {
   const [commentText, setCommentText] = useState('');
   const [replyy, setReplyy] = useState('');
+  const [bookInfo, setBookInfo] = useState({});
   const [likesCount, setLikeCount] = useState(0);
   const [likesStatue, setLikeStatue] = useState(false);
+  const [dislikesCounts, setDislikes] = useState(0);
+  const [is_dislike, setDislikeStatue] = useState(false);
   const [commentId, setCommentId] = useState(0);
   const { language } = useAppSelector(state => state.language)
   const { replies } = useAppSelector(state => state.replies)
@@ -71,40 +77,45 @@ const BooksInfo = () => {
   const { id }: any = useParams();
   const indx = parseInt(id)
   const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks, acceptedBooks, likes, is_liked, dislikes } = useAppSelector(state => state.books);
+  const { books, myBooks, acceptedBooks, likes, is_disliked, is_liked, dislikes, book } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
     user: userData?.user?.id,
     book: indx
   }
   const SavedExist = booksFav.find((book) => book.id === indx) ? true : false;
-  const AcceptedBook = acceptedBooks.find((book) => book.id === indx) ? true : false;
   const ExistedBook = myBooks.find((book) => (book.id === indx)) ? true : false;
   const chaptersOfBook = (userData?.user.is_supervisor || userData?.user.is_admin || ExistedBook) ? acceptedchapters.filter((ch) => ch.book === indx) : chapters;
-  const bookInfo = (userData?.user.is_supervisor || userData?.user.is_admin) ? AcceptedBook ?
-    acceptedBooks.find(book => book.id === indx) : books.find((book) => book.id === indx) : ExistedBook ? myBooks.find(book => book.id === indx)
-    : SavedExist ? booksFav.find((book) => book.id === indx) : books.find(book => book.id === indx);
+  const disForm: TDisForm = {
+    user_id: userData?.user.id!,
+    book_id: bookInfo?.id!
+  };
+
   const activeHandler = async (e: any) => {
     (e.target as Element).classList.toggle(active);
     if ((e.target as Element).classList.contains(active) && is_liked) {
       dispatch(actAddLikes(indx));
+      if (dislikes?.dislike_count) {
+        dispatch(actRemoveDislike(disForm));
+      }
+
     } else {
       dispatch(actDeleteLikes(indx))
 
     }
   }
+
   const activeDisHandler = async (e: any) => {
-    const disForm: TDisForm = {
-      user_id: userData?.user.id!,
-      book_id: bookInfo?.id!
-    };
-
+    const btnlike = document.querySelectorAll(".btnlike");
+    btnlike.forEach(btn=>{
+      (btn as Element).classList.remove(active)
+    });
     (e.target as Element).classList.toggle(active);
-    if ((e.target as Element).classList.contains(active) && is_liked) {
-    dispatch(actAddDislike(disForm));
+    // console.log(is_disliked)
+    if ((e.target as Element).classList.contains(active) && is_dislike) {
+      dispatch(actRemoveDislike(disForm));
     } else {
-    dispatch(actRemoveDislike(disForm))
-
+      dispatch(actAddDislike(disForm));
     }
   }
   const activeFavHandler = (e: any) => {
@@ -244,7 +255,9 @@ const BooksInfo = () => {
       const promiseComment = dispatch(actGetCommentByBook(indx));
       const promiseChapters = dispatch(actGetChapters(indx))
       const promiseLike = dispatch(actGetLikeStatue(likeForm))
-      const promiseLikes = dispatch(actGetLikes(indx))
+      const promiseDislike = dispatch(actGetDislikeStatue(likeForm))
+      // const promiseLikes = dispatch(actGetLikes(indx))
+      // const promiseDisLikes = dispatch(actGetDisLikes(indx))
       const promiseUsers = dispatch(actGetUsers())
       const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id!))
       const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
@@ -253,7 +266,9 @@ const BooksInfo = () => {
       const promiseFavorite = dispatch(actGetfavorite(userData?.user.id!))
 
       return () => {
-        promiseLikes.abort();
+        // promiseLikes.abort();
+        promiseDislike.abort();
+        // promiseDisLikes.abort();
         promiseLike.abort();
         promiseAcceptedChapter.abort();
         promiseAcceptedBooks.abort();
@@ -286,22 +301,56 @@ const BooksInfo = () => {
     })
 
   })
+  // useEffect(() => {
+  //   dispatch(actGetDislikeStatue(likeForm))
+  //   dispatch(actGetLikeStatue(likeForm))
+  //   dispatch(actGetDisLikes(indx))
+  //   dispatch(actGetLikes(indx))
+
+  // }, [likes, dislikes])
+
   useEffect(() => {
     if (likes) {
       setLikeCount(likes.likes_count)
     }
-  }, [likes])
+  }, [likes, dislikes]);
   useEffect(() => {
-    console.log(bookInfo)
-    actSetDisLike(bookInfo?.dislikes_count)
+    if (dislikes)
+      setDislikes(dislikes?.dislike_count!)
 
-  }, [bookInfo, dislikes])
+  }, [dislikes, likes])
   useEffect(() => {
     if (is_liked) {
       setLikeStatue(is_liked?.is_liked)
     }
   }, [is_liked, likes])
 
+  useEffect(() => {
+    if (is_disliked) {
+      setDislikeStatue(is_disliked?.dis_liked)
+    }
+  }, [is_disliked, dislikes])
+  useEffect(() => {
+    dispatch(actShowBook(indx))
+  }, [])
+  useEffect(() => {
+    if (book) {
+      setBookInfo(book)
+    }
+  }, [book])
+
+  // useEffect(() => {
+  //   dispatch(actGetDislikeStatue(likeForm))
+  // }, []);
+  // useEffect(() => {
+  //   dispatch(actGetLikeStatue(likeForm))
+  // }, []);
+  useEffect(() => {
+    dispatch(actGetDisLikes(indx))
+  }, [is_disliked,is_liked]);
+  useEffect(() => {
+    dispatch(actGetLikes(indx));
+  }, [is_liked,is_disliked]);
   const categoriesBookCard = catesss.map((cate) => <p onClick={() => navigate(`/Binko/categories/books/${cate?.id}`)} key={Math.random() * 2}>
     {language === 'English' ? cate?.name : cate?.name_arabic}
   </p>
@@ -451,7 +500,7 @@ const BooksInfo = () => {
           </div>
           <div className="d-flex align-items-center justify-content-center">
             <p className={`m-2 d-flex align-center ${loves}`}> {language === 'English' ? ` ${likesCount}  Likes ` : ` ${likesCount}  اعجاب `}  <i className="mx-2 pi pi-thumbs-up-fill" style={{ color: 'var(--main-color)' }}></i> </p>
-            <p className={`m-2 d-flex align-center ${dis}`}> {language === 'English' ? ` ${dislikes}  Dislikes ` : ` ${dislikes} عدم اعجاب `}  <i className=" m-2 pi pi-thumbs-down-fill" style={{ color: 'var(--red)' }}></i> </p>
+            <p className={`m-2 d-flex align-center ${dis}`}> {language === 'English' ? ` ${dislikesCounts}  Dislikes ` : ` ${dislikesCounts} عدم اعجاب `}  <i className=" m-2 pi pi-thumbs-down-fill" style={{ color: 'var(--red)' }}></i> </p>
 
           </div>
           <RatingShowStars text={language === 'English' ? ` Book Ratings ` : `  تقييم الكتاب`} ratingStars={bookInfo?.average_rating! / 2} />
@@ -474,7 +523,7 @@ const BooksInfo = () => {
                 </div>
               </li>
             }
-            <li className={likesStatue ? active : ''} onClick={(e) => activeHandler(e)}>
+            <li className={likesStatue ? `btnlike ${active}` : ''} onClick={(e) => activeHandler(e)}>
               <p>
                 {language === 'English' ? `Like` : `أعجبني`}
               </p>
@@ -487,7 +536,7 @@ const BooksInfo = () => {
                 </div>
               </div>
             </li>
-            <li className={likesStatue ? active : ''} onClick={(e) => activeDisHandler(e)}>
+            <li className={is_dislike ? `btnlike ${active}` : ''} onClick={(e) => activeDisHandler(e)}>
               <p>
                 {language === 'English' ? `Dislike` : `لم يعجبني`}
               </p>
@@ -500,9 +549,9 @@ const BooksInfo = () => {
                 </div>
               </div>
             </li>
-            {chapters.length?
+            {chapters.length ?
               <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
-           :"" }
+              : ""}
           </ul>
           {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
             <div style={{

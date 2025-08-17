@@ -100,13 +100,43 @@ class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
         fields = '__all__'
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id','name','image','discriptions']
 
 class BookSerializer(serializers.ModelSerializer):
     chapters = ChapterSerializer(many=True, read_only=True)
+    user=UserSerializer()
+    categories = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()  # حقل جديد
+    likes_count = serializers.SerializerMethodField()
+    dislikes_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
-        fields = '__all__'
+        fields =['id', 'name','image', 'description' ,'publication_date' ,'chapters','user' ,'content', 'is_accept','categories','average_rating' , 'likes_count', 'dislikes_count', 'comments_count']
+    def get_categories(self, obj):
+        return [
+            book_category.category.name
+            for book_category in Book_Category.objects.filter(book=obj)
+        ]
+
+    def get_average_rating(self, obj):
+        ratings = obj.ratings.all()
+        if ratings.exists():
+            return round(sum(r.value for r in ratings) / ratings.count(), 2)
+        return 0
+    
+    def get_likes_count(self, obj):
+        return Like.objects.filter(book=obj).count()
+
+    def get_dislikes_count(self, obj):
+        return Dislike.objects.filter(book=obj).count()
+
+    def get_comments_count(self, obj):
+        return Comment.objects.filter(book=obj).count()    
 
 #add book
 class CategorySerializer(serializers.ModelSerializer):

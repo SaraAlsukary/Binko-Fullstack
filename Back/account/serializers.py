@@ -67,7 +67,7 @@ class LogoutSerializer(serializers.Serializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'image', 'discriptions']
+        fields = ['id', 'name', 'username','image', 'discriptions','is_admin','is_supervisor', 'category']
 
 
 class UsersSerializer(serializers.ModelSerializer):

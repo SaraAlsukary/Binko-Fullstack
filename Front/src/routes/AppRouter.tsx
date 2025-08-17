@@ -14,6 +14,7 @@ const News = lazy(() => import('@pages/News/News'));
 const Registeration = lazy(() => import('@pages/Registeration/Registeration'));
 const Books = lazy(() => import('@pages/Books/Books'));
 const TopBooks = lazy(() => import('@pages/TopBooks/Books'));
+const Notifications = lazy(() => import('@pages/Notifications/Notifications'));
 const BooksCategory = lazy(() => import('@pages/BooksCategory/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
 const EditBook = lazy(() => import('@pages/EditBook/EditBook'));
@@ -26,7 +27,6 @@ const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
 const AddChapter = lazy(() => import('@pages/AddChapter/AddChapter'));
 const Favorite = lazy(() => import('@pages/Favorite/Favorite'));
 const Profile = lazy(() => import('@pages/Profile/Profile'));
-const Settings = lazy(() => import('@pages/Settings/Settings'));
 const Chapters = lazy(() => import('@pages/Chapters/Chapters'));
 const BooksSearch = lazy(() => import('@pages/BooksSearch/BooksSearch'));
 const Home = lazy(() => import('@pages/Home/Home'));
@@ -50,6 +50,10 @@ const AppRouter = () => {
             path: "/Binko/addProfile",
             element: <SuspendPage><AddProfile /></SuspendPage>
         }, {
+            path: "/Binko/notifications",
+            element: <SuspendPage><Notifications /></SuspendPage>
+        },
+        {
             path: 'profile/:id',
             element: <SuspendPage><UpdateBook /></SuspendPage>
         },
@@ -87,7 +91,7 @@ const AppRouter = () => {
         },
         {
             path: 'settings',
-            element: <SuspendPage><Settings /></SuspendPage>
+            element: <SuspendPage><Profile /></SuspendPage>
         },
         {
             path: 'addBook',

@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import BookSerializer
 from books.models import Book , Book_Category
 from categories.models import Category
+from rest_framework.authtoken.models import Token
 
 @api_view(['POST'])
 def create_user(request):
@@ -60,13 +61,19 @@ def update_custom_user(request, user_id):
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
-        serializer = CustomUserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+    serializer = CustomUserSerializer(user, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+        # الحصول أو إنشاء التوكين
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return Response({
+            "user": serializer.data,
+            "token": token.key
+        }, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_non_supervisor_users(request):

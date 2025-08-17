@@ -15,6 +15,14 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser ,JSONParser
+from .utils import recommend_books_simple , recommend_books_same_categories
+
+@api_view(['GET'])
+def recommended_books(request, user_id):
+    books = recommend_books_simple(user_id, limit=10)
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET'])
 def favorite_books(request, user_id):
     try:
@@ -80,6 +88,14 @@ def get_all_books(request):
     books = Book.objects.filter(is_accept=True)
     serializer = BooksSerializer(books, many=True)
     return JsonResponse(serializer.data, safe=False)
+@api_view(['GET'])
+def get_book_by_id(request, book_id):
+    try:
+        book = Book.objects.get(id=book_id)
+        serializer = BookSerializer(book)
+        return JsonResponse(serializer.data, safe=False)
+    except Book.DoesNotExist:
+        return JsonResponse({'error': 'Book not found'}, status=404)
 
 api_view(['GET'])
 def get_all_books_to_accept(request):
@@ -314,8 +330,15 @@ def update_book(request, book_id):
         return Response({'message': 'Book updated successfully'})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
     
+@api_view(['GET'])
+def recommended_books_for_book(request, book_id):
+    # تحقّق أن الكتاب موجود
+    if not Book.objects.filter(id=book_id).exists():
+        return Response({'detail': 'الكتاب غير موجود'}, status=status.HTTP_404_NOT_FOUND)
 
-
+    books = recommend_books_same_categories(book_id, limit=5)
+    data = BookSerializer(books, many=True).data
+    return Response(data)
 
 @api_view(['GET'])
 def latest_books(request):

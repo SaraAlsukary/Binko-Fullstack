@@ -12,12 +12,16 @@ import Poem from '@assets/lottieFiles/Poem.json'
 import Science from '@assets/lottieFiles/Science.json'
 import ScienceFiction from '@assets/lottieFiles/ScienceFiction.json'
 import Romance from '@assets/lottieFiles/Romance.json'
+import Error from '@assets/lottieFiles/Error.json'
+import LoadingPage from '@assets/lottieFiles/LoadingPage.json'
 import BooksAbout from '@assets/lottieFiles/Books About.json'
 import React from "react";
 
 const lottieFilesMap = {
     girl,
     flyingBook,
+    LoadingPage,
+    Error,
     Loading,
     Advanture,
     Action,
@@ -43,7 +47,7 @@ type LottieHandlerProps = {
 const LottieHandler = ({ type, message, className, loop, style }: LottieHandlerProps) => {
     const lottie = lottieFilesMap[type];
     // const messageStyle =
-    //     type === "error"
+    //     type === "Error"
     //         ? { fontSize: "19px", color: "red" }
     //         : { fontSize: "19px", marginTop: "30px" };
 

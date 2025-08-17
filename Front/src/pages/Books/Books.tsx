@@ -42,14 +42,14 @@ const Books = () => {
                 <BookCardList settings={settingsBackground} type={square}>
                     {booksCardsBackground}
                 </BookCardList> */}
-                <HeadingTitle>{language === 'English' ? 'Fantasy' : 'فنتازيا'}</HeadingTitle>
-                <BookCardList settings={settingsBox} type={box}>
+                <HeadingTitle>{language === 'English' ? 'Books' : 'الكتب'}</HeadingTitle>
+                {/* <BookCardList settings={settingsBox} type={box}>
                     {booksCards}
-                </BookCardList>
+                </BookCardList> */}
                 {/* <BookCardList settings={settingsBackground} type={square}>
                     {booksCardsBackground}
                 </BookCardList> */}
-                <HeadingTitle>{language === 'English' ? 'Action' : 'أكشن'}</HeadingTitle>
+                {/* <HeadingTitle>{language === 'English' ? 'Action' : 'أكشن'}</HeadingTitle> */}
 
                 <BookCardList settings={settingsSquare} type={square}>
                     {booksCardsSquare}

@@ -56,3 +56,24 @@ class DeleteDislikeSerializer(serializers.Serializer):
         user_id = self.validated_data['user_id']
         book_id = self.validated_data['book_id']
         Dislike.objects.filter(user_id=user_id, book_id=book_id).delete()
+
+
+class DisLikeStatusSerializer(serializers.Serializer):
+      dis_like = serializers.BooleanField()
+
+class BookDisLikeSerializer(serializers.ModelSerializer):
+    dis_liked = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'image', 'description', 'publication_date', 'dis_liked','content']
+
+    def get_dis_liked(self, obj):
+        user_id = self.context['user_id']  
+        return Dislike.objects.filter(user_id=user_id, book=obj).exists() 
+    
+
+
+class DislikeCountSerializer(serializers.Serializer):
+    book_id = serializers.IntegerField()
+    dislike_count = serializers.IntegerField()

@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'groups',
     'ratings',
     'dislikes',
-    'readbooks'
+    'readbooks',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [

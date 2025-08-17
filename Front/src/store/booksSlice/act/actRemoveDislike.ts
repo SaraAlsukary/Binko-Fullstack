@@ -15,10 +15,12 @@ const actRemoveDislike = createAsyncThunk(
         const { rejectWithValue } = thunkAPI;
 
         try {
-            const response = await axios.delete<TResponse>(
-                `dislike/remove/?book_id=${form.book_id}&user_id=${form.user_id}`,
 
+            const response = await axios.delete<TResponse>(
+                `books/dislike/remove/`, { data: { book_id: form.book_id, user_id: form.user_id } }
+                // books / dislike / remove /? book_id = 1 & user_id=1
             );
+
             return response.data;
         } catch (error) {
             console.log(error)

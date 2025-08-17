@@ -3,26 +3,26 @@ import styles from './Books.module.css';
 import { Col, Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { useEffect } from 'react';
-import actTopBooks from '@store/booksSlice/act/actTopBooks';
 import { TBooks } from '@customtypes/booksTypes';
 import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 import { settingsBox } from '@utils/settingsForSlick';
+import actGetRecommendations from '@store/booksSlice/act/actGetRecommendations';
 const { bookContainer } = styles;
 
-const Books = () => {
+const Recommendations = () => {
     const dispatch = useAppDispatch();
-    const { topBooks } = useAppSelector(state => state.books);
+    const { recomBooks } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
 
 
-    const booksCards = topBooks.map(((book: TBooks, idx) =>
+    const booksCards = recomBooks.map(((book: TBooks, idx) =>
         <Col key={idx}>
             <BookCard {...book} />
         </Col>
     ));
     useEffect(() => {
-        dispatch(actTopBooks())
+        dispatch(actGetRecommendations())
     }, [])
     return (
 
@@ -30,8 +30,8 @@ const Books = () => {
 
             <Container>
                 <div className='mb-4'>
-                    <HeadingTitle>{language === 'English' ? "Top Books" : "أفضل الكتب"}</HeadingTitle>
-                </div>           
+                    <HeadingTitle>{language === 'English' ? "Recommendations For You" : "كتب مقترحة لك"}</HeadingTitle>
+                </div>
                 <BookCardList settings={settingsBox} type={'box'}>
                     {booksCards}
                 </BookCardList>
@@ -40,4 +40,4 @@ const Books = () => {
     )
 }
 
-export default Books
+export default Recommendations
