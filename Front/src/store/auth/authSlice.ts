@@ -19,9 +19,9 @@ interface IAuthState {
             name: string,
             image: string,
             discriptions: string,
-            category?: number
+            category: number
         }
-        message: string,
+        message?: string,
         token: string,
     } | null;
     loading: TLoading;
@@ -80,7 +80,7 @@ const authSlice = createSlice({
             state.loading = "pending";
             state.error = null;
         });
-        builder.addCase(actLogout.fulfilled, (state, action) => {
+        builder.addCase(actLogout.fulfilled, (state) => {
             state.loading = "succeeded";
             // state.user = action.payload;  
         });
@@ -97,7 +97,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actAddProfile.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.user = action.payload;
+            state.userData = action.payload;
         });
         builder.addCase(actAddProfile.rejected, (state, action) => {
             state.loading = "failed";
@@ -112,7 +112,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actUpdateProfile.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.user = action.payload;
+            state.userData = action.payload;
         });
         builder.addCase(actUpdateProfile.rejected, (state, action) => {
             state.loading = "failed";

@@ -94,3 +94,9 @@ class BooksSerializer(serializers.ModelSerializer):
 
     def get_categories(self, obj):
         return [cat.category.name for cat in obj.book_category_set.all()]
+    
+
+class ChapterDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = ['id', 'book', 'is_accept', 'title', 'content_text', 'audio', 'note']

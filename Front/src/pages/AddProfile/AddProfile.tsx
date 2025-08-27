@@ -35,8 +35,8 @@ const Registeration = () => {
             dispatch(actAddProfile(dataform))
                 .unwrap()
                 .then(() => {
-                    toast.success('successfully updated profile!')
                     SetLoading(false)
+                    toast.success('successfully updated profile!')
                     navigate('/Binko/')
                 })
         } catch (e) {

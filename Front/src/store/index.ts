@@ -15,6 +15,7 @@ import books from "./booksSlice/booksSlice";
 import language from "./languageSlice/languageSlice";
 import favorite from "./Favorite/favoriteSlice";
 import theme from "./themeSlice/themeSlice";
+import notifications from "./notifications/notificationsSlice";
 import chapters from "./chaptersSlice/chaptersSlice";
 import comments from "./commentsSlice/commentsSlice";
 import categories from "./categorySlice/categorySlice";
@@ -62,6 +63,7 @@ const rootReducer = combineReducers({
     favorite,
     chapters,
     comments,
+    notifications,
     supervisors,
     replies,
     users

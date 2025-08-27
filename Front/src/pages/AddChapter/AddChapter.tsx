@@ -9,8 +9,8 @@ import SecondaryButton from "@components/feedback/SecondaryButton/SecondaryButto
 import SecondaryInput from "@components/feedback/SecondaryInput/SecondaryInput";
 import { Button } from "@components/feedback";
 import actAddChapter from "@store/chaptersSlice/act/actAddChapter";
-import { useParams } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 const modules = {
     toolbar: [
         [{
@@ -34,6 +34,7 @@ const AddChapter = () => {
     const [value, setValue] = useState('');
     const [title, setTitle] = useState('');
     const [file, setFile] = useState('');
+    const navigate = useNavigate()
     const [audioFile, setAudioFile] = useState("");
     const { language } = useAppSelector(state => state.language);
     const dispatch = useAppDispatch();
@@ -61,8 +62,9 @@ const AddChapter = () => {
         })
         setAudioFile('');
         setFile('');
-        setTitle('')
-        setValue('')
+        setTitle('');
+        setValue('');
+        navigate(-1);
     }
     return (
         <div className={addBooksContainer}>

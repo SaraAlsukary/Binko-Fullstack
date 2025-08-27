@@ -8,11 +8,13 @@ import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 import { settingsBox } from '@utils/settingsForSlick';
 import actLatestBooks from '@store/booksSlice/act/actLatestBooks';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 const { bookContainer } = styles;
 
 const LastBooks = () => {
     const dispatch = useAppDispatch();
-    const { latestBooks } = useAppSelector(state => state.books);
+    const { latestBooks, loading, error } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
 
 
@@ -24,6 +26,7 @@ const LastBooks = () => {
     useEffect(() => {
         dispatch(actLatestBooks())
     }, [])
+    
     return (
 
         <div className={bookContainer}>
@@ -32,12 +35,14 @@ const LastBooks = () => {
                 <div className='mb-4'>
                     <HeadingTitle>{language === 'English' ? "Latest Books" : "أحدث الكتب"}</HeadingTitle>
                 </div>
-                {/* <Row style={{ marginTop: "30px" }}>
-                    {booksCards}
-                </Row> */}
-                <BookCardList settings={settingsBox} type={'box'}>
-                    {booksCards}
-                </BookCardList>
+                {loading === ("pending" as any) ?
+                    <Loading /> :
+                    error !== null ?
+                        <Error /> :
+                        <BookCardList settings={settingsBox} type={'box'}>
+                            {booksCards}
+                        </BookCardList>
+                }
             </Container>
         </div >
     )

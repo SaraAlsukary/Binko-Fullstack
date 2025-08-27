@@ -3,7 +3,6 @@ import { DataTable } from 'primereact/datatable';
 import ViewUser from './View/View';
 import AddUser from './Add/Add';
 import EditUser from './Edit/Edit';
-import { ConfirmDialog as ConfirmSuper } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -12,6 +11,8 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 import toast from 'react-hot-toast';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     id: Number,
     name: string,
@@ -26,7 +27,7 @@ type TCategoryAra = {
 }
 function Supervisors() {
     const { language } = useAppSelector(state => state.language);
-    const { supervisors } = useAppSelector(state => state.supervisors);
+    const { supervisors,loading,error } = useAppSelector(state => state.supervisors);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
     const [showAddMode, setShowAddMode] = useState(false);
@@ -112,7 +113,10 @@ function Supervisors() {
 
         })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

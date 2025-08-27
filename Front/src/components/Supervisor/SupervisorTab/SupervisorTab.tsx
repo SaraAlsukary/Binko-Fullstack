@@ -9,7 +9,8 @@ import Book from '../BooksSuper/Book';
 import TopBooks from '../TopBooks/Book';
 import './SupervisorTab.css'
 import { useAppSelector } from '@hooks/app';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import  Chapters from '@components/Supervisor/UnacceptedChapters/Chapters';
+
 
 function LeftTabsExample() {
     const { language } = useAppSelector(state => state.language);
@@ -36,6 +37,9 @@ function LeftTabsExample() {
                             <Nav.Item>
                                 <Nav.Link eventKey="five">{language === 'English' ? 'Top Books' : 'أفضل الكتب'}</Nav.Link>
                             </Nav.Item>
+                            <Nav.Item >
+                                <Nav.Link eventKey="six">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
+                            </Nav.Item>
                         </Nav>
                     </Col>
                     <Col sm={9}>
@@ -45,6 +49,7 @@ function LeftTabsExample() {
                             <Tab.Pane eventKey="third"><Book /></Tab.Pane>
                             <Tab.Pane eventKey="fourth"><AcceptedBooks /></Tab.Pane>
                             <Tab.Pane eventKey="five"><TopBooks /></Tab.Pane>
+                            <Tab.Pane eventKey="six"><Chapters /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

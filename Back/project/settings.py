@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'dislikes',
     'readbooks',
     'rest_framework_simplejwt',
+    'notifications',
 ]
 
 MIDDLEWARE = [

@@ -7,7 +7,7 @@ from books.models import Book
 from .models import Chapter
 from .serializers import ChapterAcceptSerializer ,ChapterSerializer,ChaptersSerializer, ChapterDeleteSerializer
 from django.http import JsonResponse
-from .serializers import NoteSerializer , BooksSerializer
+from .serializers import NoteSerializer , BooksSerializer ,ChapterDetailsSerializer
 from django.db.models import Q
 
 
@@ -135,3 +135,13 @@ def search_books(request):
 
     serializer = BooksSerializer(books, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def chapter_detail(request, chapter_id):
+    try:
+        chapter = Chapter.objects.get(id=chapter_id)
+    except Chapter.DoesNotExist:
+        return Response({"error": "الفصل غير موجود"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ChapterDetailsSerializer(chapter)
+    return Response(serializer.data, status=status.HTTP_200_OK)

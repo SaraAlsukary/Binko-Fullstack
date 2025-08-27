@@ -25,7 +25,7 @@ const Favorite = () => {
     }, [])
     if (loading === 'pending')
         return <Loading />
-    if (error === null)
+    if (error !== null)
         return <Error />
     return (
         <Container>

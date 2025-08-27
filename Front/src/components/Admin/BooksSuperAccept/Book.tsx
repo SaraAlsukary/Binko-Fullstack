@@ -12,6 +12,8 @@ import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 
 import toast from 'react-hot-toast';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -27,7 +29,7 @@ type TCategoryAra = {
 function Book() {
 
     const { language } = useAppSelector(state => state.language);
-    const { acceptedBooks } = useAppSelector(state => state.books);
+    const { acceptedBooks, loading,error } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
    
@@ -106,7 +108,10 @@ function Book() {
         })
 
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

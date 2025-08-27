@@ -12,9 +12,18 @@ import BookMarkActive from '@assets/svgs/bookmarkActive.svg?react';
 import BurgerMenu from '@assets/svgs/burgerMenuBlack.svg?react';
 import BurgerMenuWhite from '@assets/svgs/burgerMenuWhite.svg?react';
 import { useAppSelector } from '@hooks/app';
-const { settings, list, icons, icon } = styles
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import actGetNotificationsCounts from '@store/notifications/act/actGetNotificationsCounts';
+const { settings, list, icons, icon, count, redCircle } = styles
 const Menu = () => {
     const { theme } = useAppSelector(state => state.theme);
+    const { userData } = useAppSelector(state => state.auth);
+    const { notificationsCount } = useAppSelector(state => state.notifications);
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(actGetNotificationsCounts(userData?.user?.id!));
+    }, [notificationsCount])
     return (
 
         <div className={settings}>
@@ -38,7 +47,10 @@ const Menu = () => {
                 </li>
                 <li><NavLink to='addBook'>{theme === 'Light' ? <div className={icons}><div className='mark' style={{ backgroundColor: 'transparent' }}><BookMarkActive style={{ widht: '100px', height: '100px' }} /></div><AddBook className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div> : <div className={icons}><div className="mark" style={{ backgroundColor: 'transparent' }}><BookMarkActive style={{ widht: '100px', height: '100px' }} /></div> <AddBookWhite className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div>}</NavLink></li>
                 <li>
-                    <NavLink to='notifications'>
+                    <NavLink className={count} to='notifications'>
+                        {notificationsCount ? <div className={redCircle}>
+                            <span>{notificationsCount}</span>
+                        </div> : ""}
                         {theme === 'Light' ? <div className={icons}>
                             <div className='mark' style={{ backgroundColor: 'transparent' }}>
                                 <BookMarkActive style={{ widht: '100px', height: '100px' }} />

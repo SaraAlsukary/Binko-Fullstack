@@ -13,10 +13,10 @@ const actAddLikes = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `like/${auth.userData?.user.id}/${id}/`,
+                `users/${auth.userData?.user.id}/books/${id}/like/`,
                 {
                     signal,
-                   
+
                 },
             );
             return response.data;

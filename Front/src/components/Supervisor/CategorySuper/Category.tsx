@@ -11,21 +11,23 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
 import actDeleteCategory from '@store/categorySlice/act/actDeleteCategory';
 import toast from 'react-hot-toast';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
-    id:number,
+    id: number,
     name: string,
     name_ar: string,
     file: React.ReactNode
 }
 type TCategoryAra = {
-    id:number,
+    id: number,
     الاسم: string,
     الاسم_العربي: string,
     الملف: React.ReactNode
 }
 function Category() {
     const { language } = useAppSelector(state => state.language);
-    const { categories } = useAppSelector(state => state.categories);
+    const { categories, loading, error } = useAppSelector(state => state.categories);
     const dispatch = useAppDispatch();
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
@@ -37,42 +39,41 @@ function Category() {
         dispatch(actGetCategories())
     }, [language]);
     useEffect(() => {
-        if(categories)
-        {           
+        if (categories) {
             const getAllUsers = async () => {
-     
-            const category: TCategory[] = categories?.map((cate) => {
-                return ({
-                    id: cate.id,
-                    name: cate.name,
-                    name_ar: cate.name_arabic,
-                    file: <video width='100' height='100' autoPlay loop >
-                        <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
-                    </video>
 
-                }) 
-            })
-   
-            const categoryAra: TCategoryAra[] = categories?.map((cate) => {
-                return ({
-                    id: cate.id,
-                    الاسم: cate.name,
-                    الاسم_العربي: cate.name_arabic,
-                    الملف: <video width='100' height='100' autoPlay loop >
-                        <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
-                    </video>
+                const category: TCategory[] = categories?.map((cate) => {
+                    return ({
+                        id: cate.id,
+                        name: cate.name,
+                        name_ar: cate.name_arabic,
+                        file: <video width='100' height='100' autoPlay loop >
+                            <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
+                        </video>
+
+                    })
                 })
-            })
-            const data = language === 'Arabic' ? categoryAra : category
-            setUsersList(data);
-        }
+
+                const categoryAra: TCategoryAra[] = categories?.map((cate) => {
+                    return ({
+                        id: cate.id,
+                        الاسم: cate.name,
+                        الاسم_العربي: cate.name_arabic,
+                        الملف: <video width='100' height='100' autoPlay loop >
+                            <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
+                        </video>
+                    })
+                })
+                const data = language === 'Arabic' ? categoryAra : category
+                setUsersList(data);
+            }
 
 
             getAllUsers();
         }
     }, [categories]);
 
- 
+
     const actionsTemplate = (rowDate: object) => {
         return (
             <>
@@ -113,7 +114,10 @@ function Category() {
             language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
         })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>
@@ -138,13 +142,13 @@ function Category() {
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
                             <Column field={language === 'English' ? "name_ar" : "الاسم_العربي"} header={language === 'English' ? "name_ar" : "الاسم_العربي"}></Column>
                             <Column field={language === 'English' ? "file" : "الملف"} header={language === 'English' ? "file" : "الملف"}></Column>
-                     
+
                             <Column header={language === 'English' ? "Actions" : "العمليات"} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
                 </div>
 
-                <Dialog header={language==="English"?"View Category Data":"عرض بيانات الصنف"}
+                <Dialog header={language === "English" ? "View Category Data" : "عرض بيانات الصنف"}
                     visible={showViewMode}
                     style={{ width: '70vw' }}
                     onHide={() => setShowViewMode(false)}>
@@ -169,7 +173,7 @@ function Category() {
 
                     <EditUser id={selectedUserId} setUserEdited={() => {
                         setShowEditMode(false);
-                      
+
                     }} />
                 </Dialog>
 

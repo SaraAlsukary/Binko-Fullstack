@@ -15,7 +15,7 @@ const actAddDislike = createAsyncThunk(
 
         try {
             const response = await axios.post(
-                `books/dislike/`, form,
+                `users/${form.user_id}/books/${form.book_id}/dislike/`, form,
                 {
                     headers: {
                         "Content-Type": "application/json"

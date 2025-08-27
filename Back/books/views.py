@@ -328,13 +328,13 @@ def update_book(request, book_id):
     if serializer.is_valid():
         serializer.save()
         return Response({'message': 'Book updated successfully'})
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
-    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)       
+ 
 @api_view(['GET'])
 def recommended_books_for_book(request, book_id):
-    # تحقّق أن الكتاب موجود
-    if not Book.objects.filter(id=book_id).exists():
-        return Response({'detail': 'الكتاب غير موجود'}, status=status.HTTP_404_NOT_FOUND)
+    # تحقّق أن الكتاب موجود ومقبول
+    if not Book.objects.filter(id=book_id, is_accept=True).exists():
+        return Response({'detail': 'الكتاب غير موجود أو غير مقبول'}, status=status.HTTP_404_NOT_FOUND)
 
     books = recommend_books_same_categories(book_id, limit=5)
     data = BookSerializer(books, many=True).data

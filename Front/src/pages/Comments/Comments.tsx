@@ -1,7 +1,7 @@
 import { Button, Input } from "@components/feedback"
 import HeadingTitle from "@components/feedback/HeadingTitle/HeadingTitle"
 import { useAppDispatch, useAppSelector } from "@hooks/app"
-import actAddComments from "@store/commentsSlice/act/actAddComment"
+
 import actGetComments from "@store/commentsSlice/act/actGetComments"
 import actAddReply from "@store/repliesSlice/act/actAddReply"
 import actGetReplyByComment from "@store/repliesSlice/act/actGetReplyByComment"
@@ -15,6 +15,8 @@ import actDeleteComment from "@store/commentsSlice/act/actDeleteComment"
 import toast from "react-hot-toast"
 import actDeleteReply from "@store/repliesSlice/act/actDeleteReply"
 import { TReplies } from "@customtypes/replyType"
+import Loading from "@pages/Loading/Loading"
+import Error from "@pages/Error/Error"
 const { pic, boxCont, commentBtns, reply, replyBox, replyer, replyerName, replyList, commenter, commenterName,
     text, inputField, comments, icon, input, box, active, commentsList } = Style;
 
@@ -36,6 +38,7 @@ const Comments = () => {
     const { userData } = useAppSelector(state => state.auth)
     const { language } = useAppSelector(state => state.language)
     const commentss = useAppSelector(state => state.comments.comments)
+    const {loading,error} = useAppSelector(state => state.comments)
     const { id, idComment } = useParams()
     const dispatch = useAppDispatch()
     const IdCom = parseInt(idComment as string)
@@ -53,7 +56,10 @@ const Comments = () => {
         })
     }
 
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
 
     interface IRep {
         user: number,

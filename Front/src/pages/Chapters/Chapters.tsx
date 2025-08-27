@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import style from './Chapters.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import ReactQuill from 'react-quill';
 import ReactAudioPlayer from "react-audio-player";
 import 'react-quill/dist/quill.snow.css';
 import { Container } from 'react-bootstrap';
@@ -11,14 +10,15 @@ import SecondaryButton from '@components/feedback/SecondaryButton/SecondaryButto
 import actGetChapters from '@store/chaptersSlice/act/actGetChapters';
 import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
 import { Button } from '@components/feedback';
-import actGetChaptersNotes from '@store/chaptersSlice/act/actGetChaptersNotes';
-import actGetAcceptedChapters from '@store/chaptersSlice/act/actGetAcceptedChapter';
 import actAddBookReading from '@store/booksSlice/act/actAddBookReading';
-const { warnings, text, down, buttn, chapterCont } = style;
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
+import actGetUnacceptedChapters from '@store/chaptersSlice/act/actGetUnacceptedChapter';
+const {text, down, buttn, chapterCont } = style;
 const Chapters = () => {
     const [disNext, setDisNext] = useState(false);
     const [disPrev, setDisPrev] = useState(false);
-    const { chapters, acceptedchapters, notes } = useAppSelector(state => state.chapters);
+    const { chapters, acceptedchapters, notes, loading, error } = useAppSelector(state => state.chapters);
     const { myBooks } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
     const { userData } = useAppSelector(state => state.auth);
@@ -30,17 +30,17 @@ const Chapters = () => {
     const chapterInfoItem = (userData?.user.is_supervisor || userData?.user.is_admin || myBooks.find(book => book.id === idBook)) ? acceptedchapters.find(ch => ch.id === index) : chapters.find(ch => ch.id === index);
 
     const chapterInfo = (userData?.user.is_supervisor || userData?.user.is_admin) && (!chapterInfoItem) ? chapters.find(ch => ch.id === index) : chapterInfoItem;
-    const formRead:{book_id:number} = {
+    const formRead: { book_id: number } = {
         book_id: idBook
     }
     useEffect(() => {
         dispatch(actGetChapters(param.id))
-        dispatch(actGetAcceptedChapters())
+        dispatch(actGetUnacceptedChapters())
         dispatch(actGetMyBooks(userData?.user.id))
-        dispatch(actGetChaptersNotes(index))
         dispatch(actAddBookReading(formRead))
 
     }, [])
+
 
     const prevNavigateHandler = () => {
         var prevChapter;
@@ -76,6 +76,10 @@ const Chapters = () => {
     }
 
     const [show, setShow] = useState(false);
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <Container className={chapterCont}>
             <ChapterMenu />
@@ -96,8 +100,7 @@ const Chapters = () => {
                 <div className={text}>
                     <h1>{chapterInfo?.title}</h1>
 
-                    {/* <p>{chapterInfo?.content_text}</p> */}
-                    {/* <div dangerouslySetInnerHTML={{ __html: value }} /> */}
+                 
                     <div className={'contentText'} dangerouslySetInnerHTML={{ __html: chapterInfo?.content_text }} />
 
                 </div>

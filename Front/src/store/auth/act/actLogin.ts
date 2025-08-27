@@ -7,19 +7,7 @@ type TFormData = {
     password: string;
 };
 
-type TResponse = {
-    user: {
-        id: number,
-        is_supervisor: boolean,
-        is_admin: boolean,
-        username: string,
-        name: string,
-        image: string,
-        discriptions: string,
-    }
-    message: string,
-    token: string,
-}
+
 
 const actLogin = createAsyncThunk(
     "auth/actLogin",
@@ -27,7 +15,7 @@ const actLogin = createAsyncThunk(
         const { rejectWithValue } = thunk;
 
         try {
-            const res = await axios.post<TResponse>("login/", JSON.stringify(formData), {
+            const res = await axios.post("login/", JSON.stringify(formData), {
                 headers: { 'Content-Type': 'application/json' },
             }
             );

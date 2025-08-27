@@ -29,7 +29,9 @@ urlpatterns = [
     path('api/', include('categories.urls')),
     path('api/', include('ratings.urls')),
     path('api/', include('dislikes.urls')),
-    path('api/', include('readbooks.urls'))
+    path('api/', include('readbooks.urls')),
+    path('api/', include('notifications.urls'))
+
 
 
 

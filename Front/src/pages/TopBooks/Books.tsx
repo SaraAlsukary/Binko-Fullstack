@@ -8,11 +8,13 @@ import { TBooks } from '@customtypes/booksTypes';
 import HeadingTitle from '@components/feedback/HeadingTitle/HeadingTitle';
 import BookCardList from '@components/Books/BookCardList/BookCardList';
 import { settingsBox } from '@utils/settingsForSlick';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 const { bookContainer } = styles;
 
 const Books = () => {
     const dispatch = useAppDispatch();
-    const { topBooks } = useAppSelector(state => state.books);
+    const { topBooks, loading, error } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
 
 
@@ -24,6 +26,7 @@ const Books = () => {
     useEffect(() => {
         dispatch(actTopBooks())
     }, [])
+
     return (
 
         <div className={bookContainer}>
@@ -31,10 +34,16 @@ const Books = () => {
             <Container>
                 <div className='mb-4'>
                     <HeadingTitle>{language === 'English' ? "Top Books" : "أفضل الكتب"}</HeadingTitle>
-                </div>           
-                <BookCardList settings={settingsBox} type={'box'}>
-                    {booksCards}
-                </BookCardList>
+                </div>
+                {loading === ("pending" as any) ?
+                    <Loading /> :
+                    error !== null ?
+                        <Error /> :
+                        <BookCardList settings={settingsBox} type={'box'}>
+                            {booksCards}
+                        </BookCardList>
+                }
+
             </Container>
         </div >
     )

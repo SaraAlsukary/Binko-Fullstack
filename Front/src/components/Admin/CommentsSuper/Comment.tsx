@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import actGetBooks from '@store/booksSlice/act/actGetBooks';
 import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import toast from 'react-hot-toast';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     id: number,
     name: string,
@@ -37,7 +39,7 @@ function Comment() {
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
 
 
-    const { comments } = useAppSelector(state => state.comments)
+    const { comments,loading,error } = useAppSelector(state => state.comments)
     const { books, acceptedBooks } = useAppSelector(state => state.books)
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -121,7 +123,10 @@ function Comment() {
             language === 'English' ? toast.success('deleted successfully!') : toast.success('تم الحذف بنجاح')
         })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

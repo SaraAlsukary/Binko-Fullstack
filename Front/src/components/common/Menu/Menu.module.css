@@ -32,6 +32,22 @@
     z-index: 100;
 }
 
+.count {
+    position: relative;
+}
+
+.redCircle {
+    width: 20px;
+    text-align: center;
+    height: 20px;
+    position: absolute;
+    background-color: var(--red);
+    border-radius: 50%;
+    left: 55px;
+    top: 13px;
+    z-index: 22222;
+}
+
 /* 
 @media (min-width:801px) and (max-width:991px) {
     .settings {
@@ -44,11 +60,15 @@
     .settings {
         left: 50%;
         transform: translateX(-50%) rotate(-90deg);
-        top: 70%;
+        top: 64%;
         position: fixed;
         background: var(--main-color);
-        height: 323px;
+        height: 397px;
         border-radius: 16px;
+    }
+
+    .redCircle {
+        transform: translateX(5%) rotate(90deg);
     }
 
     .icons {
@@ -70,6 +90,10 @@
         background: var(--main-color);
         height: 323px;
         border-radius: 16px;
+    }
+
+    .redCircle {
+        transform: translateX(5%) rotate(90deg);
     }
 
     .icons {

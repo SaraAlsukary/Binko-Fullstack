@@ -56,4 +56,8 @@ def recommend_books_same_categories(book_id, limit=5):
         return Book.objects.none()
 
     preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(book_ids)])
-    return Book.objects.filter(id__in=book_ids).order_by(preserved_order)
+    return (
+        Book.objects
+        .filter(id__in=book_ids, is_accept=True)   # ✅ شرط is_accept
+        .order_by(preserved_order)
+    )

@@ -6,9 +6,9 @@ import { isString } from "@customtypes/isString";
 import actAddChapter from "./act/actAddChapter";
 import actAcceptChapters from "./act/actAcceptChapter";
 import actDenyChapters from "./act/actDenyChapter";
-import actGetAcceptedChapters from "./act/actGetAcceptedChapter";
 import actGetChaptersNotes from "./act/actGetChaptersNotes";
 import actDeleteChapters from "./act/actDeleteChapter";
+import actGetUnacceptedChapters from "./act/actGetUnacceptedChapter";
 
 type TNote = {
     id: number,
@@ -60,15 +60,15 @@ const chapters = createSlice({
         });
 
         // get accepted books
-        builder.addCase(actGetAcceptedChapters.pending, (state) => {
+        builder.addCase(actGetUnacceptedChapters.pending, (state) => {
             state.loading = "pending";
             state.error = null;
         });
-        builder.addCase(actGetAcceptedChapters.fulfilled, (state, action) => {
+        builder.addCase(actGetUnacceptedChapters.fulfilled, (state, action) => {
             state.loading = "succeeded";
             state.acceptedchapters = action.payload;
         });
-        builder.addCase(actGetAcceptedChapters.rejected, (state, action) => {
+        builder.addCase(actGetUnacceptedChapters.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

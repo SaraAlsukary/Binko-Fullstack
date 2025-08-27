@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     id: number,
     name: string | null,
@@ -23,7 +25,7 @@ type TCategoryAra = {
 }
 function Book() {
     const { language } = useAppSelector(state => state.language);
-    const { books } = useAppSelector(state => state.books);
+    const { books,loading,error } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
    
@@ -106,7 +108,10 @@ function Book() {
             navigate(`/Binko/admin`)
         })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

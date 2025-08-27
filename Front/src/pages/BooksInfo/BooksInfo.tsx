@@ -32,7 +32,6 @@ import actDeleteComment from "@store/commentsSlice/act/actDeleteComment";
 import actDeleteFavorite from "@store/Favorite/act/actDeleteFavorite";
 import actAcceptChapters from "@store/chaptersSlice/act/actAcceptChapter";
 import actAddReply from "@store/repliesSlice/act/actAddReply";
-import actGetAcceptedChapters from "@store/chaptersSlice/act/actGetAcceptedChapter";
 import actAcceptBooks from "@store/booksSlice/act/actAcceptBook";
 import { actClearAcceptedBooks, actClearBook, actClearLike, actClearMyBook } from "@store/booksSlice/booksSlice";
 import actGetBooksToAccept from "@store/booksSlice/act/actGetBooksToAccept";
@@ -52,6 +51,8 @@ import actRemoveDislike from "@store/booksSlice/act/actRemoveDislike";
 import actShowBook from "@store/booksSlice/act/actShowBook";
 import actGetDislikeStatue from "@store/booksSlice/act/actGetDislikeStatue";
 import actGetDisLikes from "@store/booksSlice/act/actGetDisLikes ";
+import CategoriesRecommendationsBooks from "@pages/CategoriesRecommendationsBooks/CategoriesRecommendationsBooks";
+import actGetUnacceptedChapters from "@store/chaptersSlice/act/actGetUnacceptedChapter";
 type TDisForm = {
   book_id: number,
   user_id: number
@@ -77,7 +78,7 @@ const BooksInfo = () => {
   const { id }: any = useParams();
   const indx = parseInt(id)
   const { chapters, acceptedchapters } = useAppSelector(state => state.chapters);
-  const { books, myBooks, acceptedBooks, likes, is_disliked, is_liked, dislikes, book } = useAppSelector(state => state.books);
+  const {  myBooks, likes, is_disliked, is_liked, dislikes, book } = useAppSelector(state => state.books);
   const navigate = useNavigate();
   const favoriteData = {
     user: userData?.user?.id,
@@ -107,7 +108,7 @@ const BooksInfo = () => {
 
   const activeDisHandler = async (e: any) => {
     const btnlike = document.querySelectorAll(".btnlike");
-    btnlike.forEach(btn=>{
+    btnlike.forEach(btn => {
       (btn as Element).classList.remove(active)
     });
     (e.target as Element).classList.toggle(active);
@@ -256,11 +257,10 @@ const BooksInfo = () => {
       const promiseChapters = dispatch(actGetChapters(indx))
       const promiseLike = dispatch(actGetLikeStatue(likeForm))
       const promiseDislike = dispatch(actGetDislikeStatue(likeForm))
-      // const promiseLikes = dispatch(actGetLikes(indx))
-      // const promiseDisLikes = dispatch(actGetDisLikes(indx))
+    
       const promiseUsers = dispatch(actGetUsers())
       const promiseMybooks = dispatch(actGetMyBooks(userData?.user.id!))
-      const promiseAcceptedChapter = dispatch(actGetAcceptedChapters())
+      const promiseAcceptedChapter = dispatch(actGetUnacceptedChapters())
       const promiseAcceptedBooks = userData?.user.is_supervisor ? dispatch(actGetAcceptedBooksBySuperCate(userData?.user?.id!)) : dispatch(actGetBooksToAccept())
       const promiseCategories = dispatch(actGetCategories())
       const promiseFavorite = dispatch(actGetfavorite(userData?.user.id!))
@@ -301,13 +301,7 @@ const BooksInfo = () => {
     })
 
   })
-  // useEffect(() => {
-  //   dispatch(actGetDislikeStatue(likeForm))
-  //   dispatch(actGetLikeStatue(likeForm))
-  //   dispatch(actGetDisLikes(indx))
-  //   dispatch(actGetLikes(indx))
 
-  // }, [likes, dislikes])
 
   useEffect(() => {
     if (likes) {
@@ -339,18 +333,13 @@ const BooksInfo = () => {
     }
   }, [book])
 
-  // useEffect(() => {
-  //   dispatch(actGetDislikeStatue(likeForm))
-  // }, []);
-  // useEffect(() => {
-  //   dispatch(actGetLikeStatue(likeForm))
-  // }, []);
+
   useEffect(() => {
     dispatch(actGetDisLikes(indx))
-  }, [is_disliked,is_liked]);
+  }, [is_disliked, is_liked]);
   useEffect(() => {
     dispatch(actGetLikes(indx));
-  }, [is_liked,is_disliked]);
+  }, [is_liked, is_disliked]);
   const categoriesBookCard = catesss.map((cate) => <p onClick={() => navigate(`/Binko/categories/books/${cate?.id}`)} key={Math.random() * 2}>
     {language === 'English' ? cate?.name : cate?.name_arabic}
   </p>
@@ -456,11 +445,7 @@ const BooksInfo = () => {
       : ExistedBook ? <span
         style={language === 'Arabic' ? { position: 'absolute', right: '90%', top: '31%', display: 'flex' } : { position: 'absolute', right: '10px' }}
       >
-        {/* <Button style={{ backgroundColor: 'var(--secondary-color)', margin: '0 1px' }}
-        // onClick={() => AcceptChapterHandler(chapter.id)}
-        >
-          {language === 'Arabic' ? 'تعديل' : 'Edit'}
-        </Button> */}
+ 
         <Button
           style={{ backgroundColor: '#f35151', margin: '0 1px' }
           }
@@ -474,148 +459,154 @@ const BooksInfo = () => {
         : ''}
   </li >)
   const userProfile = users.find(user => user.id === bookInfo?.user?.id)
+
   return (
-    <Container className={bookCont} >
-      <div className={left}>
-        <div className={pic}>
-          <img src={`http://127.0.0.1:8000${bookInfo?.image}`} alt="" crossOrigin="anonymous" />
-        </div>
-        <div className={author} onClick={() => navigate(`/Binko/userInfo/${bookInfo?.user?.id}/`)}>
-          <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
-          <div className={authInfo}>
-            <div className={photo}>
-              <img src={`http://127.0.0.1:8000${userProfile?.image}`} alt="" />
+    <Container>
+      <div className={bookCont} >
+
+        <div className={left}>
+          <div className={pic}>
+            <img src={`http://127.0.0.1:8000${bookInfo?.image}`} alt="" crossOrigin="anonymous" />
+          </div>
+          <div className={author} onClick={() => navigate(`/Binko/userInfo/${bookInfo?.user?.id}/`)}>
+            <h3>{language === 'English' ? `About The Author` : `عن الكاتب`}</h3>
+            <div className={authInfo}>
+              <div className={photo}>
+                <img src={`http://127.0.0.1:8000${userProfile?.image}`} alt="" />
+              </div>
+              <div className={nameAuth}>{bookInfo?.user?.name}</div>
             </div>
-            <div className={nameAuth}>{bookInfo?.user?.name}</div>
           </div>
         </div>
-      </div>
-      <div className={right}>
-        <div className={up}>
-          <h1>{bookInfo?.name}</h1>
-          <span>{bookInfo?.user?.name}</span>
-          <div className={cate}>
+        <div className={right}>
+          <div className={up}>
+            <h1>{bookInfo?.name}</h1>
+            <span>{bookInfo?.user?.name}</span>
+            <div className={cate}>
 
-            {categoriesBookCard}
-          </div>
-          <div className="d-flex align-items-center justify-content-center">
-            <p className={`m-2 d-flex align-center ${loves}`}> {language === 'English' ? ` ${likesCount}  Likes ` : ` ${likesCount}  اعجاب `}  <i className="mx-2 pi pi-thumbs-up-fill" style={{ color: 'var(--main-color)' }}></i> </p>
-            <p className={`m-2 d-flex align-center ${dis}`}> {language === 'English' ? ` ${dislikesCounts}  Dislikes ` : ` ${dislikesCounts} عدم اعجاب `}  <i className=" m-2 pi pi-thumbs-down-fill" style={{ color: 'var(--red)' }}></i> </p>
+              {categoriesBookCard}
+            </div>
+            <div className="d-flex align-items-center justify-content-center">
+              <p className={`m-2 d-flex align-center ${loves}`}> {language === 'English' ? ` ${likesCount}  Likes ` : ` ${likesCount}  اعجاب `}  <i className="mx-2 pi pi-thumbs-up-fill" style={{ color: 'var(--main-color)' }}></i> </p>
+              <p className={`m-2 d-flex align-center ${dis}`}> {language === 'English' ? ` ${dislikesCounts}  Dislikes ` : ` ${dislikesCounts} عدم اعجاب `}  <i className=" m-2 pi pi-thumbs-down-fill" style={{ color: 'var(--red)' }}></i> </p>
 
-          </div>
-          <RatingShowStars text={language === 'English' ? ` Book Ratings ` : `  تقييم الكتاب`} ratingStars={bookInfo?.average_rating! / 2} />
-          {/* <span className={ratings}>{bookInfo?.average_rating/2}/5 </span> */}
-          <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
-          <p className={desc}> {language === 'English' ? `Description ` : ` الوصف  `} : {bookInfo?.description}</p>
-          {(userData?.user.id !== bookInfo?.user?.id) ?
-            <RatingsModal bookId={bookInfo?.id!} userId={userData?.user.id!} />
-            : ""}
-          <ul>
-            {ExistedBook ? '' :
-              <li className={SavedExist ? active : ''} onClick={(e) => activeFavHandler(e)}><p>{language === 'English' ? `Save` : `حفظ`} </p>
+            </div>
+            <RatingShowStars text={language === 'English' ? ` Book Ratings ` : `  تقييم الكتاب`} ratingStars={bookInfo?.average_rating! / 2} />
+            {/* <span className={ratings}>{bookInfo?.average_rating/2}/5 </span> */}
+            <p>{language === 'English' ? `Publication Date` : ` تاريخ النشر `} : {bookInfo?.publication_date} </p>
+            <p className={desc}> {language === 'English' ? `Description ` : ` الوصف  `} : {bookInfo?.description}</p>
+            {(userData?.user.id !== bookInfo?.user?.id) ?
+              <RatingsModal bookId={bookInfo?.id!} userId={userData?.user.id!} />
+              : ""}
+            <ul>
+              {ExistedBook ? '' :
+                <li className={SavedExist ? active : ''} onClick={(e) => activeFavHandler(e)}><p>{language === 'English' ? `Save` : `حفظ`} </p>
+                  <div className={icons}>
+                    <div className={activeIcon}>
+                      <BookMarkWhite style={{ width: '20px' }} />
+                    </div>
+                    <div className={icon}>
+                      <BookMark style={{ width: '20px' }} />
+                    </div>
+                  </div>
+                </li>
+              }
+              <li className={likesStatue ? `btnlike ${active}` : ''} onClick={(e) => activeHandler(e)}>
+                <p>
+                  {language === 'English' ? `Like` : `أعجبني`}
+                </p>
                 <div className={icons}>
                   <div className={activeIcon}>
-                    <BookMarkWhite style={{ width: '20px' }} />
+                    <LikeWhite style={{ width: '20px' }} />
                   </div>
                   <div className={icon}>
-                    <BookMark style={{ width: '20px' }} />
+                    <Like style={{ width: '20px' }} />
                   </div>
                 </div>
               </li>
-            }
-            <li className={likesStatue ? `btnlike ${active}` : ''} onClick={(e) => activeHandler(e)}>
-              <p>
-                {language === 'English' ? `Like` : `أعجبني`}
-              </p>
-              <div className={icons}>
-                <div className={activeIcon}>
-                  <LikeWhite style={{ width: '20px' }} />
+              <li className={is_dislike ? `btnlike ${active}` : ''} onClick={(e) => activeDisHandler(e)}>
+                <p>
+                  {language === 'English' ? `Dislike` : `لم يعجبني`}
+                </p>
+                <div className={icons}>
+                  <div className={activeIcon}>
+                    <DislikeWhite style={{ width: '20px' }} />
+                  </div>
+                  <div className={icon}>
+                    <Dislike style={{ width: '20px' }} />
+                  </div>
                 </div>
-                <div className={icon}>
-                  <Like style={{ width: '20px' }} />
-                </div>
+              </li>
+              {chapters.length ?
+                <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
+                : ""}
+            </ul>
+            {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
+              <div style={{
+                display: 'flex', justifyContent: "center",
+                alignItems: "center"
+              }}>
+                <Button
+                  onClick={editHandler}
+                  style={{ margin: '10px', width: '50%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
+                <Button onClick={deleteBookConfirm} style={{ margin: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
               </div>
-            </li>
-            <li className={is_dislike ? `btnlike ${active}` : ''} onClick={(e) => activeDisHandler(e)}>
-              <p>
-                {language === 'English' ? `Dislike` : `لم يعجبني`}
-              </p>
-              <div className={icons}>
-                <div className={activeIcon}>
-                  <DislikeWhite style={{ width: '20px' }} />
-                </div>
-                <div className={icon}>
-                  <Dislike style={{ width: '20px' }} />
-                </div>
+              : ''}
+            {(userData?.user.is_supervisor || userData?.user.is_admin) ?
+              <div style={{
+                display: 'flex', justifyContent: "center",
+                alignItems: "center"
+              }}>
+                {!bookInfo?.is_accept ? <Button onClick={() => AcceptBookHandler(indx)} style={{ width: '40%' }}>{language === 'Arabic' ? 'قبول' :
+                  'Accept'}</Button> : ""}
+                <Button onClick={() => navigate(`note`)
+                } style={{ margin: '0 5px ', backgroundColor: '#f35151', width: '40%' }}>{language === 'English' ? 'Deny' : "رفض"}</Button>
+
               </div>
-            </li>
-            {chapters.length ?
-              <li className={active} onClick={() => navigate(`${chapters[0].id}`)} ><p>{language === 'English' ? `Read` : `قراءة`}</p> <div className={icon}><Read style={{ width: '20px' }} /></div></li>
               : ""}
-          </ul>
-          {ExistedBook && !userData?.user.is_supervisor && !userData?.user.is_admin ?
-            <div style={{
-              display: 'flex', justifyContent: "center",
-              alignItems: "center"
-            }}>
-              <Button
-                onClick={editHandler}
-                style={{ margin: '10px', width: '50%' }}>{language === 'English' ? 'Edit' : "تعديل"}</Button>
-              <Button onClick={deleteBookConfirm} style={{ margin: '10px', backgroundColor: '#f35151', width: '50%' }}>{language === 'English' ? 'Delete' : "حذف"}</Button>
-            </div>
-            : ''}
-          {(userData?.user.is_supervisor || userData?.user.is_admin) ?
-            <div style={{
-              display: 'flex', justifyContent: "center",
-              alignItems: "center"
-            }}>
-              {!bookInfo?.is_accept ? <Button onClick={() => AcceptBookHandler(indx)} style={{ width: '40%' }}>{language === 'Arabic' ? 'قبول' :
-                'Accept'}</Button> : ""}
-              <Button onClick={() => navigate(`note`)
-              } style={{ margin: '0 5px ', backgroundColor: '#f35151', width: '40%' }}>{language === 'English' ? 'Deny' : "رفض"}</Button>
-
-            </div>
-            : ""}
-        </div>
-
-        <div className={down}>
-          <HeadingTitle>{language === 'English' ? `Content` : `المحتوى`}</HeadingTitle>
-          <div className="content">
-            {bookInfo?.content}
           </div>
-          <HeadingTitle>{language === 'English' ? `Chapters` : `الفصول`}</HeadingTitle>
-          {ExistedBook ? <Button onClick={() =>
-            navigate(`/Binko/books/${bookInfo?.id}/addChapter`)
-          } style={{ width: '50%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
-          <ul className={list}>
-            {(chaptersList.length || chaptersLists.length) || (chaptersList.length && (!userData?.user.is_admin || !userData.user.is_supervisor)) ? chaptersList :
-              language === 'English' ? 'There is no chapters yet' : 'لا يوجد فصول بعد'}
-            {(userData?.user.is_admin || userData?.user.is_supervisor || ExistedBook) ? chaptersLists : ""}
-          </ul>
 
-          <div className={comments}>
-
-            <HeadingTitle>{language === 'English' ? `Comments` : `التعليقات`}</HeadingTitle>
-            <div className={inputField}>
-              <div className={input}>
-                <Input value={commentText} type="text" onChange={(e: any) => setCommentText(e.target.value)} placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
-              </div>
-              <div className={icon} onClick={addCommentHandler}>
-                {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
-              </div>
+          <div className={down}>
+            <HeadingTitle>{language === 'English' ? `Content` : `المحتوى`}</HeadingTitle>
+            <div className="content">
+              {bookInfo?.content}
             </div>
-            <div id="com" className={commentsList}>
-              {commentsListElements.length ? commentsListElements :
-                language === 'English' ? 'There is no comments' : 'لا يوجد تعليقات'}
-              {commentsListElements.length > 3 ? <div onClick={() => { activeMoreHandler() }} className={buttn}>
-                <Button>{language === 'English' ? `More` : `المزيد`}</Button>
-              </div> : ""}
-            </div>
+            <HeadingTitle>{language === 'English' ? `Chapters` : `الفصول`}</HeadingTitle>
+            {ExistedBook ? <Button onClick={() =>
+              navigate(`/Binko/books/${bookInfo?.id}/addChapter`)
+            } style={{ width: '50%' }}>{language === 'English' ? 'Add Chapter' : "اضافة فصل"}</Button> : ''}
+            <ul className={list}>
+              {(chaptersList.length || chaptersLists.length) || (chaptersList.length && (!userData?.user.is_admin || !userData.user.is_supervisor)) ? chaptersList :
+                language === 'English' ? 'There is no chapters yet' : 'لا يوجد فصول بعد'}
+              {(userData?.user.is_admin || userData?.user.is_supervisor || ExistedBook) ? chaptersLists : ""}
+            </ul>
 
+            <div className={comments}>
+
+              <HeadingTitle>{language === 'English' ? `Comments` : `التعليقات`}</HeadingTitle>
+              <div className={inputField}>
+                <div className={input}>
+                  <Input value={commentText} type="text" onChange={(e: any) => setCommentText(e.target.value)} placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                </div>
+                <div className={icon} onClick={addCommentHandler}>
+                  {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
+                </div>
+              </div>
+              <div id="com" className={commentsList}>
+                {commentsListElements.length ? commentsListElements :
+                  language === 'English' ? 'There is no comments' : 'لا يوجد تعليقات'}
+                {commentsListElements.length > 3 ? <div onClick={() => { activeMoreHandler() }} className={buttn}>
+                  <Button>{language === 'English' ? `More` : `المزيد`}</Button>
+                </div> : ""}
+              </div>
+
+            </div>
           </div>
         </div>
+
+
       </div>
-
+      <CategoriesRecommendationsBooks id={indx} />
     </Container >
   )
 }

@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
 import actTopBooks from '@store/booksSlice/act/actTopBooks';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TBook = {
     id: number,
     name: string | null,
@@ -26,14 +28,14 @@ type TBookAra = {
     // الكاتب: string | null
 }
 function Book() {
-    
+
     const { language } = useAppSelector(state => state.language);
-    const { topBooks } = useAppSelector(state => state.books);
+    const { topBooks, loading, error } = useAppSelector(state => state.books);
     // const booksUser = useAppSelector(state => state.users.users);
     const [booksState, setBooksStateList] = useState<TBook[] | TBookAra[]>([]);
 
     const dispatch = useAppDispatch();
-  
+
     const navigate = useNavigate();
 
 
@@ -72,13 +74,13 @@ function Book() {
             <>
                 <button className='btn btn-success' onClick={() => {
                     navigate(`/Binko/books/${rowDate.id}`)
-                  
+
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
-               
+
                 <button className='btn btn-danger' onClick={() => {
-             
+
 
                     deleteConfirm(rowDate?.id)
                 }
@@ -110,7 +112,10 @@ function Book() {
             navigate(0)
         })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>
@@ -123,23 +128,23 @@ function Book() {
                     </h3>
 
                     <div className='users-list'>
-                        
+
                         <DataTable className='tableCell' value={booksState}>
                             <Column field={language === 'English' ? 'Image' : 'الصورة'}
                                 header={language === 'English' ? 'Image' : 'الصورة'}></Column>
                             <Column field={language === 'English' ? 'name' : 'الاسم'} header={language === 'English' ? 'name' : 'الاسم'}></Column>
                             {/* <Column field={language === 'English' ? 'author' : 'الكاتب'} header={language === 'English' ? 'author' : 'الكاتب'}></Column> */}
-                      
+
                             <Column header={language === 'Arabic' ? 'العمليات' : 'Actions'} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
                 </div>
 
-             
-         
 
-              
-                  
+
+
+
+
             </div>
         </>
     )

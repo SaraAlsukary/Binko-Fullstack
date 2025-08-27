@@ -31,6 +31,7 @@ import actGetRecommendations from "./act/actGetRecommendations";
 import actShowBook from "./act/actShowBook";
 import actGetDislikeStatue from "./act/actGetDislikeStatue";
 import actGetDisLikes from "./act/actGetDisLikes ";
+import actGetRecommendationsByCategories from "./act/actGetRecommendationsByCategories";
 type TNote = {
     id: number,
     note: string
@@ -92,7 +93,7 @@ const books = createSlice({
             state.notes = null;
 
         },
-    
+
     },
     extraReducers: (builder) => {
         // get books
@@ -421,6 +422,23 @@ const books = createSlice({
                 state.error = action.payload;
             }
         });
+        //get recommendations book by categories
+        builder.addCase(actGetRecommendationsByCategories.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actGetRecommendationsByCategories.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.recomBooks = action.payload;
+
+        });
+        builder.addCase(actGetRecommendationsByCategories.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
         //get like statue
         builder.addCase(actGetLikeStatue.pending, (state) => {
             state.loading = "pending";

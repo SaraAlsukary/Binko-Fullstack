@@ -3,7 +3,6 @@ import { DataTable } from 'primereact/datatable';
 
 
 
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Column } from 'primereact/column';
 
@@ -14,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
 import actGetBooksBySuperCate from '@store/booksSlice/act/actGetBooksBySuperCate';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     id: Number,
     name: string | null,
@@ -30,7 +31,7 @@ function Book() {
     
     const { language } = useAppSelector(state => state.language);
     const { userData } = useAppSelector(state => state.auth);
-    const { books } = useAppSelector(state => state.books);
+    const { books,loading,error } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
 
@@ -112,7 +113,10 @@ function Book() {
             navigate(`/Binko/admin`)
         })
     }
-
+  if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

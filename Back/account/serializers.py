@@ -68,7 +68,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'name', 'username','image', 'discriptions','is_admin','is_supervisor', 'category']
-
+        extra_kwargs = {
+            'username': {'required': False},
+            'name': {'required': False},
+        }
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:

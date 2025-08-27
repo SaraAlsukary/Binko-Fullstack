@@ -4,9 +4,7 @@ import { useAppSelector } from "@hooks/app"
 const Error = () => {
     const { language } = useAppSelector(state => state.language)
     return (
-        <div>
-            <LottieHandler className="d-flex justify-content-center align-items-center mt-4" type="Error" message={language === "English" ? "Ops, Error Occured!" : " للأسف، حدث خطأ!"} />
-        </div>
+        <LottieHandler style={{ width: '100px' }} className="d-flex flex-column justify-content-center align-items-center mt-4" type="Error" message={language === "English" ? "Ops, Error Occured!" : " للأسف، حدث خطأ!"} />
     )
 }
 

@@ -1,27 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TChapters } from "@customtypes/chaptersType";
 
-type TResponse = TChapters[];
 
-const actGetAcceptedChapters = createAsyncThunk(
-    "chapters/actGetAcceptedChapters",
-    async (_, thunkAPI) => {
+const actReadNotifications = createAsyncThunk(
+    "notifications/actReadNotifications",
+    async (id: number, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
+
         try {
-            const response = await axios.get<TResponse>(
-                // `books/${id}/chapters/`,
-                `unaccepted-chapters/`,
+            const response = await axios.patch(
+                `/users/${id}/notifications/read-all/`,
                 {
                     signal,
-                }
+                },
             );
+
             return response.data;
         } catch (error) {
+
             return rejectWithValue(axiosErrorHandler(error));
+
         }
     }
 );
 
-export default actGetAcceptedChapters;
+export default actReadNotifications;

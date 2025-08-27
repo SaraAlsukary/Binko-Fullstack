@@ -9,6 +9,8 @@ import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteUser from '@store/usersSlice/act/actDeleteUser';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import Loading from '@pages/Loading/Loading';
+import Error from '@pages/Error/Error';
 type TCategory = {
     name: string | null,
     profile: React.ReactNode,
@@ -22,6 +24,8 @@ type TCategoryAra = {
 function Comment() {
     const { language } = useAppSelector(state => state.language);
     const userss = useAppSelector(state => state.users);
+    const {loading,error} = useAppSelector(state => state.users);
+  
     const dispatch = useAppDispatch();
     const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
     useEffect(() => {
@@ -101,7 +105,10 @@ function Comment() {
 
             })
     }
-
+    if (loading === 'pending')
+        return <Loading />
+    if (error !== null)
+        return <Error />
     return (
         <>
             <div className='users-page'>

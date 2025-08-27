@@ -3,7 +3,7 @@ import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
 import { RootState } from "@store/index";
-interface TForm  {
+interface TForm {
     id: number
     commentData: {
         comment: string,
@@ -18,10 +18,10 @@ const actAddComments = createAsyncThunk(
 
         try {
             const response = await axios.post<TResponse>(
-                `books/${Formdata.id}/users/${auth.userData?.user?.id}/comments/
-                `, Formdata.commentData,
+
+                `users/${auth.userData?.user?.id}/books/${Formdata.id}/comment/`, Formdata.commentData,
                 {
-                
+
                 },
             );
             return response.data;

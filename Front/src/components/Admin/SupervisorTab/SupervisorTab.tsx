@@ -11,6 +11,7 @@ import Users from '../../Admin/Users/Users';
 import { useAppSelector } from '@hooks/app';
 import Supervisors from '../Supervisors/Supervisors';
 import './SupervisorTab.css'
+import  Chapters from '@components/Supervisor/UnacceptedChapters/Chapters';
 
 
 function LeftTabsExample() {
@@ -40,11 +41,14 @@ function LeftTabsExample() {
                             <Nav.Item>
                                 <Nav.Link eventKey="fifth">{language === 'English' ? 'Top Books' : 'أفضل الكتب'}</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item >
-                                <Nav.Link eventKey="six">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
+                            <Nav.Item>
+                                <Nav.Link eventKey="six">{language === 'English' ? 'Unaccepted chapters' : 'الفصول'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="seven">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
+                                <Nav.Link eventKey="seven">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item >
+                                <Nav.Link eventKey="eight">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
                             </Nav.Item>
 
                         </Nav>
@@ -56,8 +60,9 @@ function LeftTabsExample() {
                             <Tab.Pane eventKey="third"><Book /></Tab.Pane>
                             <Tab.Pane eventKey="fourth"><AcceptedBooks /></Tab.Pane>
                             <Tab.Pane eventKey="fifth"><TopBooks /></Tab.Pane>
-                            <Tab.Pane eventKey="six"><Supervisors /></Tab.Pane>
-                            <Tab.Pane eventKey="seven"><Users /></Tab.Pane>
+                            <Tab.Pane eventKey="six"><Chapters /></Tab.Pane>
+                            <Tab.Pane eventKey="seven"><Supervisors /></Tab.Pane>
+                            <Tab.Pane eventKey="eight"><Users /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>
