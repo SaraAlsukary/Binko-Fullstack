@@ -1,0 +1,9 @@
+.wait {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.waitLottie{
+    width: 500px;
+}

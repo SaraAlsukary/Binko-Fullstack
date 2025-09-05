@@ -9,7 +9,7 @@ const actAddProfile = createAsyncThunk(
         const { rejectWithValue, getState } = thunk;
         const { auth } = getState() as RootState;
         try {
-            const res = await axios.put(`update-user/${auth.userData?.id}/`, formData, {
+            const res = await axios.put(`update-user/${auth.createdAccount?.id}/`, formData, {
             });
             return res.data;
 

@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
-import { TComment } from "@customtypes/commentType";
+import { TReplies } from "@customtypes/replyType";
 
-type TResponse = TComment[];
+type TResponse = TReplies[];
 
 const actGetReplyByComment = createAsyncThunk(
     "replies/actGetReplyByComment",

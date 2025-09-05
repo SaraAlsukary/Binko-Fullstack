@@ -1,4 +1,3 @@
-import Messages from '@components/Chats/Messages/Messages';
 import SuspendPage from '@components/feedback/SuspendPage/SuspendPage';
 import { useAppSelector } from '@hooks/app';
 import { lazy } from 'react';
@@ -7,13 +6,13 @@ const HomePage = lazy(() => import('src/HomePage'));
 const Categories = lazy(() => import('@pages/Categories/Categories'));
 // const ChatsHomepage = lazy(() => import('@pages/Chats/ChatsHomepage'));
 const UserInfo = lazy(() => import('@pages/UserInfo/UserInfo'));
-const Chats = lazy(() => import('@pages/Chats/Chats'));
 const About = lazy(() => import('@pages/About/About'));
 const Login = lazy(() => import('@pages/Login/Login'));
+const Waiting = lazy(() => import('@pages/Waiting/Waiting'));
 const News = lazy(() => import('@pages/News/News'));
 const Registeration = lazy(() => import('@pages/Registeration/Registeration'));
 const Books = lazy(() => import('@pages/Books/Books'));
-const TopBooks = lazy(() => import('@pages/TopBooks/Books'));
+const TopBooks = lazy(() => import('@components/Books/TopBooks/Books'));
 const Notifications = lazy(() => import('@pages/Notifications/Notifications'));
 const BooksCategory = lazy(() => import('@pages/BooksCategory/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
@@ -23,7 +22,6 @@ const Comments = lazy(() => import('@pages/Comments/Comments'));
 const DenyNoteChapter = lazy(() => import('@pages/DenyNoteChapter/DenyNote'));
 const AddBook = lazy(() => import('@pages/AddBook/AddBook'));
 const AddProfile = lazy(() => import('@pages/AddProfile/AddProfile'));
-const UpdateBook = lazy(() => import('@pages/UpdateBook/UpdateBook'));
 const AddChapter = lazy(() => import('@pages/AddChapter/AddChapter'));
 const Favorite = lazy(() => import('@pages/Favorite/Favorite'));
 const Profile = lazy(() => import('@pages/Profile/Profile'));
@@ -53,10 +51,7 @@ const AppRouter = () => {
             path: "/Binko/notifications",
             element: <SuspendPage><Notifications /></SuspendPage>
         },
-        {
-            path: 'profile/:id',
-            element: <SuspendPage><UpdateBook /></SuspendPage>
-        },
+
         {
             path: 'booksSearch',
             element: <SuspendPage><BooksSearch /></SuspendPage>
@@ -146,17 +141,9 @@ const AppRouter = () => {
         ],
 
     }, {
-        path: '/Binko/chats',
-        element: <SuspendPage><Chats /></SuspendPage>
-        , children: [
-            // {
-            // index: true, element: <ChatsHomepage />,
-            // }
-            {
-                path: ':id',
-                element: <SuspendPage><Messages /></SuspendPage>
-            }]
-    }, {
+        path: '/Binko/waiting',
+        element: <SuspendPage> <Waiting /></SuspendPage>
+    },  {
         path: '/Binko/supervisor',
         element: <SuspendPage><Supervisor /></SuspendPage>
     }, {
@@ -166,10 +153,7 @@ const AppRouter = () => {
         path: '/Binko/books/:id/addChapter',
         element: <SuspendPage><AddChapter /></SuspendPage>
     },
-        // {
-        //     path: '/Binko/profile/:id',
-        //     element: <SuspendPage><UpdateBook /></SuspendPage>
-        // },
+
     ])
     return <RouterProvider router={router} />
 }

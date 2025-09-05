@@ -13,10 +13,9 @@ import { Container } from "react-bootstrap";
 const Favorite = () => {
     const dispatch = useAppDispatch();
     const { loading, error } = useAppSelector(state => state.favorite)
-    const { favorite, auth, users, language } = useAppSelector(state => state);
+    const { favorite, auth, language } = useAppSelector(state => state);
     const booksCardsFavorite = favorite.books.map((book => {
-        const userName = users.users.find(user => user.id == book.user)?.name;
-        return <BookCard name={book.name} category={book.category} image={book.image} user={userName} id={book.id} description={book.description} />
+        return <BookCard key={book.id}{...book} />
 
     }))
     useEffect(() => {

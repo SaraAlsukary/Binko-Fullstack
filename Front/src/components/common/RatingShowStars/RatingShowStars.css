@@ -1,16 +1,14 @@
-.stars .hide {
-    display: none;
+.stars li {
+    width: inherit !important;
+    border: none !important;
+    font-size: 2rem !important;
+    color: var(--secondary-color) !important;
 }
 
-.stars .starsText {
-    color: white !important;
+.stars li div[aria-checked="false"] span {
+    color: #ccc !important;
 }
-.stars .st{
-    margin: 0 5px;
-}
-@media (max-width:767px) {
-    .stars {
-        display: flex;
-        flex-direction: column;
-    }
+
+.stars span {
+    color: inherit !important;
 }

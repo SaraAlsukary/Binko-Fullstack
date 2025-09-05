@@ -7,6 +7,8 @@ import Comment from '../CommentsSuper/Comment'
 import Category from '../CategorySuper/Category'
 import Book from '../BooksSuper/Book';
 import TopBooks from '../TopBooks/Book';
+import BooksArabic from '../BooksArabic/Book';
+import BooksForeign from '../BooksForeign/Book';
 import './SupervisorTab.css'
 import { useAppSelector } from '@hooks/app';
 import  Chapters from '@components/Supervisor/UnacceptedChapters/Chapters';
@@ -37,8 +39,14 @@ function LeftTabsExample() {
                             <Nav.Item>
                                 <Nav.Link eventKey="five">{language === 'English' ? 'Top Books' : 'أفضل الكتب'}</Nav.Link>
                             </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="six">{language === 'English' ? 'Arabic Books' : 'الكتب العربية'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="seven">{language === 'English' ? 'English Books' : 'الكتب الانجليزية '}</Nav.Link>
+                            </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="six">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
+                                <Nav.Link eventKey="eight">{language === 'English' ? 'Unaccepted chapters' : 'الفصول'}</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
@@ -49,7 +57,9 @@ function LeftTabsExample() {
                             <Tab.Pane eventKey="third"><Book /></Tab.Pane>
                             <Tab.Pane eventKey="fourth"><AcceptedBooks /></Tab.Pane>
                             <Tab.Pane eventKey="five"><TopBooks /></Tab.Pane>
-                            <Tab.Pane eventKey="six"><Chapters /></Tab.Pane>
+                            <Tab.Pane eventKey="six"><BooksArabic /></Tab.Pane>
+                            <Tab.Pane eventKey="seven"><BooksForeign /></Tab.Pane>
+                            <Tab.Pane eventKey="eight"><Chapters /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

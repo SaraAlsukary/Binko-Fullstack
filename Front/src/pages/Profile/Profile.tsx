@@ -15,19 +15,19 @@ import { useNavigate } from 'react-router-dom';
 import { settingsBox } from '@utils/settingsForSlick';
 import actGetfavorite from '@store/Favorite/act/actGetfavorite';
 import actGetMyBooks from '@store/booksSlice/act/actGetMyBooks';
-import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import toast from 'react-hot-toast';
+import { Localhost } from '@utils/localhost';
 
-const { profileContainer, settings, userName, inputs, info } = styles;
+const { profileContainer, settings, userName, inputs, info, pp } = styles;
 function Profile() {
     const [imageFile, setImageFile] = useState('');
     const [name, setName] = useState('');
+    const [age, setAge] = useState<null | number>(null);
     const [des, setDes] = useState('');
     const [file, setFile] = useState('');
     const imageHandler = (e: any) => {
         setFile(URL.createObjectURL(e.target.files[0]));
         setImageFile(e.target.files[0]);
-        console.log(file)
     }
 
     const navigate = useNavigate();
@@ -44,25 +44,25 @@ function Profile() {
     }
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
-    const { favorite, auth, books, users } = useAppSelector(state => state);
+    const { myBooks } = useAppSelector(state => state.books);
+    const {  books } = useAppSelector(state => state.favorite);
+    const { userData } = useAppSelector(state => state.auth);
 
-    // const booksCardsWrite = addBook.books.map((book => <BookCard image={book.image} name={book.name} id={book.id} user={auth.user?.username} />))
-    const booksCardsFavorite = favorite.books.map((book => {
-        const userName = users.users.find(user => user.id == book.user.id)?.name;
-        return <BookCard key={book.id} name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
+    const booksCardsFavorite = books.map((book => {
+        return <BookCard key={book.id} {...book} />
 
     }))
 
-    const booksCardsPublished = books.myBooks.map((book => {
-        const userName = users.users.find(user => user.id === book.user.id)?.name;
-        return <BookCard key={book.id} name={book.name} image={book.image} user={userName} id={book.id} description={book.description} />
+    const booksCardsPublished = myBooks.map((book => {
+        return <BookCard key={book.id} {...book} />
 
     }))
     const dataform = new FormData
-
     const updateHandler = () => {
         dataform.append('image', imageFile)
         dataform.append('discriptions', des)
+        dataform.append('age', age as any)
+        dataform.append('is_reader', userData?.user.is_reader as any)
         dataform.append('name', name)
         dispatch(actUpdateProfile(dataform))
             .unwrap()
@@ -71,19 +71,26 @@ function Profile() {
             })
     }
     useEffect(() => {
-        dispatch(actGetfavorite(auth.userData!.user?.id));
-        dispatch(actGetMyBooks(auth.userData!.user?.id));
-        dispatch(actGetUsers());
+        dispatch(actGetfavorite(userData!.user?.id));
+        dispatch(actGetMyBooks(userData!.user?.id));
     }, [])
-    const userData = users.users.find(user => auth.userData!.user?.id === user.id);
     return (
         <div className={profileContainer}>
             <Container>
-                <Picture imageHandler={imageHandler} file={file} image={`http://127.0.0.1:8000${userData?.image}`} />
+                <Picture imageHandler={imageHandler} file={file} image={`${Localhost}${userData?.user?.image}`} />
                 <div className={userName}>
-                    <h2>{userData?.name}</h2>
-                    <p>{userData?.discriptions}</p>
-                </div>
+                    <div>
+                        <h2>{userData?.user?.name}</h2>
+                    </div>                    <div className="reader">
+                        <p>{userData?.user.is_reader === true && language === 'English' ? "Reader" : userData?.user?.is_reader === true && language === 'Arabic' ? "قارئ" : userData?.user?.is_reader === false && language === 'English' ? "Author" : userData?.user?.is_reader === false && language === 'Arabic' ? "كاتب" : ""}</p>
+                    </div>
+
+                    <div className={pp}>
+                        <p>{language === "English" ? "Age: " : "العمر: "} {userData?.user.age}</p>
+                    </div>
+                    <div className={pp}>
+                        <p>{userData?.user.discriptions}</p>
+                    </div>                </div>
                 <div className={settings}>
                     <Tabs
                         defaultActiveKey="profile"
@@ -97,10 +104,9 @@ function Profile() {
                                 <div className={info}>
                                     {language === 'English' ? "Change My informations" : "تغيير معلوماتي "}
                                 </div>
-                                <Input onChange={(e: any) => setDes(e.target.value)} type='text' value={auth?.user?.discriptions} placeholder={language === 'English' ? 'info' : 'نبذة'} />
-                                <Input onChange={(e: any) => setName(e.target.value)} type='text' value={auth?.user?.name} placeholder={language === 'English' ? 'userame' : 'اسم المستخدم'} />
-                                {/* <Input type='email' value={auth.user?.username} placeholder={language === 'Arabic' ? 'email' : 'ايميل'} /> */}
-                                {/* <Input type='password' value={auth.user?.password} placeholder={language === 'Arabic' ? 'password' : 'كلمة المرور'} /> */}
+                                <Input onChange={(e: any) => setDes(e.target.value)} type='text'  placeholder={language === 'English' ? 'info' : 'نبذة'} />
+                                <Input onChange={(e: any) => setName(e.target.value)} type='text'  placeholder={language === 'English' ? 'userame' : 'اسم المستخدم'} />
+                                <Input onChange={(e: any) => setAge(e.target.value)} type='number' placeholder={language === 'English' ? 'Age' : 'العمر'} />
                                 <Input onClick={updateHandler} type='submit' value={language === 'Arabic' ? 'تغيير' : 'Change'} />
                                 <SecondaryButton onClick={logoutHandler} style={{ height: '50px', width: '100px', marginTop: "10px" }}>{language === 'Arabic' ? ' تسجيل الخروج ' : 'Logout'} </SecondaryButton>
                             </div>
@@ -111,19 +117,12 @@ function Profile() {
                             <BookCardList type='box' settings={settingsBox}>{booksCardsFavorite}</BookCardList>
 
                         </Tab>
-                        <Tab eventKey="longer-tab" title=
+                        {userData?.user.is_reader === false ? <Tab eventKey="longer-tab" title=
                             {language === 'English' ? 'My Published Books' : 'كتبي المنشورة'}
                         >
                             <BookCardList type='box' settings={settingsBox}>{booksCardsPublished}</BookCardList>
 
-                        </Tab>
-                        {/* <Tab eventKey="contact" title=
-                            {language === 'English' ? 'My Saved Books' : 'كتبي المحفوظة'}
-
-                        >
-                            <BookCardList type='box' settings={settingsBox}>{booksCardsWrite}</BookCardList>
-
-                        </Tab> */}
+                        </Tab> : ""}
 
                     </Tabs>
                 </div>
@@ -131,5 +130,4 @@ function Profile() {
             </Container> </div >
     );
 }
-
 export default Profile;

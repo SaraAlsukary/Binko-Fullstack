@@ -12,20 +12,16 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { actLogin } from "@store/auth/authSlice";
 const { book, bookReg, registers, bottom, account, forgot } = style
-const schema = z.object({
-    username: z.string({ required_error: 'required field', invalid_type_error: 'email is required!' }).email(),
-    password: z.string({ required_error: 'required field', invalid_type_error: 'password is required!' }).min(8),
 
-});
 type TUser = {
     username: string,
     password: string,
 }
-type Inputs = z.infer<typeof schema>;
 
 const Login = () => {
 
 
+    const { error } = useAppSelector(state => state.auth);
     const language = useAppSelector(state => state.language.language);
     const [showEye, setShowEye] = useState(false);
     const [username, setUsername] = useState('');
@@ -36,6 +32,18 @@ const Login = () => {
         password: password,
     }
 
+
+    const navigate = useNavigate();
+    const schema = z.object({
+        username: z.string()
+            .min(1, { message: language === 'English' ? 'email is required!' : "حقل الايميل مطلوب" })
+            .email({ message: language === 'English' ? 'invalid email!' : "بريد إلكتروني غير صالح" }),
+        password: z.string()
+            .min(1, { message: language === 'English' ? 'password is required!' : "حقل كلمة المرور مطلوب  " })
+            .min(8, { message: language === 'English' ? "Password must at least be 8 characters" : "يجب أن تكون كلمة المرور 8 أحرف على الأقل" }),
+
+    });
+    type Inputs = z.infer<typeof schema>;
     const {
         register,
         handleSubmit,
@@ -44,8 +52,6 @@ const Login = () => {
     } = useForm<Inputs>({
         resolver: zodResolver(schema),
     });
-    const navigate = useNavigate();
-
     const loginHandler: SubmitHandler<Inputs> = async () => {
         try {
             await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -104,8 +110,9 @@ const Login = () => {
                                 </div>
                             </Form.Group>
                             {errors.password && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.password.message}</Alert>}
+                            {error && <Alert className='dangerAlert' key='dangerssss' variant='danger'>{error?.non_field_errors[0]}</Alert>}
 
-                            <p className={forgot}>{language === 'English' ? 'Forgot Password?' : 'نسيت كلمة المرور؟'}</p>
+                            {/* <p className={forgot}>{language === 'English' ? 'Forgot Password?' : 'نسيت كلمة المرور؟'}</p> */}
 
                             <Button
                                 disabled={isSubmitting} type="submit">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { TUser } from '@customtypes/userType';
 import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
+import { Localhost } from '@utils/localhost';
 
 const initialUserInfo: TUser = {
     name: '',
@@ -18,10 +19,10 @@ function View({ userId }: { userId: number }) {
     const user = supervisors.find((user) => user.id == userId)
     useEffect(() => {
         dispatch(actGetSupervisor())
-    },[language])
+    }, [language])
     useEffect(() => {
-        if(supervisors)
-        fetchUserData()
+        if (supervisors)
+            fetchUserData()
 
     }, [supervisors]);
 
@@ -33,25 +34,25 @@ function View({ userId }: { userId: number }) {
 
     return (
         <div className='user-view'>
-            <h1>Basic Info</h1>
             <div className='box'>
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
                         <p>
                             <span>{language === 'English' ? 'Profile:' : "الصورة"}</span>
-                            <img src={`http://127.0.0.1:8000${userInfo?.image}`} />
+                            {userInfo.image && <img src={`${Localhost}${userInfo?.image}`} />}
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
                             <span>{language === 'English' ? 'Name:' : "الاسم"}</span>
-                            <span>{userInfo.name}</span>
+                            {userInfo.name && <span>{userInfo.name}</span>}
+
                         </p>
                     </div>
                     <div className='col-sm-12 col-md-6'>
                         <p>
                             <span>{language === 'English' ? 'Bio:' : "الوصف"}</span>
-                            <span>{userInfo.discriptions}</span>
+                            {userInfo.discriptions && <span>{userInfo.discriptions}</span>}
                         </p>
                     </div>
 

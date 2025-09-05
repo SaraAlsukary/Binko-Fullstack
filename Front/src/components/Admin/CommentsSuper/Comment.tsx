@@ -8,7 +8,6 @@ import './Comment.css'
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 
 import actGetComments from '@store/commentsSlice/act/actGetComments';
-import actGetUsers from '@store/usersSlice/act/actGetUsers';
 import actDeleteComment from '@store/commentsSlice/act/actDeleteComment';
 import { useNavigate } from 'react-router-dom';
 import actGetBooks from '@store/booksSlice/act/actGetBooks';
@@ -16,7 +15,8 @@ import actGetBooksToAccept from '@store/booksSlice/act/actGetBooksToAccept';
 import toast from 'react-hot-toast';
 import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
-type TCategory = {
+import { Localhost } from '@utils/localhost';
+type TComment = {
     id: number,
     name: string,
     book: string,
@@ -24,7 +24,7 @@ type TCategory = {
     profile: React.ReactNode,
     comment: string
 }
-type TCategoryAra = {
+type TCommentAra = {
     id: number,
     book_id: number,
     الاسم: string,
@@ -34,61 +34,59 @@ type TCategoryAra = {
 }
 function Comment() {
     const { language } = useAppSelector(state => state.language);
-    const userss = useAppSelector(state => state.users.users);
 
-    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
+    const [Comments, setList] = useState<TComment[] | TCommentAra[]>([]);
 
 
-    const { comments,loading,error } = useAppSelector(state => state.comments)
+    const { comments, loading, error } = useAppSelector(state => state.comments)
     const { books, acceptedBooks } = useAppSelector(state => state.books)
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(actGetComments());
-        dispatch(actGetUsers());
         dispatch(actGetBooks());
         dispatch(actGetBooksToAccept());
     }, [language]);
     useEffect(() => {
         if (comments) {
-            const getAllUsers = () => {
+            const getAll = () => {
 
-                const category: TCategory[] = comments.map((comment) => {
+                const comment: TComment[] = comments.map((comment) => {
 
 
                     const book = acceptedBooks.find(book => book.name === comment.book) ? acceptedBooks.find(book => book.name === comment.book) : books.find(book => book.name === comment.book)
                     return ({
-                        id: comment.id,
-                        book_id: book?.id,
-                        book: book?.name,
-                        name: comment.name,
-                        comment: comment.comment,
-                        profile: <img src={`http://127.0.0.1:8000${comment.image}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                        id: comment.id!,
+                        book_id: book?.id!,
+                        book: book?.name!,
+                        name: comment.name!,
+                        comment: comment.comment!,
+                        profile: <img src={`${Localhost}${comment.image!}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
                     })
                 })
-                const categoryAra: TCategoryAra[] = comments.map((comment) => {
-                    const bookId = acceptedBooks.find(book => book.name === comment.book) ? acceptedBooks.find(book => book.name === comment.book) : books.find(book => book.name === comment.book)
+                const commentAra: TCommentAra[] = comments.map((comment) => {
+                    const bookId = acceptedBooks.find(book => book.name == comment.book) ? acceptedBooks.find(book => book.name === comment.book) : books.find(book => book.name === comment.book)
                     return ({
-                        id: comment.id,
-                        book: bookId?.id,
-                        الكتاب: bookId?.name,
-                        الاسم: comment.name,
-                        التعليق: comment.comment,
-                        الصورة: <img src={`http://127.0.0.1:8000${comment.image}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
+                        id: comment.id!,
+                        book_id: bookId?.id!,
+                        الكتاب: bookId?.name!,
+                        الاسم: comment.name!,
+                        التعليق: comment.comment!,
+                        الصورة: <img src={`${Localhost}${comment.image!}`} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />,
                     })
                 })
 
-                const data = language === 'Arabic' ? categoryAra : category
+                const data = language === 'Arabic' ? commentAra : comment
 
-                setUsersList(data);
+                setList(data);
             }
-            getAllUsers();
+            getAll();
         }
     }, [comments]);
 
 
-    const actionsTemplate = (rowDate: object) => {
+    const actionsTemplate = (rowDate: TComment | TCommentAra) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
@@ -107,19 +105,19 @@ function Comment() {
         )
     }
 
-    const deleteUserConfirm = (userId: number) => {
+    const deleteUserConfirm = (Id: number) => {
         confirmDialog({
             message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف التعليق؟' : 'Are you sure you want to delete this comment?',
             header: language === 'English' ? 'Confirmation' : "التأكيد",
             icon: 'pi pi-trash',
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
-            accept: () => deleteUser(userId),
+            accept: () => deleteHandler(Id),
         });
     }
 
-    const deleteUser = async (userId: number) => {
-        dispatch(actDeleteComment(userId)).unwrap().then(() => {
+    const deleteHandler = async (Id: number) => {
+        dispatch(actDeleteComment(Id)).unwrap().then(() => {
             language === 'English' ? toast.success('deleted successfully!') : toast.success('تم الحذف بنجاح')
         })
     }
@@ -141,7 +139,7 @@ function Comment() {
 
                     <div className='users-list'>
 
-                        <DataTable className='tableCell' value={users}>
+                        <DataTable className='tableCell' value={Comments}>
                             <Column field={language === 'English' ? "profile" : "الصورة"} header={language === 'English' ? "profile" : "الصورة"}></Column>
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
                             <Column field={language === 'English' ? "book" : "الكتاب"} header={language === 'English' ? "book" : "الكتاب"}></Column>

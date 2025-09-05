@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import update_note ,get_note ,book_likes ,add_book_by_cat,get_like_status ,reject_book_with_note
-from .views import update_book , like_book , unlike_book ,liked_books  , latest_books
+from .views import update_book , like_book , unlike_book ,liked_books  , latest_books ,get_arabic_books
 from .views import favorite_books , add_favorite_book ,get_books_by_category , get_all_books ,get_my_book
-from .views import delete_book , recommended_books_for_book,recommended_books,add_book ,get_all_books_to_accept, get_book_by_id,delete_book_fav ,accept_book,toggle_like
+from .views import delete_book , recommended_books_for_book,recommended_books,add_book ,get_all_books_to_accept, get_book_by_id,delete_book_fav ,accept_book,toggle_like ,get_foreign_books
 urlpatterns = [
     path('favorite-books/<int:user_id>/', favorite_books, name='favorite-books'),
     path('add-favorite/', add_favorite_book, name='add-favorite'),
@@ -30,6 +30,9 @@ urlpatterns = [
      path('books/<int:book_id>/', get_book_by_id, name='get_book_by_id'),
      path('recommendations/<int:user_id>/', recommended_books, name='recommended_books'),
      path( 'recommendations/book/<int:book_id>/', recommended_books_for_book, name='recommended_books_for_book'),
+    path('books/arabic/', get_arabic_books, name='get_arabic_books'),
+    path('books/foreign/', get_foreign_books, name='get_foreign_books'),
+
 ]
     
 

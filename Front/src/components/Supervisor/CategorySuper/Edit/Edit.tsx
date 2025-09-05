@@ -3,6 +3,7 @@ import actUpdateCategory from '@store/categorySlice/act/actUpdateCategory';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
 import toast from 'react-hot-toast';
+import { Localhost } from '@utils/localhost';
 
 
 function EditUser({ id }: { id: number }) {
@@ -10,15 +11,17 @@ function EditUser({ id }: { id: number }) {
     const categoryInfo = categories.find(cat => cat.id === id);
     const [name, setName] = useState(categoryInfo?.name);
     const { language } = useAppSelector(state => state.language);
+    const [image, setImage] = useState(`${Localhost}${categoryInfo?.file!}`);
+
     const [ar_name, setAraName] = useState(categoryInfo?.name_arabic);
-    const [file, setFile] = useState('');
+    const [file, setFile] = useState<null | string | File>(categoryInfo?.file!);
 
     const dispatch = useAppDispatch();
 
     const editExistUser = async () => {
         const formdata = new FormData();
         formdata.append("name", name!)
-        formdata.append("file", file)
+        formdata.append("file", file as string)
         formdata.append("name_arabic", ar_name!)
 
         const data = {
@@ -31,6 +34,11 @@ function EditUser({ id }: { id: number }) {
             setAraName('')
             setFile('')
         })
+    }
+    const fileHandler = (e: any) => {
+        setFile(e.target.files[0]);
+        setImage(URL.createObjectURL(e.target.files[0]))
+
     }
     useEffect(() => {
         dispatch(actGetCategories())
@@ -68,17 +76,19 @@ function EditUser({ id }: { id: number }) {
                         />
 
                     </div>
-                    <div className='col-sm-12 col-md-6'>
-
+                    <div className='col-sm-12 col-md-12 mt-2 d-flex justify-content-center align-items-center'>
+                        <label className='file-label' htmlFor="file">{language === 'English' ? 'Enter file' : "اختر الملف"}</label>
                         <input
                             type='file'
+                            style={{ display: 'none' }}
+                            id={'file'}
                             className='form-control'
                             placeholder={language === 'English' ? 'Enter file' : "اختر الملف"}
-                            onChange={e => setFile(e.target.files[0])}
+                            onChange={fileHandler}
 
                         />
-
-                    </div>
+                        <img src={image} alt="" />  
+                        </div>
 
 
                 </div>

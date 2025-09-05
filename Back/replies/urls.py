@@ -8,9 +8,7 @@ urlpatterns = [
     path('comments/<int:comment_id>/replies/', get_replies, name='get-replies'),
     path('getreplys/<int:comment_id>/', get_reply, name='get_reply'),
     path('addreply/<int:comment_id>/<int:user_id>/', add_reply),
-     path('comments/<int:comment_id>/reply/<int:parent_reply_id>/user/<int:user_id>/', reply_to_reply, name='reply_to_reply'),
-
-
+    path('comments/<int:comment_id>/reply/<int:parent_reply_id>/user/<int:user_id>/', reply_to_reply, name='reply_to_reply'),
 ]
   
         

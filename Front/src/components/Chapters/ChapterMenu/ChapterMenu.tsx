@@ -23,7 +23,9 @@ import actAddFavorite from '@store/Favorite/act/actAddFavorite';
 import actDeleteFavorite from '@store/Favorite/act/actDeleteFavorite';
 import actGetDisLikes from '@store/booksSlice/act/actGetDisLikes ';
 import actGetLikes from '@store/booksSlice/act/actGetLikes';
-const { up, text, bookUp, book, listMenu, icon, activeIcon, active, icons, chapterList, photo, title, author, arrow } = style;
+import actShowBook from '@store/booksSlice/act/actShowBook';
+import { Localhost } from '@utils/localhost';
+const { up, text, bookUp, book, listMenu, icon, activeIcon, active, icons, chapterList, photo, title, arrow } = style;
 type TDisForm = {
     book_id: number,
     user_id: number
@@ -39,9 +41,9 @@ const ChapterMenu = () => {
     const MybookInfo = books.myBooks.find(book => book.id == param.id);
     const MybookFav = favorite.books.find(book => book.id == param.id) ? true : false;
     const bookInfo = (MybookInfo) ? books.myBooks.find(book => book.id == param.id) : (userData?.user.is_supervisor || userData?.user.is_admin) ? acceptedBooks.find(book => book.id == param.id) : books.books.find(book => book.id == param.id);
-    const chaptersInfo = MybookInfo ? chapters.acceptedchapters.filter((ch) => ch.book == param.id) : chapters.chapters.filter((ch) => ch.book == param.id);
+    // const chaptersInfo = MybookInfo ? chapters.acceptedchapters.filter((ch) => ch.book == param.id) : chapters.chapters.filter((ch) => ch.book == param.id);
     const chapterIndex = parseInt(param.idChapter);
-    const chaptersList = chapters.chapters.map((chapter, idx) => <li className={chapter.id === chapterIndex ? `${active}` : ""} key={chapter.id} onClick={() => navigate(`/Binko/books/${param.id}/${chapter.id}`)}>{chapter.title}</li>)
+    const chaptersList = chapters.chapters.map((chapter) => <li className={chapter.id === chapterIndex ? `${active}` : ""} key={chapter.id} onClick={() => navigate(`/Binko/books/${param.id}/${chapter.id}`)}>{chapter.title}</li>)
     const disForm: TDisForm = {
         user_id: userData?.user.id!,
         book_id: bookInfo?.id!
@@ -51,7 +53,7 @@ const ChapterMenu = () => {
         id_user: userData?.user.id!,
     }
     const favoriteData = {
-        user: userData?.user?.id,
+        user: userData?.user?.id!,
         book: param.id
     }
     const activeHandler = () => {
@@ -102,6 +104,7 @@ const ChapterMenu = () => {
         dispatch(actGetfavorite(userData?.user!.id!))
         dispatch(actGetBooksToAccept())
         dispatch(actGetBooks())
+        dispatch(actShowBook(param.id))
         dispatch(actGetLikeStatue(likeForm))
         dispatch(actGetDislikeStatue(likeForm))
     }, [])
@@ -128,15 +131,12 @@ const ChapterMenu = () => {
             <div className={up}>
                 <div className={bookUp}>
                     <div className={book}>
-                        <div onClick={() => navigate(`/Binko/books/${bookInfo?.id}`)} className={photo}>
-                            <img src={`http://127.0.0.1:8000${bookInfo?.image}`} alt="" />
+                        <div onClick={() => navigate(`/Binko/books/${books?.book!.id}`)} className={photo}>
+                            <img src={`${Localhost}${books.book?.image}`} alt="" />
                         </div>
                         <div onClick={() => navigate(`/Binko/books/${bookInfo?.id}`)} className={text}>
                             <div className={title}>
-                                {bookInfo?.name}
-                            </div>
-                            <div className={author}>
-                                {language === 'English' ? `Written By ` : `كُتِب بواسطة `} <span>{bookInfo?.user?.name!}</span>
+                                {books.book?.name}
                             </div>
                         </div>
                         <div onClick={() => activeHandler()} className={arrow}>

@@ -11,6 +11,10 @@
     color: var(--secondary-color);
 }
 
+.pp {
+    color: var(--red);
+}
+
 .profileContainer .pic {
     margin: 0 20px;
     cursor: pointer;

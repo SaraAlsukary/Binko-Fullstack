@@ -1,11 +1,12 @@
 
-type TChild ={
+type TChild = {
     content: string,
     created_at: string,
     id: number,
     name: string,
     image: string,
     parent: number | null,
+    parent_name: string | null,
     user: number
 }
 export type TReplies = {
@@ -16,5 +17,6 @@ export type TReplies = {
     name: string,
     image: string,
     parent: number | null,
+    parent_name: string | null,
     user: number
 }

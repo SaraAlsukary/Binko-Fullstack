@@ -1,6 +1,35 @@
 .searchCont {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 20px 0 50px 0;
+}
+
+.SearchList {
+    z-index: 1000;
+    /* transition: .9s; */
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 122px;
+    margin-right: 30px;
+    width: 51%;
+    color: var(--background);
+    background-color: var(--color);
+}
+
+.SearchList li {
+    padding: 0 30px;
+    transition: .3s;
+}
+
+.SearchList li:hover {
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    color: #fff
+}
+
+.search {
+    width: 81%;
 }

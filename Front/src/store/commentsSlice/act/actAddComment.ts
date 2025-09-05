@@ -3,13 +3,14 @@ import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
 import { RootState } from "@store/index";
+import { TComment } from "@customtypes/commentType";
 interface TForm {
     id: number
     commentData: {
         comment: string,
     }
 }
-type TResponse = [];
+type TResponse = TComment;
 const actAddComments = createAsyncThunk(
     "comments/actAddComments",
     async (Formdata: TForm, thunkAPI) => {

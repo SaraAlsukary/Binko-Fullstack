@@ -15,6 +15,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@reduxjs/toolkit": "^2.2.8",
+    "antd": "^5.27.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cookie-universal": "^2.2.2",

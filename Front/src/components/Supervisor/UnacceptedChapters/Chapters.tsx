@@ -13,13 +13,13 @@ import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
 import actGetUnacceptedChapters from '@store/chaptersSlice/act/actGetUnacceptedChapter';
 import actDeleteChapters from '@store/chaptersSlice/act/actDeleteChapter';
-type TCategory = {
+type TChapters = {
     id: number,
     idBook: number,
     title: string | null,
     nameBook: string | null,
 }
-type TCategoryAra = {
+type TChaptersAra = {
     id: number,
     idBook: number,
     العنوان: string | null,
@@ -28,7 +28,7 @@ type TCategoryAra = {
 function Book() {
     const { language } = useAppSelector(state => state.language);
     const { acceptedchapters, loading, error } = useAppSelector(state => state.chapters);
-    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
+    const [Chapters, setList] = useState<TChapters[] | TChaptersAra[]>([]);
 
     const dispatch = useAppDispatch();
 
@@ -41,33 +41,33 @@ function Book() {
     }, [language]);
     useEffect(() => {
         if (acceptedchapters) {
-            const getAllUsers = async () => {
-                const category: TCategory[] = acceptedchapters.map((book) => {
+            const getAll = async () => {
+                const chapter: TChapters[] = acceptedchapters.map((ch) => {
                     return ({
-                        id: book.id,
-                        idBook: book.book,
-                        title: book.title,
-                        nameBook: book.name,
+                        id: ch.id!,
+                        idBook: ch.book,
+                        title: ch.title,
+                        nameBook: ch.name!,
 
                     })
                 })
-                const categoryAra: TCategoryAra[] = acceptedchapters.map((book) => {
+                const chapterAra: TChaptersAra[] = acceptedchapters.map((ch) => {
                     return ({
-                        id: book.id,
-                        idBook: book.book,
-                        العنوان: book.title,
-                        اسم_الكتاب: book.name,
+                        id: ch.id!,
+                        idBook: ch.book,
+                        العنوان: ch.title,
+                        اسم_الكتاب: ch.name!,
                     })
                 })
-                const data = language === 'Arabic' ? categoryAra : category
-                setUsersList(data);
+                const data = language === 'Arabic' ? chapterAra : chapter
+                setList(data);
             }
 
-            getAllUsers();
+            getAll();
         }
     }, [acceptedchapters]);
 
-    const actionsTemplate = (rowDate: TCategory | TCategoryAra) => {
+    const actionsTemplate = (rowDate: TChapters | TChaptersAra) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
@@ -88,7 +88,7 @@ function Book() {
         )
     }
 
-    const deleteUserConfirm = (userId: number) => {
+    const deleteUserConfirm = (Id: number) => {
         confirmDialog({
             message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف الفصل؟' : 'Are you sure you want to delete this chapter?',
             header: language === 'English' ? 'Confirmation' : "التأكيد",
@@ -96,13 +96,13 @@ function Book() {
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
             accept: () => {
-                deleteUser(userId)
+                deleteHandler(Id)
             },
         });
     }
 
-    const deleteUser = (userId: number) => {
-        dispatch(actDeleteChapters(userId)).unwrap().then(() => {
+    const deleteHandler = (Id: number) => {
+        dispatch(actDeleteChapters(Id)).unwrap().then(() => {
             language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
 
         })
@@ -124,7 +124,7 @@ function Book() {
 
                     <div className='users-list'>
 
-                        <DataTable className='tableCell' value={users}>
+                        <DataTable className='tableCell' value={Chapters}>
                             <Column field={language === 'English' ? 'title' : 'العنوان'} header={language === 'English' ? 'title' : 'العنوان'}></Column>
                             <Column field={language === 'English' ? 'nameBook' : 'اسم_الكتاب'} header={language === 'English' ? 'Book Name' : 'اسم_الكتاب'}></Column>
 

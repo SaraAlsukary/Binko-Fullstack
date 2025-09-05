@@ -10,12 +10,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'username', 'password', 'confirm_password', 'is_admin', 'is_supervisor', 'image', 'discriptions','category']
+        fields = ['id', 'name', 'username', 'password', 'confirm_password', 'is_admin', 'is_supervisor', 'image', 'discriptions','category','is_accept','is_reader','age']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"password": "كلمات المرور غير متطابقة."})
+            raise serializers.ValidationError({"password": "كلمات المرور غير متطابقة. | Passwords do not match."})
         return attrs   
 
     def create(self, validated_data):
@@ -43,11 +43,16 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         if username and password:
-            user = authenticate(username=username, password=password)  
+            user = authenticate(username=username, password=password)
 
             if user:
                 if not user.is_active:
                     raise serializers.ValidationError("الحساب معطل.")
+                
+                # التحقق من قبول الحساب
+                if not user.is_accept:
+                    raise serializers.ValidationError("لم يتم قبول حسابك بعد من الإدارة.")
+
                 data['user'] = user
             else:
                 raise serializers.ValidationError("بيانات تسجيل الدخول غير صحيحة.")
@@ -55,6 +60,7 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("يجب إدخال البريد الإلكتروني وكلمة المرور.")
         
         return data
+
 class CustomrUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -67,7 +73,8 @@ class LogoutSerializer(serializers.Serializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'name', 'username','image', 'discriptions','is_admin','is_supervisor', 'category']
+        fields = ['id', 'name', 'username','image', 'discriptions','is_admin','is_supervisor', 'category','age',
+                 'is_reader' ]
         extra_kwargs = {
             'username': {'required': False},
             'name': {'required': False},
@@ -85,14 +92,14 @@ class SupervisorUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'username', 'password', 'confirm_password', 'image', 'is_admin', 'is_supervisor', 'discriptions' ,'category']
+        fields = ['id','name', 'username', 'password', 'confirm_password', 'image', 'is_admin', 'is_supervisor', 'discriptions' ,'category']
         extra_kwargs = {
             'category': {'required': True}  
         }
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"password": "كلمة المرور وتأكيد كلمة المرور غير متطابقتين."})
+            raise serializers.ValidationError({"password": "كلمات المرور غير متطابقة. | Passwords do not match."})
         return attrs
 
     def create(self, validated_data):
@@ -112,3 +119,4 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'image', 'description', 'publication_date', 'username', 'is_accept']
+

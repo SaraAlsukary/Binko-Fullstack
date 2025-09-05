@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "@utils/axiosErrorHandler";
+import { TAuth } from "@customtypes/authType";
 
 type TFormData = {
     username: string;
@@ -21,7 +22,6 @@ const actLogin = createAsyncThunk(
             );
             return res.data;
         } catch (error) {
-            console.log(error)
             return rejectWithValue(axiosErrorHandler(error));
         }
     }

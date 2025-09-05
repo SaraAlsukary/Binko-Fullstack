@@ -11,8 +11,8 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
 import actDeleteCategory from '@store/categorySlice/act/actDeleteCategory';
 import toast from 'react-hot-toast';
-import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
+import { Localhost } from '@utils/localhost';
 type TCategory = {
     id: number,
     name: string,
@@ -27,13 +27,13 @@ type TCategoryAra = {
 }
 function Category() {
     const { language } = useAppSelector(state => state.language);
-    const { categories, loading, error } = useAppSelector(state => state.categories);
+    const { categories, error } = useAppSelector(state => state.categories);
     const dispatch = useAppDispatch();
-    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
+    const [Cates, setList] = useState<TCategory[] | TCategoryAra[]>([]);
     const [showViewMode, setShowViewMode] = useState(false);
     const [showAddMode, setShowAddMode] = useState(false);
     const [showEditMode, setShowEditMode] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null)
+    const [selectedUserId, setSelectedUserId] = useState<null|number>(null)
 
     useEffect(() => {
         dispatch(actGetCategories())
@@ -47,9 +47,7 @@ function Category() {
                         id: cate.id,
                         name: cate.name,
                         name_ar: cate.name_arabic,
-                        file: <video width='100' height='100' autoPlay loop >
-                            <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
-                        </video>
+                        file: <img src={`${Localhost}${cate.file}`} />
 
                     })
                 })
@@ -59,13 +57,11 @@ function Category() {
                         id: cate.id,
                         الاسم: cate.name,
                         الاسم_العربي: cate.name_arabic,
-                        الملف: <video width='100' height='100' autoPlay loop >
-                            <source src={`http://127.0.0.1:8000${cate.file}`} type="video/webm" />
-                        </video>
+                        الملف: <img src={`${Localhost}${cate.file}`}/>
                     })
                 })
                 const data = language === 'Arabic' ? categoryAra : category
-                setUsersList(data);
+                setList(data);
             }
 
 
@@ -74,17 +70,17 @@ function Category() {
     }, [categories]);
 
 
-    const actionsTemplate = (rowDate: object) => {
+    const actionsTemplate = (rowDate: TCategory|TCategoryAra) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
+                    setSelectedUserId(rowDate?.id!)
                     setShowViewMode(true)
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
                 <button className='btn btn-primary' onClick={() => {
-                    setSelectedUserId(rowDate?.id)
+                    setSelectedUserId(rowDate?.id!)
                     setShowEditMode(true)
                 }}>
                     <i className='pi pi-file-edit'></i>
@@ -114,8 +110,7 @@ function Category() {
             language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
         })
     }
-    if (loading === 'pending')
-        return <Loading />
+
     if (error !== null)
         return <Error />
     return (
@@ -138,7 +133,7 @@ function Category() {
 
                             </button>
                         </div>
-                        <DataTable className='tableCell' value={users}>
+                        <DataTable className='tableCell' value={Cates}>
                             <Column field={language === 'English' ? "name" : "الاسم"} header={language === 'English' ? "name" : "الاسم"}></Column>
                             <Column field={language === 'English' ? "name_ar" : "الاسم_العربي"} header={language === 'English' ? "name_ar" : "الاسم_العربي"}></Column>
                             <Column field={language === 'English' ? "file" : "الملف"} header={language === 'English' ? "file" : "الملف"}></Column>
@@ -153,7 +148,7 @@ function Category() {
                     style={{ width: '70vw' }}
                     onHide={() => setShowViewMode(false)}>
 
-                    <ViewUser id={selectedUserId} />
+                    <ViewUser id={selectedUserId!} />
                 </Dialog>
 
                 <Dialog header={language === "English" ? "Add New Category" : "اضافة صنف"}
@@ -161,9 +156,7 @@ function Category() {
                     style={{ width: '70vw' }}
                     onHide={() => setShowAddMode(false)}>
 
-                    <AddUser setUserAdded={() => {
-                        setShowAddMode(false);
-                    }} />
+                    <AddUser />
                 </Dialog>
 
                 <Dialog header={language === "English" ? "Edit Exist Category" : "تعديل صنف موجود"}
@@ -171,10 +164,7 @@ function Category() {
                     style={{ width: '70vw' }}
                     onHide={() => setShowEditMode(false)}>
 
-                    <EditUser id={selectedUserId} setUserEdited={() => {
-                        setShowEditMode(false);
-
-                    }} />
+                    <EditUser id={selectedUserId!} />
                 </Dialog>
 
             </div >

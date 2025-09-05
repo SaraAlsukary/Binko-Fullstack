@@ -12,7 +12,7 @@
 
 :root {
   --main-color: #4deb42;
-  --red:#f35151;
+  --red: #f35151;
   --secondary-color: #e9e902;
   /* --background: #fdffee;*/
   --background: #fdffee;
@@ -118,7 +118,7 @@ a .mark {
   background: transparent;
   border: none;
   height: 10px;
-  color: var(--secondary-color);
+  color: var(--red);
 }
 
 .form input {
@@ -162,33 +162,60 @@ a .mark {
   font-family: BinkoAra;
   font-size: 20px;
 }
-#parent{
-  color:rgb(74, 74, 255)
+
+#parent {
+  color: rgb(74, 74, 255)
 }
 
 .p-dialog-header,
 .p-dialog-content {
-    padding: 20px;
-    direction: rtl;
+  padding: 20px;
+  direction: rtl;
 }
 
 .p-dialog-content span {
-    font-size: 22px;
-    margin: 0 10px;
+  font-size: 22px;
+  margin: 0 10px;
 
 }
 
 .p-dialog-footer {
-    text-align: center;
-    padding: 10px;
+  text-align: center;
+  padding: 10px;
 }
 
 .p-dialog-footer button:nth-of-type(1) {
-    color: var(--main-color);
+  color: var(--main-color);
 }
 
 .p-dialog-footer button:nth-of-type(2) {
-    padding: 2px;
-    margin: 0 20px;
-    background-color: var(--main-color);
+  padding: 2px;
+  margin: 0 20px;
+  background-color: var(--main-color);
+}
+
+.reader {
+  display: flex;
+  justify-content: center;
+}
+
+.reader p {
+  background-color: gray;
+  color: #fff;
+  border-radius: 17px;
+  width: 80px;
+}
+
+.stars {
+  direction: ltr;
+}
+
+:where(.css-dev-only-do-not-override-xepvsj).ant-rate .ant-rate-star-first {
+  width: 30% !important;
+  left: 10px;
+  top: initial;
+}
+
+:where(.css-dev-only-do-not-override-xepvsj).ant-rate .ant-rate-star-second {
+  color: #ccc;
 }

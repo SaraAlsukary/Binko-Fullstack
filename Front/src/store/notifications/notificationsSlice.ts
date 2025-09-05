@@ -1,15 +1,13 @@
-
 import { createSlice } from "@reduxjs/toolkit";
-
-import { TBooks } from "@customtypes/booksTypes";
 import { TLoading } from "@customtypes/loadingType";
 import { isString } from "@customtypes/isString";
 import actGetNotificationsCounts from "./act/actGetNotificationsCounts";
 import actGetNotificationsList from "./act/actGetNotificationsList";
 import actReadNotifications from "./act/actReadNotificationsts";
+import { TNotification } from "@customtypes/notificationType";
 
 interface IBooksState {
-    notifications: TBooks[];
+    notifications: TNotification[];
     notificationsCount: number;
     loading: TLoading;
     error: string | null;

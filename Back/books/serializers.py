@@ -28,7 +28,7 @@ class BooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = [
-            'id', 'name', 'image', 'description', 'publication_date',
+            'id', 'name', 'image', 'description', 'publication_date','language',
             'user', 'categories', 'is_accept', 'content',
             'average_rating' , 'likes_count', 'dislikes_count', 'comments_count' # نضيفه هنا أيضًا
         ]
@@ -158,7 +158,7 @@ class AddBookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['id', 'user', 'name', 'content','image', 'description', 'publication_date', 'category_id', 'book_categories']
+        fields = ['id', 'user', 'name', 'content','image','language' ,'description', 'publication_date', 'category_id', 'book_categories']
 
     def create(self, validated_data):
         categories = validated_data.pop('categories')  
@@ -229,7 +229,7 @@ class AddBookCatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['id', 'user', 'name', 'image', 'description', 'publication_date', 'category_names', 'book_categories','content']
+        fields = ['id', 'user', 'name', 'image', 'description', 'publication_date', 'category_names', 'book_categories','content',"language"]
 
     def create(self, validated_data):
         category_names = validated_data.pop('category_names')  
@@ -331,4 +331,13 @@ class BookUpdateSerializer(serializers.ModelSerializer):
 class LatestBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ['id', 'name', 'image', 'publication_date', 'description']
+        fields = ['id', 'name', 'image', 'publication_date', 'description','user']
+
+class BooklanguageSerializer(serializers.ModelSerializer):
+    avg_rating = serializers.FloatField(read_only=True)  
+    class Meta:
+        model = Book 
+        fields = [
+            'id', 'user', 'name', 'image', 'is_accept', 'description',
+            'publication_date', 'note', 'content', 'language', 'avg_rating'
+        ]

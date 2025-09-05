@@ -12,24 +12,13 @@ import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const { book, bookReg, registers, bottom } = style;
-const schema = z.object({
-    name: z.string({
-        required_error: 'required field', invalid_type_error: 'name is required!'
-    }),
-    username: z.string({ required_error: 'required field', invalid_type_error: 'email is required!' }).email(),
-    password: z.string({ required_error: 'required field', invalid_type_error: 'password is required!' }).min(8),
-    confirm_password: z.string({
-        required_error: 'required field', invalid_type_error: 'confirm_password is required!'
 
-    }).min(8)
-});
 type TUser = {
     name: string,
     username: string,
     password: string,
     confirm_password: string
 }
-type Inputs = z.infer<typeof schema>;
 
 const Registeration = () => {
 
@@ -41,8 +30,30 @@ const Registeration = () => {
     const [showEye1, setShowEye1] = useState(false);
 
     const [confirm_password, setConfirmPassword] = useState('');
+    
     const dispatch = useAppDispatch();
     const language = useAppSelector(state => state.language.language);
+    const { error } = useAppSelector(state => state.auth);
+    const schema = z.object({
+        name: z.string().min(1, { message: language === 'English' ? 'name is required!' : "حقل الاسم مطلوب" }),
+        username: z.string().min(1, { message: language === 'English' ? 'email is required!' : "حقل الايميل مطلوب" }).email({ message: language === 'English' ? 'invalid email!' : "بريد إلكتروني غير صالح" }),
+        password: z.string().min(1, { message: language === 'English' ? 'password is required!' : "حقل كلمة المرور مطلوب" })
+            .min(8, { message: language === 'English' ? "Password must at least be 8 characters" : "يجب أن تكون كلمة المرور 8 أحرف على الأقل" })
+            .regex(/[a-zA-Z]/, { message: language === 'English' ? "Password must at least contain 1 string" : "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل" })
+            .regex(/\d/, { message: language === 'English' ? "Password must at least contain 1 number" : "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل" }),
+        confirmPassword: z.string()
+            .min(1, { message: language === 'English' ? "Confirm password is required" : "تأكيد كلمة المرور مطلوب" })
+    }).superRefine((data, ctx) => {
+
+        if (data.password !== data.confirmPassword) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: language === 'English' ? "Password and its Confirm must be matched" : "كلمتا المرور غير متطابقتين",
+                path: ["confirmPassword"]
+            });
+        }
+    });
+    type Inputs = z.infer<typeof schema>;
 
     const userData: TUser = {
         name: name,
@@ -55,8 +66,10 @@ const Registeration = () => {
         handleSubmit,
         setError,
         formState: { errors, isSubmitting },
+
     } = useForm<Inputs>({
         resolver: zodResolver(schema),
+        mode: "onChange"
     });
 
 
@@ -95,7 +108,7 @@ const Registeration = () => {
                     </div>
                     <div className={bottom}>
                         <Form className='form' onSubmit={handleSubmit(loginHandler)}>
-                            <Form.Group className="mb-3 " controlId="formBasicEmail">
+                            <Form.Group className="mb-3 " controlId="name">
                                 <Form.Control type="text" placeholder={language === 'English' ? 'Username' : 'اسم المستخدم'} {...register("name"
 
                                 )}
@@ -103,9 +116,9 @@ const Registeration = () => {
                                 />
                                 {/* {errors.email && <span>{errors.email.message}</span>} */}
                                 {!errors.name ? <Form.Text className="text-muted">
-                                </Form.Text> : <Alert className='dangerAlert' key='danger' variant='danger'>{errors.name.message}</Alert>}
+                                </Form.Text> : <Alert className='dangerAlert' key='dangers' variant='danger'>{errors.name.message}</Alert>}
                             </Form.Group>
-                            <Form.Group className="mb-3 " controlId="formBasicEmail">
+                            <Form.Group className="mb-3 " controlId="email">
                                 <Form.Control type="email" placeholder={language === 'English' ? 'Email' : 'الايميل '} {...register("username"
 
                                 )}
@@ -114,37 +127,39 @@ const Registeration = () => {
                                 />
                                 {/* {errors.email && <span>{errors.email.message}</span>} */}
                                 {!errors.username ? <Form.Text className="text-muted">
-                                </Form.Text> : <Alert className='dangerAlert' key='danger' variant='danger'>{errors.username.message}</Alert>}
+                                </Form.Text> : <Alert className='dangerAlert' key='dangerss' variant='danger'>{errors.username.message}</Alert>}
                             </Form.Group>
                             <Form.Group
-
+                                controlId="password"
                                 style={{ position: 'relative' }}
-                                className="mb-3" controlId="formBasicPassword">
+                                className="mb-3" >
                                 <Form.Control type={showEye ? 'text' : 'password'} placeholder={language === 'English' ? 'Password' : '  كلمة المرور'} {...register('password'
 
                                 )}
                                     onChange={(e: any) => setPassword(e.target.value)}
-                                />    <div style={{ position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
+                                />    <div style={language === "English" ? { position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' } : { position: 'absolute', left: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
                                     {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
                                 </div>
 
                             </Form.Group>
-                            {errors.password && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.password.message}</Alert>}
+                            {errors.password && <Alert className='dangerAlert' key='dangersss' variant='danger'>{errors.password.message}</Alert>}
                             <Form.Group
+                                controlId="confirm"
 
                                 style={{ position: 'relative' }}
-                                className="mb-3" controlId="formBasicPassword">
-                                <Form.Control type={showEye1 ? 'text' : 'password'} placeholder={language === 'English' ? 'Confirm Password' : ' تأكيد كلمة المرور'} {...register('confirm_password'
+                                className="mb-3" >
+                                <Form.Control type={showEye1 ? 'text' : 'password'} placeholder={language === 'English' ? 'Confirm Password' : ' تأكيد كلمة المرور'} {...register('confirmPassword'
 
                                 )}
                                     onChange={(e: any) => setConfirmPassword(e.target.value)}
 
                                 />
-                                <div style={{ position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
+                                <div style={language === "English" ? { position: 'absolute', right: "32px", top: '12px', cursor: 'pointer' } : { position: 'absolute', left: "32px", top: '12px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
                                     {!showEye1 ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
                                 </div>
                             </Form.Group>
-                            {errors.confirm_password && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.confirm_password.message}</Alert>}
+                            {errors.confirmPassword && <Alert className='dangerAlert' key='danger' variant='danger'>{errors.confirmPassword.message}</Alert>}
+                            {error && <Alert className='dangerAlert' key='dangerssss' variant='danger'>{error?.non_field_errors[0]}</Alert>}
 
                             <Button
                                 disabled={isSubmitting} type="submit">

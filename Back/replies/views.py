@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from .models import Comment, Reply
 from .serializers import ReplySerializer ,GetReplySerializer ,Repliesrializer ,ReplysSerializer ,ReplyToReplySerializer
-
+from .serializers import GetRepliesSerializer
 @api_view(['GET'])
 def get_replies_for_comment(request, comment_id):
     try:
@@ -101,14 +101,11 @@ def add_reply(request, comment_id, user_id):
     )
 
     serializer = ReplysSerializer(reply)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
 @api_view(['GET'])
 def get_reply(request, comment_id):
-    replies = Reply.objects.filter(comment_id=comment_id, parent=None)  # الردود الجذرية فقط
-    serializer = ReplysSerializer(replies, many=True)
+    replies = Reply.objects.filter(comment_id=comment_id, parent=None)
+    serializer = GetRepliesSerializer(replies, many=True)
     return Response(serializer.data)
-
-
 @api_view(['POST'])
 def reply_to_reply(request, user_id, comment_id, parent_reply_id):
     try:

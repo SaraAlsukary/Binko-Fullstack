@@ -5,7 +5,7 @@ from books.models import Book
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')
-    value = models.IntegerField() 
+    value = models.FloatField() 
 
     class Meta:
         unique_together = ('user', 'book')

@@ -1,6 +1,7 @@
 
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import actGetCategories from '@store/categorySlice/act/actGetCategories';
+import { Localhost } from '@utils/localhost';
 import { useEffect, useState } from 'react';
 
 
@@ -47,9 +48,8 @@ function View({ id }: { id: number }) {
                     <div className='col-sm-12 col-md-6'>
                         <p>
                             <span>{language === 'English' ? 'File:' : "الملف"}</span>
-                            <video width='100' height='100' autoPlay loop >
-                                <source src={`http://127.0.0.1:8000${file}`} type="video/webm" />
-                            </video>
+                            <img src={`${Localhost}${file}`} />
+
 
                         </p>
                     </div>

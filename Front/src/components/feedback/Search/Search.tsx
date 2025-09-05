@@ -20,7 +20,7 @@ const Search = ({ className, isThereNavigate, checkLocate, onChange }: TClass) =
             <Input type='search'
                 onChange={onChange}
                 onFocus={() => { isThereNavigate ? navigate('booksSearch') : '' }}
-                placeholder={language === 'Arabic' ? 'ابحث' : 'search here..'} />
+                placeholder={language === 'Arabic' ? ' ابحث عبر عنوان الكتاب أو اسم الكاتب..' : 'search by title or author..'} />
             <div className={searchIcon}>
                 <SearchIcon style={language === 'Arabic' ? { width: '100%', height: '100%', position: 'absolute', right: '0' } : {
                     width: '100%',

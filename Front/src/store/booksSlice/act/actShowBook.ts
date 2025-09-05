@@ -3,7 +3,7 @@ import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 import { TBooks } from "@customtypes/booksTypes";
 
-type TResponse = TBooks[];
+type TResponse = TBooks;
 
 const actShowBook = createAsyncThunk(
     "books/actShowBook.",

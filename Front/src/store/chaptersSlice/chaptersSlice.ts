@@ -9,6 +9,7 @@ import actDenyChapters from "./act/actDenyChapter";
 import actGetChaptersNotes from "./act/actGetChaptersNotes";
 import actDeleteChapters from "./act/actDeleteChapter";
 import actGetUnacceptedChapters from "./act/actGetUnacceptedChapter";
+import actShowChapter from "./act/actShowChapter";
 
 type TNote = {
     id: number,
@@ -16,6 +17,7 @@ type TNote = {
 }
 interface IChaptersState {
     chapters: TChapters[];
+    chapter:TChapters|null;
     notes: TNote | null;
     acceptedchapters: TChapters[];
     myBooks: [];
@@ -25,6 +27,7 @@ interface IChaptersState {
 
 const initialState: IChaptersState = {
     chapters: [],
+    chapter:null,
     notes: null,
     acceptedchapters: [],
     myBooks: [],
@@ -53,6 +56,21 @@ const chapters = createSlice({
             state.chapters = action.payload;
         });
         builder.addCase(actGetChapters.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+        // get chapter
+        builder.addCase(actShowChapter.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actShowChapter.fulfilled, (state, action) => {
+            state.loading = "succeeded";
+            state.chapter = action.payload;
+        });
+        builder.addCase(actShowChapter.rejected, (state, action) => {
             state.loading = "failed";
             if (isString(action.payload)) {
                 state.error = action.payload;

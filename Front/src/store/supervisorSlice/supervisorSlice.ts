@@ -5,6 +5,7 @@ import actGetSupervisor from "./act/actGetSupervisor";
 import { TUser } from "@customtypes/userType";
 import actDeleteSupervisor from "./act/actDeleteSupervisor";
 import actAddSupervisor from "./act/actAddSupervisor";
+import actUpdateSupervisor from "./act/actUpdateSupervisor";
 interface IBooksState {
     supervisors: TUser[];
     loading: TLoading;
@@ -26,7 +27,7 @@ const supervisors = createSlice({
         }
     },
     extraReducers: (builder) => {
-        // get users
+        // get supervisors
         builder.addCase(actGetSupervisor.pending, (state) => {
             state.loading = "pending";
             state.error = null;
@@ -57,15 +58,33 @@ const supervisors = createSlice({
             }
         });
 
+        // update Supervisor
+        builder.addCase(actUpdateSupervisor.pending, (state) => {
+            state.loading = "pending";
+            state.error = null;
+        });
+        builder.addCase(actUpdateSupervisor.fulfilled, (state,action) => {
+            state.loading = "succeeded";
+            state.supervisors = state.supervisors.map(st => st.id === action.payload.id ? action.payload : st)
 
-        // get users
+
+        });
+        builder.addCase(actUpdateSupervisor.rejected, (state, action) => {
+            state.loading = "failed";
+            if (isString(action.payload)) {
+                state.error = action.payload;
+            }
+        });
+
+        // delete supervisor
         builder.addCase(actDeleteSupervisor.pending, (state) => {
             state.loading = "pending";
             state.error = null;
         });
-        builder.addCase(actDeleteSupervisor.fulfilled, (state) => {
+        builder.addCase(actDeleteSupervisor.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            // state.users = action.payload;
+            state.supervisors = state.supervisors.filter((s) => s.id !== action.payload);
+
         });
         builder.addCase(actDeleteSupervisor.rejected, (state, action) => {
             state.loading = "failed";

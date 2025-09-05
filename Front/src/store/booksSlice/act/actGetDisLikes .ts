@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
+import { TDislikes } from "@customtypes/DislikeType";
 
-import { TLikes } from "@customtypes/LikesType";
 
-type TResponse = TLikes;
+type TResponse = TDislikes;
 const actGetDisLikes = createAsyncThunk(
     "books/actGetDisLikes ",
     async (id: number, thunkAPI) => {

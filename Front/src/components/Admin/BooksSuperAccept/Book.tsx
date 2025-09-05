@@ -14,24 +14,22 @@ import toast from 'react-hot-toast';
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
-type TCategory = {
-    id: Number,
+import { Localhost } from '@utils/localhost';
+type TBook = {
+    id: number,
     name: string | null,
     Image: React.ReactNode,
-    author: string | null
 }
-type TCategoryAra = {
-    id: Number,
+type TBookAra = {
+    id: number,
     الاسم: string | null,
     الصورة: React.ReactNode,
-    الكاتب: string | null
 }
 function Book() {
 
     const { language } = useAppSelector(state => state.language);
     const { acceptedBooks, loading,error } = useAppSelector(state => state.books);
-    const booksUser = useAppSelector(state => state.users.users);
-    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
+    const [Books, setList] = useState<TBook[] | TBookAra[]>([]);
    
 
     const dispatch = useAppDispatch();
@@ -42,34 +40,32 @@ function Book() {
     }, [language]);
     useEffect(() => {
         if (acceptedBooks) {
-            const getAllUsers = async () => {
-                const category: TCategory[] = acceptedBooks?.map((book) => {
+            const getAll = async () => {
+                const book: TBook[] = acceptedBooks?.map((book) => {
                     return ({
-                        id: book.id,
-                        name: book.name,
-                        author: booksUser.find((user) => user.id === book.user)?.name,
-                        Image: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+                        id: book.id!,
+                        name: book.name!,
+                        Image: <img src={`${Localhost}${book.image!}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
 
                     })
                 })
-                const categoryAra: TCategoryAra[] = acceptedBooks?.map((book) => {
+                const bookAra: TBookAra[] = acceptedBooks?.map((book) => {
                     return ({
-                        id: book.id,
-                        الاسم: book.name,
-                        الكاتب: booksUser.find((user) => user.id === book.user)?.name,
-                        الصورة: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+                        id: book.id!,
+                        الاسم: book.name!,
+                        الصورة: <img src={`${Localhost}${book.image!}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
 
                     })
                 })
-                const data = language === 'Arabic' ? categoryAra : category
-                setUsersList(data);
+                const data = language === 'Arabic' ? bookAra : book
+                setList(data);
             }
 
-            getAllUsers();
+            getAll();
         }
     }, [acceptedBooks]);
 
-    const actionsTemplate = (rowDate: object) => {
+    const actionsTemplate = (rowDate: TBook|TBookAra) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
@@ -79,14 +75,14 @@ function Book() {
                     <i className='pi pi-eye'></i>
                 </button>
          
-                <button className='btn btn-danger' onClick={() => deleteUserConfirm(rowDate?.id)}>
+                <button className='btn btn-danger' onClick={() => deleteConfirm(rowDate?.id)}>
                     <i className='pi pi-trash'></i>
                 </button>
             </>
         )
     }
 
-    const deleteUserConfirm = (userId: number) => {
+    const deleteConfirm = (Id: number) => {
         confirmDialog({
             message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف الكتاب؟' : 'Are you sure you want to delete this book?',
             header: language === 'English' ? 'Confirmation' : "التأكيد",
@@ -94,17 +90,17 @@ function Book() {
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
             accept: () => {
-                deleteUser(userId)
+                deleteHandler(Id)
             },
         });
     }
 
-    const deleteUser = async (userId: number) => {
+    const deleteHandler = async (Id: number) => {
 
-        dispatch(actDeleteBook(userId)).unwrap().then(() => {
+        dispatch(actDeleteBook(Id)).unwrap().then(() => {
             language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
 
-            navigate(`/Binko/admin`)
+            navigate(0)
         })
 
     }
@@ -125,11 +121,10 @@ function Book() {
 
                     <div className='users-list'>
                  
-                        <DataTable className='tableCell' value={users}>
+                        <DataTable className='tableCell' value={Books}>
                             <Column field={language === 'English' ? 'Image' : 'الصورة'}
                                 header={language === 'English' ? 'Image' : 'الصورة'}></Column>
                             <Column field={language === 'English' ? 'name' : 'الاسم'} header={language === 'English' ? 'name' : 'الاسم'}></Column>
-                            <Column field={language === 'English' ? 'author' : 'الكاتب'} header={language === 'English' ? 'author' : 'الكاتب'}></Column>
                  
                             <Column header={language === 'Arabic' ? 'العمليات' : 'Actions'} body={actionsTemplate}></Column>
                         </DataTable>

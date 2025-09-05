@@ -97,6 +97,8 @@ class BooksSerializer(serializers.ModelSerializer):
     
 
 class ChapterDetailsSerializer(serializers.ModelSerializer):
+    name_book=serializers.CharField(source='book.name',read_only=True)
+    image=serializers.ImageField(source='book.image',read_only=True)
     class Meta:
         model = Chapter
-        fields = ['id', 'book', 'is_accept', 'title', 'content_text', 'audio', 'note']
+        fields = ['id', 'book', 'is_accept','name_book', 'image','title', 'content_text', 'audio', 'note']

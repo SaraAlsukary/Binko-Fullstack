@@ -16,14 +16,13 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { changeLanguageToArabic, changeLanguageToEnglish } from '@store/languageSlice/languageSlice';
 import { Container } from 'react-bootstrap';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
-const { headerContainer, closeIcon, searchIcon, navStyle, icon, prof, burger, show, dark } = Styles;
+const { headerContainer, closeIcon, searchIcon, navStyle, icon,  burger, show } = Styles;
 const Header = () => {
     const [toggle, setToggle] = useState(false);
     const dispatch = useAppDispatch();
     const { theme } = useAppSelector(state => state.theme);
     const { language } = useAppSelector(state => state.language);
     const { userData } = useAppSelector(state => state.auth)
-    const { users } = useAppSelector(state => state.users)
     const location: any = useLocation();
     useEffect(() => {
         dispatch(actGetUsers())
@@ -56,7 +55,7 @@ const Header = () => {
     return (
         <header>
             <Container className={headerContainer} >
-                <div className={icon}><NavLink to='/'> <LogoIcon /></NavLink></div>
+                <div className={icon}><NavLink to='/Binko'> <LogoIcon /></NavLink></div>
                 <Search className="showInput" isThereNavigate={true} checkLocate={location.pathname === '/Binko/booksSearch' ? true : false} />
 
                 <nav className={navStyle} >

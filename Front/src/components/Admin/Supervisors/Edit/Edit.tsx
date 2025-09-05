@@ -1,244 +1,95 @@
-import { useState } from 'react'
-import axios from 'axios';
-import Eye from '@assets/svgs/eye-svgrepo-com(1).svg?react';
-import EyeClosed from '@assets/svgs/eye-slash-svgrepo-com(1).svg?react';
-import { useAppDispatch } from '@hooks/app';
-import { actUpdateProfile } from '@store/auth/authSlice';
+import { useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '@hooks/app';
 import toast from 'react-hot-toast';
+import actUpdateSupervisor from '@store/supervisorSlice/act/actUpdateSupervisor';
+import actGetSupervisor from '@store/supervisorSlice/act/actGetSupervisor';
+import { TUser } from '@customtypes/userType';
+import actGetCategories from '@store/categorySlice/act/actGetCategories';
+import { actClearCategories } from '@store/categorySlice/categorySlice';
 
-
-function EditUser(props) {
-    const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [showEye, setShowEye] = useState(false);
-    const [showEye1, setShowEye1] = useState(false);
-    const [confirm_password, setConfirmPassword] = useState('');
+function Edit(props: { id: number }) {
+    const { supervisors } = useAppSelector(state => state.supervisors)
+    const user = supervisors.find((user) => user.id === props.id)
+    const [userInfo, setUserInfo] = useState<null | TUser>(user!);
+    const [name, setName] = useState(userInfo?.name!);
+    const [username, setUsername] = useState(userInfo?.username!);
+    const [category, setCategory] = useState('');
     const { language } = useAppSelector(state => state.language)
+    const { categories } = useAppSelector(state => state.categories)
 
-    const [is_supervisor, setSupervisor] = useState(1);
     const dispatch = useAppDispatch();
-    const addNewUser = () => {
+    const editSuper = () => {
         const data = {
+            id: props.id,
             name,
             username,
-            password,
-            confirm_password,
-            is_supervisor
+            category
         }
-        dispatch(actUpdateProfile(data)).unwrap().then(() => {
+        dispatch(actUpdateSupervisor(data)).unwrap().then(() => {
 
-            language === 'English' ? toast.success(' Supervisor Edited successfully!') : toast.success('تم اضافة مشرف جديد!')
+            language === 'English' ? toast.success(' Supervisor Edited successfully!') : toast.success('تم تعديل مشرف !')
 
         })
     }
+    const cateOptions = categories.map(cate => <option value={cate.id}>{language === 'English' ? cate.name : cate.name_arabic}</option>)
+    useEffect(() => {
+        const promiseCate = dispatch(actGetCategories());
+        return () => {
+            promiseCate.abort();
+            dispatch(actClearCategories())
+        }
+    }, [])
 
 
+    useEffect(() => {
+        dispatch(actGetSupervisor())
+    }, [language])
+    useEffect(() => {
+        if (supervisors)
+            fetchUserData()
+
+    }, [supervisors]);
+
+    const fetchUserData = () => {
+        setUserInfo(user as TUser);
+    }
 
     return (
         <div className='user-view _add-view'>
-            <h1>Basic Info</h1>
             <div className='box'>
                 <div className='row'>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Name:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Name'
-                                onChange={e => setName(e.target.value)}
-                            />
-                        </p>
+                        <input
+                            type='text'
+                            className='form-control'
+                            placeholder={language === 'English' ? 'Enter Email' : "الايميل"}
+
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                        />
                     </div>
                     <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Email:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Email'
-                                onChange={e => setUsername(e.target.value)}
-                            />
-                        </p>
+                        <input
+                            type='text'
+                            className='form-control'
+                            placeholder='Enter Email'
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                        />
                     </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p >
-                            <span>password:</span>
-                            <div style={{ position: "relative" }}>
-                                <input
-                                    type={showEye1 ? 'password' : 'text'}
-                                    className='form-control'
-                                    placeholder='Enter Password'
-                                    onChange={e => setPassword(e.target.value)}
-                                />
-                                <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye1(!showEye1)}>
-                                    {!showEye1 ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
-                                </div>
-                            </div>
-                        </p>
+                    <div className='d-flex justify-content-center mt-4 mb-4'>
+                        <p className='fs-5'>{language === 'English' ? "choose category: " : "اختر تصنيف: "}</p>
+                        <select style={{ width: '80%', margin: "0 10px" }} onChange={(e) => setCategory(e.target.value)}>
+                            {cateOptions}
+                        </select>
                     </div>
 
-                    <div className='col-sm-12 col-md-6'>
-                        <p >
-                            <span>Confirm Password:</span>
-                            <div style={{ position: "relative" }}>
-                                <input
-                                    type={showEye ? 'password' : 'text'}
-                                    className='form-control'
-                                    placeholder='Enter Confirm Password'
-                                    onChange={e => setConfirmPassword(e.target.value)}
-                                />
-                                <div style={{ position: 'absolute', left: "32px", top: '5px', cursor: 'pointer' }} onClick={() => setShowEye(!showEye)}>
-                                    {!showEye ? <Eye style={{ width: '20px', height: '20px' }} /> : <EyeClosed style={{ width: '20px', height: '20px' }} />}
-                                </div>
-                            </div>
-                        </p>
-                    </div>
                 </div>
             </div>
 
-            <h1>User Address</h1>
-            <div className='box'>
-                <div className='row'>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>City:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter City Name'
-                                value={userInfo.address.city}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        city: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Street:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Street Name'
-                                value={userInfo.address.street}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        street: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Suite:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Suite Name'
-                                value={userInfo.address.suite}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        suite: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>ZIP Code:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter ZIP Code'
-                                value={userInfo.address.zipcode}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    address: {
-                                        ...userInfo.address,
-                                        zipcode: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <h1>User Company</h1>
-            <div className='box'>
-                <div className='row'>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Company Name:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Company Name'
-                                value={userInfo.company.name}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        name: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>Catch Phrase:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter Catch Phrase'
-                                value={userInfo.company.catchPhrase}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        catchPhrase: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                    <div className='col-sm-12 col-md-6'>
-                        <p>
-                            <span>BS:</span>
-                            <input
-                                type='text'
-                                className='form-control'
-                                placeholder='Enter BS'
-                                value={userInfo.company.bs}
-                                onChange={e => setUserInfo({
-                                    ...userInfo,
-                                    company: {
-                                        ...userInfo.company,
-                                        bs: e.target.value
-                                    }
-                                })}
-                            />
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <button className='btn btn-success' onClick={() => editExistUser()}>Edit User</button>
+            <button className='btn btn-success' onClick={() => editSuper()}>{language === 'English' ? "Edit" : "تعديل"}</button>
         </div>
     )
 }
 
-export default EditUser
+export default Edit

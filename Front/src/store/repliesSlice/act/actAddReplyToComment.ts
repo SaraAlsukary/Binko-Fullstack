@@ -1,26 +1,23 @@
 import { createAsyncThunk, } from "@reduxjs/toolkit";
 import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
+import { TReplies } from "@customtypes/replyType";
 
 type TForm = {
-
     comment: number,
     user: number,
     content: string
 }
-type TResponse = [];
+type TResponse = TReplies;
 const actAddReplyToComment = createAsyncThunk(
     "replies/actAddReplyToComment",
     async (Formdata: TForm, thunkAPI) => {
         const { rejectWithValue } = thunkAPI;
-
-
-
         try {
             const response = await axios.post<TResponse>(
-                `api/comments/${Formdata?.comment}/reply/${Formdata?.user}/`,
-                { content: Formdata.content }
-              
+                    `api/comments/${Formdata?.comment}/reply/${Formdata?.user}/`
+                , { content: Formdata.content }
+
             );
             return response.data;
         } catch (error) {

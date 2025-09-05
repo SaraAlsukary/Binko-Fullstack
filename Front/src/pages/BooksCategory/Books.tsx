@@ -57,18 +57,12 @@ const Books = () => {
 
         <div className={bookContainer}>
             <Container>
-                {/* 
-                <BookCardList settings={settingsBackground} type={square}>
-                    {booksCardsBackground}
-                </BookCardList> */}
+
                 <HeadingTitle>{language === 'English' ? categoryInfo?.name : categoryInfo?.name_arabic}</HeadingTitle>
                 <BookCardList settings={settingsBox} type={box}>
                     {booksCards}
                 </BookCardList>
-                {/* <BookCardList settings={settingsBackground} type={square}>
-                    {booksCardsBackground}
-                </BookCardList> */}
-                {/* <HeadingTitle>{language === 'English' ? 'Action' : 'أكشن'}</HeadingTitle> */}
+
                 <HeadingTitle>{language === 'English' ? categoryInfo?.name : categoryInfo?.name_arabic}</HeadingTitle>
 
                 <BookCardList settings={settingsSquare} type={square}>

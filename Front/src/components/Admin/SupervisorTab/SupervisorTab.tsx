@@ -7,11 +7,16 @@ import Category from '../../Supervisor/CategorySuper/Category';
 import TopBooks from '../../Supervisor/TopBooks/Book';
 import Book from '../BooksSuper/Book';
 import AcceptedBooks from '../BooksSuperAccept/Book';
-import Users from '../../Admin/Users/Users';
+import BooksForeign from '../../Supervisor/BooksForeign/Book';
+import BooksArabic from '../../Supervisor/BooksArabic/Book';
+import Readers from '../Readers/Users';
+import AcceptedUsers from '../AcceptedUsers/Users';
+import UnacceptedUsers from '../UnacceptedUsers/Users';
+import Writers from '../Writers/Users';
 import { useAppSelector } from '@hooks/app';
 import Supervisors from '../Supervisors/Supervisors';
 import './SupervisorTab.css'
-import  Chapters from '@components/Supervisor/UnacceptedChapters/Chapters';
+import Chapters from '@components/Supervisor/UnacceptedChapters/Chapters';
 
 
 function LeftTabsExample() {
@@ -42,13 +47,28 @@ function LeftTabsExample() {
                                 <Nav.Link eventKey="fifth">{language === 'English' ? 'Top Books' : 'أفضل الكتب'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="six">{language === 'English' ? 'Unaccepted chapters' : 'الفصول'}</Nav.Link>
+                                <Nav.Link eventKey="six">{language === 'English' ? 'Arabic Books' : 'الكتب العربية'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="seven">{language === 'English' ? 'English Books' : 'الكتب الانجليزية'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="eight">{language === 'English' ? 'Unaccepted chapters' : 'الفصول الغبر مقبولة'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="seven">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
+                                <Nav.Link eventKey="neen">{language === 'English' ? 'Supervisors' : 'المشرفين'}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item >
-                                <Nav.Link eventKey="eight">{language === 'English' ? 'Users' : 'المستخدمين'}</Nav.Link>
+                                <Nav.Link eventKey="ten">{language === 'English' ? 'Accepted Users' : 'المستخدمين المقبولين'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item >
+                                <Nav.Link eventKey="eleven">{language === 'English' ? 'Unaccepted Users' : 'المستخدمين الغير  مقبولين'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item >
+                                <Nav.Link eventKey="tewelve">{language === 'English' ? 'Readers' : 'القراء'}</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item >
+                                <Nav.Link eventKey="thirteen">{language === 'English' ? 'Writers' : 'الكاتبين'}</Nav.Link>
                             </Nav.Item>
 
                         </Nav>
@@ -60,9 +80,14 @@ function LeftTabsExample() {
                             <Tab.Pane eventKey="third"><Book /></Tab.Pane>
                             <Tab.Pane eventKey="fourth"><AcceptedBooks /></Tab.Pane>
                             <Tab.Pane eventKey="fifth"><TopBooks /></Tab.Pane>
-                            <Tab.Pane eventKey="six"><Chapters /></Tab.Pane>
-                            <Tab.Pane eventKey="seven"><Supervisors /></Tab.Pane>
-                            <Tab.Pane eventKey="eight"><Users /></Tab.Pane>
+                            <Tab.Pane eventKey="six"><BooksArabic /></Tab.Pane>
+                            <Tab.Pane eventKey="seven"><BooksForeign /></Tab.Pane>
+                            <Tab.Pane eventKey="eight"><Chapters /></Tab.Pane>
+                            <Tab.Pane eventKey="neen"><Supervisors /></Tab.Pane>
+                            <Tab.Pane eventKey="ten"><AcceptedUsers /></Tab.Pane>
+                            <Tab.Pane eventKey="eleven"><UnacceptedUsers /></Tab.Pane>
+                            <Tab.Pane eventKey="tewelve"><Readers /></Tab.Pane>
+                            <Tab.Pane eventKey="thirteen"><Writers /></Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>

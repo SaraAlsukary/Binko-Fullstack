@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.db.models import Q , Avg
 from rest_framework.decorators import api_view , parser_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +9,7 @@ from account.models import CustomUser
 from account.models import CustomUser
 from .serializers import BooksSerializer,AddBookSerializer,BookFavSerializer,LikeSerializer,FavoriteBookSerializer , BookCatSerializer ,BookDetailsSerializer
 from account.models import CustomUser
-from .serializers import BookSerializer ,BookLikesSerializer ,AddBookCatSerializer,BookLikeSerializer
+from .serializers import BookSerializer ,BookLikesSerializer ,AddBookCatSerializer,BookLikeSerializer , BooklanguageSerializer
 from categories.models import Category
 from .serializers import  NoteSerializer ,BookUpdateSerializer ,BookLikedSerializer , LatestBookSerializer
 from django.shortcuts import get_object_or_404
@@ -349,3 +350,29 @@ def latest_books(request):
     serializer = LatestBookSerializer(books, many=True)
     return Response(serializer.data)    
     
+@api_view(['GET'])
+def get_arabic_books(request):
+    books = (
+        Book.objects.filter(
+            Q(language__icontains='arabic') | Q(language__icontains='عربي'),
+            is_accept=True
+        )
+        .annotate(avg_rating=Avg('ratings__value'))  # حساب متوسط التقييم
+        .order_by('-avg_rating', '-publication_date')  # ترتيب حسب الأعلى تقييم ثم الأحدث
+    )
+
+    serializer = BooklanguageSerializer(books, many=True)
+    return Response(serializer.data)  
+@api_view(['GET'])
+def get_foreign_books(request):
+    books = (
+        Book.objects.filter(
+            Q(language__icontains='english') | Q(language__icontains='اجنبي'),
+            is_accept=True
+        )
+        .annotate(avg_rating=Avg('ratings__value'))  # حساب متوسط التقييم
+        .order_by('-avg_rating', '-publication_date')  # ترتيب حسب الأعلى تقييم ثم الأحدث
+    )
+
+    serializer = BooklanguageSerializer(books, many=True)
+    return Response(serializer.data)

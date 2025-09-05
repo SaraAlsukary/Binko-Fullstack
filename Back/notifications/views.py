@@ -103,7 +103,7 @@ def comment_book(request, user_id, book_id):
         return Response({"error": "التعليق مطلوب"}, status=status.HTTP_400_BAD_REQUEST)
 
     # حفظ التعليق
-    Comment.objects.create(user=user, book=book, comment=comment_text)
+    comment = Comment.objects.create(user=user, book=book, comment=comment_text)
 
     # إنشاء الإشعار لصاحب الكتاب
     Notification.objects.create(
@@ -112,6 +112,14 @@ def comment_book(request, user_id, book_id):
         message_ar=f"قام {user.name} بالتعليق على كتابك '{book.name}': {comment_text}",
         message_en=f"{user.name} commented on your book '{book.name}': {comment_text}"
     )
+
+    # إعادة تفاصيل التعليق
+    return Response({
+        "id": comment.id,
+        "user_name": user.name,
+        "user_image": user.image.url if user.image else None,
+        "comment": comment.comment
+    }, status=status.HTTP_201_CREATED)
 
     return Response({"message": "تم إضافة التعليق وإرسال الإشعار."}, status=status.HTTP_201_CREATED)
 

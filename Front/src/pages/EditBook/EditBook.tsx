@@ -19,12 +19,12 @@ const EditBook = () => {
     const [image, setImage] = useState<string>('');
     const [imageFile, setImageFile] = useState<string>('');
     const [newImage, setNewImage] = useState<string>('');
-    // const [category, setCategory] = useState([]);
     const [name, setName] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const dispatch = useAppDispatch();
     const { language } = useAppSelector(state => state.language);
+    const { userData } = useAppSelector(state => state.auth);
     const { myBooks } = useAppSelector(state => state.books);
     const idx = parseInt(id as string)
 
@@ -72,9 +72,10 @@ const EditBook = () => {
         dataForm.append('id', id as string)
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
+        dataForm.append('user', userData?.user.id as any);
         dataForm.append('content', content);
         dataForm.append('description', description);
-        cate.forEach((ca: any) => dataForm.append(`category_names`, ca))
+        cate.forEach((ca: any) => dataForm.append(`categories`, ca))
 
         for (let [key, value] of dataForm.entries()) {
             console.log(key, value)
@@ -100,7 +101,7 @@ const EditBook = () => {
         return (
             <option
                 selected={newCate ? true : false}
-                key={cate?.id} onClick={selectCate} value={cate?.name}>
+                key={cate?.id} onClick={selectCate} value={cate?.id}>
             {language === 'English' ? cate.name : cate.name_arabic}
         </option>)
     }

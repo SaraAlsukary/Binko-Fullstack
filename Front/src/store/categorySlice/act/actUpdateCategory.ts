@@ -3,11 +3,13 @@ import axios from "axios";
 import axiosErrorHandler from "../../../utils/axiosErrorHandler";
 
 
-// type TResponse = TCategory[];
-
+type TForm = {
+    id: number,
+    formdata: FormData
+}
 const actUpdateCategory = createAsyncThunk(
     "categories/actUpdateCategory",
-    async (form: object, thunkAPI) => {
+    async (form: TForm, thunkAPI) => {
         const { rejectWithValue, signal } = thunkAPI;
         try {
             const response = await axios.put(

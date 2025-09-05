@@ -45,7 +45,16 @@ const Menu = () => {
                             </div>}
                     </NavLink>
                 </li>
-                <li><NavLink to='addBook'>{theme === 'Light' ? <div className={icons}><div className='mark' style={{ backgroundColor: 'transparent' }}><BookMarkActive style={{ widht: '100px', height: '100px' }} /></div><AddBook className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div> : <div className={icons}><div className="mark" style={{ backgroundColor: 'transparent' }}><BookMarkActive style={{ widht: '100px', height: '100px' }} /></div> <AddBookWhite className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div>}</NavLink></li>
+                {!userData?.user.is_reader &&
+                    <li><NavLink to='addBook'>
+                        {theme === 'Light' ? <div className={icons}>
+                            <div className='mark' style={{ backgroundColor: 'transparent' }}>
+                                <BookMarkActive style={{ widht: '100px', height: '100px' }} />
+                            </div>
+                            <AddBook className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div> : <div className={icons}><div className="mark" style={{ backgroundColor: 'transparent' }}><BookMarkActive style={{ widht: '100px', height: '100px' }} /></div> <AddBookWhite className={icon} style={{ position: 'absolute', width: '40px', height: '40px' }} /></div>}
+                    </NavLink>
+                    </li>
+                }
                 <li>
                     <NavLink className={count} to='notifications'>
                         {notificationsCount ? <div className={redCircle}>

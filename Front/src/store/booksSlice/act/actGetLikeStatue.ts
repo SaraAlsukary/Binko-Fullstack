@@ -5,7 +5,7 @@ type TLike = {
     id_book: number,
     id_user: number,
 }
-type TResponse = boolean;
+type TResponse = {is_liked:boolean};
 const actGetLikeStatue = createAsyncThunk(
     "books/actGetLikeStatue",
     async (form: TLike, thunkAPI) => {

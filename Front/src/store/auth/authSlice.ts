@@ -2,33 +2,20 @@ import { createSlice } from "@reduxjs/toolkit";
 import actCreateAccount from './act/actCreateAccount';
 import { TLoading } from "@customtypes/loadingType";
 import actLogin from "./act/actLogin";
-import { isString } from "@customtypes/isString";
 import actLogout from "./act/actLogout";
 import actUpdateProfile from "./act/actUpdateProfile";
 import actAddProfile from "./act/actAddProfile";
+import { TAuth } from "@customtypes/authType";
 
 interface IAuthState {
-    userData:
-    {
-
-        user: {
-            id: number,
-            is_supervisor: boolean,
-            is_admin: boolean,
-            username: string,
-            name: string,
-            image: string,
-            discriptions: string,
-            category: number
-        }
-        message?: string,
-        token: string,
-    } | null;
+    userData: TAuth,
     loading: TLoading;
-    error: string | null;
+    error: { non_field_errors: string[] } | null;
+    createdAccount: TAuth;
 }
 const initialState: IAuthState = {
     userData: null,
+    createdAccount: null,
     loading: "idle",
     error: null,
 }
@@ -49,14 +36,12 @@ const authSlice = createSlice({
         });
         builder.addCase(actCreateAccount.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.userData = action.payload;
+            state.createdAccount = action.payload;
 
         });
         builder.addCase(actCreateAccount.rejected, (state, action) => {
             state.loading = "failed";
-            if (isString(action.payload)) {
-                state.error = action.payload;
-            }
+            state.error = action.payload as { non_field_errors: string[] };
         });
 
 
@@ -71,9 +56,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actLogin.rejected, (state, action) => {
             state.loading = "failed";
-            if (isString(action.payload)) {
-                state.error = action.payload;
-            }
+            state.error = action.payload as { non_field_errors: string[] };
         });
         //logout
         builder.addCase(actLogout.pending, (state) => {
@@ -86,9 +69,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actLogout.rejected, (state, action) => {
             state.loading = "failed";
-            if (isString(action.payload)) {
-                state.error = action.payload;
-            }
+            state.error = action.payload as { non_field_errors: string[] };
         });
         //Add Profile
         builder.addCase(actAddProfile.pending, (state) => {
@@ -97,13 +78,11 @@ const authSlice = createSlice({
         });
         builder.addCase(actAddProfile.fulfilled, (state, action) => {
             state.loading = "succeeded";
-            state.userData = action.payload;
+            state.createdAccount = action.payload;
         });
         builder.addCase(actAddProfile.rejected, (state, action) => {
             state.loading = "failed";
-            if (isString(action.payload)) {
-                state.error = action.payload;
-            }
+            state.error = action.payload as { non_field_errors: string[] };
         });
         //update profile
         builder.addCase(actUpdateProfile.pending, (state) => {
@@ -116,9 +95,7 @@ const authSlice = createSlice({
         });
         builder.addCase(actUpdateProfile.rejected, (state, action) => {
             state.loading = "failed";
-            if (isString(action.payload)) {
-                state.error = action.payload;
-            }
+            state.error = action.payload as { non_field_errors: string[] };
         });
     },
 })

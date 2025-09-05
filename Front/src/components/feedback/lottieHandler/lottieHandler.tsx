@@ -14,6 +14,7 @@ import ScienceFiction from '@assets/lottieFiles/ScienceFiction.json'
 import Romance from '@assets/lottieFiles/Romance.json'
 import Error from '@assets/lottieFiles/Error.json'
 import LoadingPage from '@assets/lottieFiles/LoadingPage.json'
+import Waiting from '@assets/lottieFiles/Waiting.json'
 import BooksAbout from '@assets/lottieFiles/Books About.json'
 import React from "react";
 
@@ -27,6 +28,7 @@ const lottieFilesMap = {
     Action,
     Fiction,
     Science,
+    Waiting,
     ScienceFiction,
     Poem,
     Classic,

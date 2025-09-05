@@ -3,6 +3,7 @@ export type TChapters = {
     title: string,
     content_text: string,
     audio: string,
+    name?:string,
     is_accept: boolean,
     book: number
 }

@@ -15,8 +15,9 @@ import actDeleteComment from "@store/commentsSlice/act/actDeleteComment"
 import toast from "react-hot-toast"
 import actDeleteReply from "@store/repliesSlice/act/actDeleteReply"
 import { TReplies } from "@customtypes/replyType"
-import Loading from "@pages/Loading/Loading"
 import Error from "@pages/Error/Error"
+import { Localhost } from "@utils/localhost"
+import actAddReplyToReply from "@store/repliesSlice/act/actAddReplyToReply"
 const { pic, boxCont, commentBtns, reply, replyBox, replyer, replyerName, replyList, commenter, commenterName,
     text, inputField, comments, icon, input, box, active, commentsList } = Style;
 
@@ -28,18 +29,20 @@ const initialStateReplies: TReplies[] = [{
     name: "",
     image: '',
     parent: null,
+    parent_name: null,
     user: 0
 }]
 const Comments = () => {
-    const [commentText, setCommentText] = useState('');
-    const [replyy, setReplyy] = useState(''); const [repliesState, setRepliesState] = useState<TReplies[]>(initialStateReplies);
+    const [replyy, setReplyy] = useState('');
+    const [replyId, setReplyId] = useState<null | number>(null);
+    const [repliesState, setRepliesState] = useState<TReplies[]>(initialStateReplies);
     const { replies } = useAppSelector(state => state.replies)
     const navigate = useNavigate()
     const { userData } = useAppSelector(state => state.auth)
     const { language } = useAppSelector(state => state.language)
     const commentss = useAppSelector(state => state.comments.comments)
-    const {loading,error} = useAppSelector(state => state.comments)
-    const { id, idComment } = useParams()
+    const { error } = useAppSelector(state => state.comments)
+    const { idComment } = useParams()
     const dispatch = useAppDispatch()
     const IdCom = parseInt(idComment as string)
     const comment = commentss.find((c) => c.id === IdCom)
@@ -56,12 +59,16 @@ const Comments = () => {
         })
     }
 
-    if (loading === 'pending')
-        return <Loading />
     if (error !== null)
         return <Error />
 
     interface IRep {
+        user: number,
+        comment: number,
+        content: string
+    }
+    interface IRepOnRep {
+        rep: number,
         user: number,
         comment: number,
         content: string
@@ -72,10 +79,29 @@ const Comments = () => {
         content: replyy
 
     }
+    const ReplyToReplyData: IRepOnRep = {
+        rep: replyId!,
+        user: userData?.user?.id!,
+        comment: IdCom,
+        content: replyy
+
+    }
     const addReplyHandler = () => {
         console.log(ReplyData)
-        dispatch(actAddReply(ReplyData))
+        dispatch(actAddReply(ReplyData)).unwrap().then(() => {
+            toast.success(language === 'English' ? "your reply added successfully!" : "تم اضافة ردك بنجاح!")
+        })
         setReplyy('');
+    }
+    const addRepOnRep = (id: number) => {
+        setReplyId(id)
+        console.log(ReplyToReplyData)
+        dispatch(actAddReplyToReply(ReplyToReplyData))
+            .unwrap().then(() => {
+                toast.success(language === 'English' ? "your reply added successfully!" : "تم اضافة ردك بنجاح!")
+            })
+        setReplyy('');
+
     }
     const unactiveInputHandler = () => {
         document.body.addEventListener('click', (e: any) => {
@@ -110,7 +136,7 @@ const Comments = () => {
 
                     }
                         className={pic}>
-                        <img src={`http://127.0.0.1:8000/${comment?.image}`} alt="" />
+                        <img src={`${Localhost}${comment?.image}`} alt="" />
                     </div>
                     <div onClick={() =>
                         // navigate(`/Binko/userInfo/${comment?.user}`)
@@ -151,13 +177,13 @@ const Comments = () => {
                 </div>
             </div>
             {repliesState.length > 0 ? <div className={`${replyList} ${reply}-${comment?.id} ${active}`}>
-                {repliesState?.map(rep => {
+                {repliesState?.map((rep, idx) => {
                     return (
-                        <div key={rep.id}>
+                        <div key={idx}>
                             <div className={replyBox}>
                                 <div className={replyer}>
                                     <div className={pic}>
-                                        <img src={`http://127.0.0.1:8000/${rep?.image}`} alt="" />
+                                        <img src={`${Localhost}${rep?.image}`} alt="" />
                                     </div>
                                     <div className={replyerName}>
                                         {rep?.name}
@@ -182,9 +208,11 @@ const Comments = () => {
                                     className={` ${inputField}`}
                                     id={`inp-${rep?.id}`} >
                                     <div className={input} >
-                                        <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                                        <Input onFocus={() => setReplyId(rep.id)} onChange={(e) => {
+                                            setReplyy(e.target.value)
+                                        }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
                                     </div>
-                                    <div className={icon}>
+                                    <div onClick={() => addRepOnRep(rep.id)} className={icon}>
                                         {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
                                     </div>
                                 </div>
@@ -192,13 +220,13 @@ const Comments = () => {
 
                             {
                                 rep.children?.length ?
-                                    rep.children?.map(rep => {
+                                    rep.children?.map((rep, idx) => {
                                         return (
                                             <>
-                                                <div className={replyBox}>
+                                                <div key={idx} className={replyBox}>
                                                     <div className={replyer}>
                                                         <div className={pic}>
-                                                            <img src={`http://127.0.0.1:8000${rep?.image}`} alt="" />
+                                                            <img src={`${Localhost}${rep?.image}`} alt="" />
                                                         </div>
                                                         <div className={replyerName}>
                                                             {rep?.name}
@@ -206,7 +234,7 @@ const Comments = () => {
                                                     </div>
                                                     <div className={text}>
                                                         <div className={replyerName} id="parent">
-                                                            @{rep?.parent}
+                                                            @{rep?.parent_name}
                                                         </div>
                                                         <p>{rep?.content} <span
                                                             className={`${rep?.id}`}
@@ -227,9 +255,11 @@ const Comments = () => {
                                                         className={` ${inputField}`}
                                                         id={`inp-${rep?.id}`} >
                                                         <div className={input} >
-                                                            <Input type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
+                                                            <Input onFocus={() => setReplyId(rep.id)} onChange={(e) => {
+                                                                setReplyy(e.target.value)
+                                                            }} type="text" placeholder={language === 'English' ? `Write a Comment...` : `اكتب تعليقاً...`} />
                                                         </div>
-                                                        <div className={icon}>
+                                                        <div onClick={() => addRepOnRep(rep.id)} className={icon}>
                                                             {language === 'English' ? <Send style={{ width: '30px' }} /> : <SendArabic style={{ width: '30px' }} />}
                                                         </div>
                                                     </div>

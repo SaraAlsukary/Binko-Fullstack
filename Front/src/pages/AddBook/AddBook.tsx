@@ -8,14 +8,16 @@ import actAddBooks from "@store/booksSlice/act/actAddBooks";
 import actGetCategories from "@store/categorySlice/act/actGetCategories";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Input } from "@components/feedback";
 
 
-const { addBooksContainer, cont, controlBtn, input, pic, mul, img, mulch, bookInfo, } = Styles;
+const { addBooksContainer, cont, controlBtn, input, pic, mul, img, eng, bookInfo, } = Styles;
 const AddBook = () => {
     const dataForm = new FormData();
     const [image, setImage] = useState('');
     const [imageFile, setImageFile] = useState('');
     const [name, setName] = useState('');
+    const [lang, setLang] = useState('');
     const [content, setContent] = useState('');
     const [description, setDescription] = useState('');
     const dispatch = useAppDispatch();
@@ -35,6 +37,9 @@ const AddBook = () => {
     }
     const titleHandler = (e: any) => {
         setName(e.target.value);
+    }
+    const langHandler = (e: any) => {
+        setLang(e.target.value);
     }
     const descHandler = (e: any) => {
         setDescription(e.target.value);
@@ -57,20 +62,16 @@ const AddBook = () => {
         dataForm.append('image', imageFile)
         dataForm.append('name', name);
         dataForm.append('content', content);
+        dataForm.append('language', lang);
         dataForm.append('description', description);
         cate.forEach((ca: any) => dataForm.append(`category_names`, ca))
-
-        // for (let [key, value] of dataForm.entries()) {
-        //     console.log(key, value)
-        // }
         dispatch(actAddBooks(dataForm))
             .unwrap()
             .then(() => {
                 language === 'English' ? toast.success('Your Book published successfully!') : toast.success('تم نشر كتابك بنجاح!')
-                navigate(-2)
-
-
+                navigate('/Binko/profile')
                 setDescription('');
+                setLang('');
                 setContent('');
                 setImage('');
                 setName('');
@@ -82,6 +83,7 @@ const AddBook = () => {
         <option key={cate?.id} onClick={selectCate} value={cate?.name}>
             {language === 'English' ? cate.name : cate.name_arabic}
         </option>
+
     )
     useEffect(() => {
         dispatch(actGetCategories())
@@ -108,7 +110,25 @@ const AddBook = () => {
                         <SecondaryInput onChange={titleHandler} type="text" placeholder={language === 'English' ? "Book Title" : "عنوان الكتاب"} />
                         <textarea name="" id="" onChange={descHandler} placeholder={language === 'English' ? "Book description" : "وصف الكتاب"} ></textarea>
                         <textarea name="" id="" onChange={contentHandler} placeholder={language === 'English' ? "Book Content" : "محتوى الكتاب"} ></textarea>
-                        <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك:'}</div>
+
+                        <div className="cate">{language === 'English' ? 'choose language for your book: ' : 'اختر لغة كتابك: '}</div>
+                        <label className={eng} htmlFor="english">
+                            <Input checked={lang === 'english' ? true : false} name="english"
+                                value="english" id="english" onChange={langHandler}
+                                type='radio' style={{ width: '15px', height: '15px' }} />
+                            <span>
+                                {language === "English" ? "English" : "انجليزية"}
+                            </span>
+                        </label>
+                        <label className={eng} htmlFor="arabic">
+                            <Input checked={lang === 'arabic' ? true : false} name="arabic"
+                                value="arabic" id={"arabic"} onChange={langHandler}
+                                type='radio' style={{ width: '15px', height: '15px' }} />
+                            <span>
+                                {language === "English" ? "Arabic" : "العربية"}
+                            </span>
+                        </label>
+                        <div className="cate">{language === 'English' ? 'choose categories for your book: ' : 'اختر تصنيفات كتابك: '}</div>
                         <div className={mul}>
                             <select name="category_names" multiple id="">
                                 {CategoriesSelects}

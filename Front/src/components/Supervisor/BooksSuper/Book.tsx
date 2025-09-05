@@ -12,80 +12,77 @@ import { useNavigate } from 'react-router-dom';
 
 import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
-import actGetBooksBySuperCate from '@store/booksSlice/act/actGetBooksBySuperCate';
 import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
-type TCategory = {
-    id: Number,
+import actGetBooksByCategory from '@store/booksSlice/act/actGetBooksByCate';
+import { Localhost } from '@utils/localhost';
+type TBooks = {
+    id: number,
     name: string | null,
     Image: React.ReactNode,
     author: string | null
 }
-type TCategoryAra = {
-    id: Number,
+type TBooksAr = {
+    id: number,
     الاسم: string | null,
     الصورة: React.ReactNode,
     الكاتب: string | null
 }
 function Book() {
-    
+
     const { language } = useAppSelector(state => state.language);
-    const { userData } = useAppSelector(state => state.auth);
-    const { books,loading,error } = useAppSelector(state => state.books);
+    const { books, loading, error } = useAppSelector(state => state.books);
     const booksUser = useAppSelector(state => state.users.users);
-    const [users, setUsersList] = useState<TCategory[] | TCategoryAra[]>([]);
+    const { userData } = useAppSelector(state => state.auth);
+    const [Books, setList] = useState<TBooksAr[] | TBooks[]>([]);
 
     const dispatch = useAppDispatch();
-  
+
     const navigate = useNavigate();
 
 
     useEffect(() => {
-        dispatch(actGetBooksBySuperCate(userData?.user.id))
+        dispatch(actGetBooksByCategory(userData?.user.id!))
     }, [language]);
     useEffect(() => {
         if (books) {
-            const getAllUsers = async () => {
-                const category: TCategory[] = books.map((book) => {
+            const getAll = async () => {
+                const book: TBooks[] = books.map((book) => {
                     return ({
-                        id: book.id,
-                        name: book.name,
-                        author: booksUser.find((user) => user.id === book.user)?.name,
-                        Image: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+                        id: book.id!,
+                        name: book.name!,
+                        author: booksUser.find((user) => user.id === book.user)?.name!,
+                        Image: <img src={`${Localhost}${book.image!}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
 
                     })
                 })
-                const categoryAra: TCategoryAra[] = books.map((book) => {
+                const bookAra: TBooksAr[] = books.map((book) => {
                     return ({
-                        id: book.id,
-                        الاسم: book.name,
-                        الكاتب: booksUser.find((user) => user.id === book.user)?.name,
-                        الصورة: <img src={`http://127.0.0.1:8000${book.image}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
+                        id: book.id!,
+                        الاسم: book.name!,
+                        الكاتب: booksUser.find((user) => user.id === book.user)?.name!,
+                        الصورة: <img src={`${Localhost}${book.image!}`} style={{ marginTop: '10px', width: '50px', height: '50px' }} />,
 
                     })
                 })
-                const data = language === 'Arabic' ? categoryAra : category
-                setUsersList(data);
+                const data = language === 'Arabic' ? bookAra : book
+                setList(data);
             }
-            getAllUsers();
+            getAll();
         }
     }, [books]);
-    const actionsTemplate = (rowDate: object) => {
+    const actionsTemplate = (rowDate: TBooks | TBooksAr) => {
         return (
             <>
                 <button className='btn btn-success' onClick={() => {
                     navigate(`/Binko/books/${rowDate.id}`)
-                  
                 }}>
                     <i className='pi pi-eye'></i>
                 </button>
-               
+
                 <button className='btn btn-danger' onClick={() => {
-             
-
-                    deleteUserConfirm(rowDate?.id)
+                    deleteConfirm(rowDate?.id)
                 }
-
                 }>
                     <i className='pi pi-trash'></i>
                 </button>
@@ -93,7 +90,7 @@ function Book() {
         )
     }
 
-    const deleteUserConfirm = (userId: number) => {
+    const deleteConfirm = (Id: number) => {
         confirmDialog({
             message: language === 'Arabic' ? 'هل أنتَ متأكد من أنك تريد حذف الكتاب؟' : 'Are you sure you want to delete this book?',
             header: language === 'English' ? 'Confirmation' : "التأكيد",
@@ -101,19 +98,19 @@ function Book() {
             acceptLabel: language === 'English' ? 'Yes' : "نعم",
             rejectLabel: language === 'English' ? 'No' : " لا",
             accept: () => {
-                deleteUser(userId)
+                deleteHandler(Id)
             },
         });
     }
 
-    const deleteUser = (userId: number) => {
-        dispatch(actDeleteBook(userId)).unwrap().then(() => {
+    const deleteHandler = (Id: number) => {
+        dispatch(actDeleteBook(Id)).unwrap().then(() => {
             language === 'English' ? toast.success(' Deleted successfully! ') : toast.success('تم الحذف بنجاح !')
 
-            navigate(`/Binko/admin`)
+            navigate(0)
         })
     }
-  if (loading === 'pending')
+    if (loading === 'pending')
         return <Loading />
     if (error !== null)
         return <Error />
@@ -122,30 +119,30 @@ function Book() {
             <div className='users-page'>
                 <div className='container'>
                     <h1>
-                        {language === 'English' ? `The Books in the System with Supervisor Category` : 'الكتب في النظام بتصنيف المشرف'}
+                        {language === 'English' ? `The Books in the System with Supervisor ${userData?.user.category} Category ` : `الكتب في النظام بتصنيف ${userData?.user} المشرف`}
                     </h1>
                     <h3>
-                        {language === 'English' ? 'Operations on Books' : ' التعديلات على الكتب '}
+                        {language === 'English' ? 'Operations on Books' : ' العمليات على الكتب '}
                     </h3>
 
                     <div className='users-list'>
-                        
-                        <DataTable className='tableCell' value={users}>
+
+                        <DataTable className='tableCell' value={Books}>
                             <Column field={language === 'English' ? 'Image' : 'الصورة'}
                                 header={language === 'English' ? 'Image' : 'الصورة'}></Column>
                             <Column field={language === 'English' ? 'name' : 'الاسم'} header={language === 'English' ? 'name' : 'الاسم'}></Column>
                             <Column field={language === 'English' ? 'author' : 'الكاتب'} header={language === 'English' ? 'author' : 'الكاتب'}></Column>
-                      
+
                             <Column header={language === 'Arabic' ? 'العمليات' : 'Actions'} body={actionsTemplate}></Column>
                         </DataTable>
                     </div>
                 </div>
 
-             
-         
 
-              
-                  
+
+
+
+
             </div>
         </>
     )

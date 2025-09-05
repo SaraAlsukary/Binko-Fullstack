@@ -13,6 +13,7 @@ class Book(models.Model):
     publication_date = models.DateField(null=True, blank=True, default=date.today)
     note=models.CharField(max_length=250 ,null=True)
     content=models.CharField(max_length=1000)
+    language=models.CharField(max_length=250,null=True)
     class Meta:
          db_table = 'books'
 

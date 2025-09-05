@@ -10,6 +10,10 @@ class CustomUser(AbstractUser):
     is_supervisor = models.BooleanField(default=False)
     discriptions=models.CharField(max_length=250 , null=True)
     category=models.CharField(max_length=250 , null=True)
+    is_reader=models.BooleanField(null=True)
+    is_accept=models.BooleanField(default=False)
+    age=models.IntegerField(null=True)
+    
 
     def __str__(self):
         return self.username

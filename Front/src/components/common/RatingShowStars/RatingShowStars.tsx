@@ -1,43 +1,17 @@
 import { useEffect, useState } from 'react'
-import { FaStar } from 'react-icons/fa'
-
+import { Rate } from 'antd';
 import './RatingShowStars.css'
-
-// import { useAppSelector } from '@hooks/app'
-
-
-const RatingShowStars = ({ ratingStars, text }: { ratingStars: number, text: string }) => {
+const RatingShowStars = ({ ratingStars }: { ratingStars: number }) => {
 
     const [ratings, setRatings] = useState(0)
-    const [rateColor, setColor] = useState(null)
     useEffect(() => {
         if (ratingStars) {
             setRatings(ratingStars)
         }
     }, [ratingStars])
-
     return (
-        <div className='m-2 mb-4 stars'>
-            <span className='starsText'>{text}</span>
-
-            <span className='st'>
-                {
-                    [...Array(5)].map((star, idx) => {
-                        const currentStar = idx + 1
-                        return (
-                            <label key={idx}>
-                                <input className='hide' type="radio" name='ratings' value={ratingStars?ratingStars:""} />
-
-                                <FaStar size={35}
-                                    color={currentStar <= (rateColor || ratings) ? 'yellow' : 'grey'}
-                                />
-                            </label>
-                        )
-                    })
-
-                }
-            </span>
-
+        <div className='m-2 mb-4 stars d-flex align-items-center justify-content-center'>
+            <Rate allowHalf disabled defaultValue={0} value={ratings} count={5} />
         </div>
     )
 }
