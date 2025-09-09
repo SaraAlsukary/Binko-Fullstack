@@ -210,12 +210,38 @@ a .mark {
   direction: ltr;
 }
 
-:where(.css-dev-only-do-not-override-xepvsj).ant-rate .ant-rate-star-first {
-  width: 30% !important;
-  left: 10px;
-  top: initial;
-}
-
 :where(.css-dev-only-do-not-override-xepvsj).ant-rate .ant-rate-star-second {
   color: #ccc;
+}
+
+.ql-formats {
+  background-color: var(--secondary-color);
+  color: black;
+  font-family: var(--lang);
+  font-weight: bold;
+}
+
+.ql-formats:hover {
+  color: white;
+}
+
+.ql-picker-label:hover {
+  color: var(--main-color);
+}
+
+.ql-snow.ql-toolbar button:hover,
+.ql-snow .ql-toolbar button:hover,
+.ql-snow.ql-toolbar button:focus,
+.ql-snow .ql-toolbar button:focus,
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow .ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow .ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-snow .ql-toolbar .ql-picker-item:hover,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+  color: white !important;
 }

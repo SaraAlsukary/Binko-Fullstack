@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@hooks/app';
 import { Localhost } from '@utils/localhost';
 const { pic, text, paraga, info, btnCard, booCard } = styles;
-const BookCard = ({ image, description, user, name, id }: TBooks) => {
+const BookCard = ({ image, description, user, name, id, path }: TBooks) => {
     const navigate = useNavigate();
     const { language } = useAppSelector(state => state.language);
     const chars = (description: string) => {
@@ -25,7 +25,7 @@ const BookCard = ({ image, description, user, name, id }: TBooks) => {
                 <img src={`${Localhost}${image}`} alt="" crossOrigin='anonymous' />
             </div>
             <div className={text}>
-                <div onClick={() => navigate(`/Binko/books/${id}`)} className={paraga}>
+                <div onClick={() => navigate(path ? `${path}${id}` : `/Binko/books/${id}`)} className={paraga}>
                     <h3>{name}</h3>
                     <span>{user?.name}</span>
                     <p>{desc}</p>

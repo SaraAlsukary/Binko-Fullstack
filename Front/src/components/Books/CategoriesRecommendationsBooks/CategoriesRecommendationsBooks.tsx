@@ -1,6 +1,6 @@
 import BookCard from '@components/Books/BookCard/BookCard';
 import styles from './Books.module.css';
-import {  Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { useEffect } from 'react';
 import { TBooks } from '@customtypes/booksTypes';
@@ -10,13 +10,13 @@ import { settingsBox } from '@utils/settingsForSlick';
 import actGetRecommendationsByCategories from '@store/booksSlice/act/actGetRecommendationsByCategories';
 const { bookContainer } = styles;
 
-const CategoriesRecommendationsBooks = ({ id }: { id: number }) => {
+const CategoriesRecommendationsBooks = ({ id, path }: { id: number, path: string }) => {
     const dispatch = useAppDispatch();
     const { recomBooks } = useAppSelector(state => state.books);
     const { language } = useAppSelector(state => state.language);
 
     const booksCards = recomBooks.map(((book: TBooks, idx) =>
-            <BookCard key={idx} {...book} />
+        <BookCard path={path} key={idx} {...book} />
     ));
     useEffect(() => {
         dispatch(actGetRecommendationsByCategories(id))

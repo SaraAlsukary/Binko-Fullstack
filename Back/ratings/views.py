@@ -35,7 +35,7 @@ def add_rating(request, user_id, book_id):
 @api_view(['GET'])
 def top_books_rated_7_to_10(request):
     books = Book.objects.annotate(average_rating=Avg('ratings__value')) \
-        .filter(average_rating__gte=7, average_rating__lte=10) \
+        .filter(average_rating__gte=4, average_rating__lte=5) \
         .order_by('-average_rating')
 
     serializer = BookWithRatingSerializer(books, many=True)

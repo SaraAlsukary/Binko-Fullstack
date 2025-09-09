@@ -6,25 +6,23 @@ import 'react-quill/dist/quill.snow.css';
 import { Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import ChapterMenu from '@components/Chapters/ChapterMenu/ChapterMenu';
-import SecondaryButton from '@components/feedback/SecondaryButton/SecondaryButton';
 import { Button } from '@components/feedback';
 import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
 import actShowChapter from '@store/chaptersSlice/act/actShowChapter';
 import actGetChapters from '@store/chaptersSlice/act/actGetChapters';
 import { Localhost } from '@utils/localhost';
-const { text, down, buttn, chapterCont } = style;
+const { text, down, chapterCont } = style;
 const Chapters = () => {
     const [disNext, setDisNext] = useState(false);
     const [disPrev, setDisPrev] = useState(false);
-    const { chapters, loading, error, chapter} = useAppSelector(state => state.chapters);
+    const { chapters, loading, error, chapter } = useAppSelector(state => state.chapters);
     const { language } = useAppSelector(state => state.language);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const param: any = useParams();
     const index = parseInt(param.idChapter);
     const idBook = parseInt(param.id);
-
     useEffect(() => {
         dispatch(actShowChapter(index))
         dispatch(actGetChapters(idBook))
@@ -39,6 +37,8 @@ const Chapters = () => {
         } else {
             setDisNext(false);
             prevChapter = index - 1;
+            dispatch(actShowChapter(prevChapter))
+
             navigate(`/Binko/books/${param.id}/${prevChapter}`);
 
         }
@@ -57,6 +57,8 @@ const Chapters = () => {
             setDisPrev(false);
 
             nextChapter = index + 1;
+            dispatch(actShowChapter(nextChapter))
+
             navigate(`/Binko/books/${param.id}/${nextChapter}`);
 
         }
@@ -93,10 +95,17 @@ const Chapters = () => {
                     <div className={'contentText'} dangerouslySetInnerHTML={{ __html: chapter?.content_text! }} />
 
                 </div>
-                {chapters.length>1 && <div className={buttn}>
+                {/* {chapters.length > 1 && <div className={buttn}>
                     <SecondaryButton style={disNext ? { display: 'none' } : { display: 'block' }} disabled={disNext} onClick={() => nextNavigateHandler()}>{language === 'English' ? `Next Chapter` : `الفصل التالي`}</SecondaryButton>
+
+                    <span className={` ${indexs} m-2`}  >
+                        {language === 'English'
+                            ? `Chapter ${index + 1} of ${chapters.length}`
+                            : `الفصل ${index + 1} من ${chapters.length}`
+                        }
+                    </span>
                     <SecondaryButton style={disPrev ? { display: 'none' } : { display: 'block' }} disabled={disPrev} onClick={() => prevNavigateHandler()}>{language === 'English' ? `Previous Chapter` : `الفصل السابق`}</SecondaryButton>
-                </div>}
+                </div>} */}
             </div>
         </Container>
 

@@ -32,18 +32,9 @@
     height: 100%;
 }
 
-.editorInput span {
-    background-color: var(--secondary-color);
-    color: black;
-    font-family: var(--lang);
-    font-weight: bold;
-}
-
 /* 
-.editorInput .ql-picker-label:hover,
-.editorInput svg:hover {
-    color: var(--main-color);
-} */
+.editorInput .ql-picker-label:hover,*/
+
 .controlBtn {
     display: flex;
     align-items: center;

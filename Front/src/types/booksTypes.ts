@@ -15,4 +15,5 @@ export type TBooks = {
     likes_count: number,
     categories?: [],
     publication_date?: string
+    path?: string
 }

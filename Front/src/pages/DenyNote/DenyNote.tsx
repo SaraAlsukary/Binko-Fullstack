@@ -23,10 +23,8 @@ const DenyNote = () => {
         dispatch(actDenyBooks(DenyNote))
             .unwrap()
             .then(() => {
-                alert('Denied successfully!')
                 language === 'English' ? toast.success('Denied successfully!') : toast.success('تم الرفض بنجاح!')
-
-                // navigate(-2)
+                navigate(-2)
 
             })
     }

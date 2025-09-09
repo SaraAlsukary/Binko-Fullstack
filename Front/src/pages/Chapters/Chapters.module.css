@@ -27,7 +27,6 @@
 
 .chapterCont .down {
     padding: 100px 0;
-    text-align: center;
 }
 
 .chapterCont .down .buttn {
@@ -40,8 +39,13 @@
 
 .chapterCont .down .text h1 {
     color: var(--secondary-color);
+    text-align: center;
 }
 
 .chapterCont .down .text p {
     font-size: 22px;
+}
+
+.indexs {
+    color: var(--color);
 }

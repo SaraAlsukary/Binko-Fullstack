@@ -16,6 +16,7 @@ const TopBooks = lazy(() => import('@components/Books/TopBooks/Books'));
 const Notifications = lazy(() => import('@pages/Notifications/Notifications'));
 const BooksCategory = lazy(() => import('@pages/BooksCategory/Books'));
 const BooksInfo = lazy(() => import('@pages/BooksInfo/BooksInfo'));
+const BooksInfoMore = lazy(() => import('@pages/BooksInfoMore/BooksInfo'));
 const EditBook = lazy(() => import('@pages/EditBook/EditBook'));
 const DenyNote = lazy(() => import('@pages/DenyNote/DenyNote'));
 const Comments = lazy(() => import('@pages/Comments/Comments'));
@@ -109,6 +110,11 @@ const AppRouter = () => {
 
         },
         {
+            path: `books/:idBook/more/:id`,
+            element: <SuspendPage><BooksInfoMore /></SuspendPage>,
+
+        },
+        {
             path: 'books/:id/comments/:idComment/replies',
             element: <SuspendPage><Comments /></SuspendPage>,
 
@@ -143,7 +149,7 @@ const AppRouter = () => {
     }, {
         path: '/Binko/waiting',
         element: <SuspendPage> <Waiting /></SuspendPage>
-    },  {
+    }, {
         path: '/Binko/supervisor',
         element: <SuspendPage><Supervisor /></SuspendPage>
     }, {

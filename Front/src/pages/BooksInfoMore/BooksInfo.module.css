@@ -1,0 +1,438 @@
+.bookCont {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 100px;
+}
+
+.warnings {
+
+    margin-top: 35px;
+    padding: 20px;
+    color: #000;
+    background: var(--main-color);
+    box-shadow: 0 0 6px 5px var(--main-color);
+    ;
+}
+
+.warnings h3 {
+    background-color: var(--secondary-color);
+    width: fit-content;
+    padding: 12px;
+    color: #000;
+    border-radius: 7px;
+}
+
+.warnings p:last-of-type {
+    font-weight: bold;
+}
+
+.bookCont .left {
+    width: 40%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
+.bookCont .left .pic {
+    width: 300px;
+    height: 400px;
+}
+
+.bookCont .left .pic img {
+    width: 100%;
+    height: 100%;
+}
+
+.bookCont .left .author {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 0 10px 1px var(--main-color);
+    border-radius: 4px;
+    border: 1px solid var(--main-color);
+}
+
+.bookCont .left .author .authInfo {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.bookCont .left .author .photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.bookCont .left .author .photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.bookCont .left .author h3 {
+    color: var(--secondary-color);
+}
+
+.bookCont .left .author .authInfo .nameAuth {
+    color: gray;
+    cursor: pointer;
+}
+
+.bookCont .right .up {
+    padding: 20px;
+    border: 1px solid var(--main-color);
+    box-shadow: 0 0 10px 1px var(--main-color);
+}
+
+.bookCont .right {
+    width: 60%;
+    position: relative;
+}
+
+.bookCont .right .up h1 {
+    color: var(--main-color);
+}
+
+.bookCont .right .up span {
+    color: var(--secondary-color);
+}
+
+.bookCont .right .up .cate {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.bookCont .right .up .cate p {
+    background-color: gray;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #fff;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.bookCont .right .up .loves {
+    color: var(--main-color);
+}
+
+.bookCont .right .up .dis {
+    color: #f35151;
+}
+
+.bookCont .right .up ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.bookCont .right .up ul li {
+    border: 1px solid var(--main-color);
+    width: calc(100% / 3);
+    padding: 10px;
+    color: var(--main-color);
+    transition: .3s;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bookCont .right .up ul li p {
+    margin: 0;
+}
+
+.bookCont .right .up ul li .icons {
+    display: flex;
+    position: relative;
+    align-items: center;
+
+
+}
+
+.bookCont .right .up ul li .icons .icon,
+.bookCont .right .up ul li .icons .activeIcon {
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+[data-lang='Arabic'] .bookCont .right .up ul li .icons .icon,
+[data-lang='Arabic'] .bookCont .right .up ul li .icons .activeIcon {
+    right: -30px;
+}
+
+.bookCont .right .up ul li .activeIcon {
+    display: none;
+}
+
+.bookCont .right .up ul li.active .activeIcon {
+    display: block;
+    z-index: 2;
+}
+
+.bookCont .right .up ul li.active {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.bookCont .right .down {
+    padding: 20px;
+}
+
+.bookCont .right .down .list {
+    width: 100%;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.bookCont .right .down .list li {
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
+    padding: 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.bookCont .right .down .list li svg {
+    width: 10px;
+}
+
+.bookCont .right .down .list li:hover {
+    border: 1px solid #fff;
+    background-color: var(--main-color);
+    color: #fff;
+    padding: 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.bookCont .right .down .comments {
+    margin-top: 20px;
+}
+
+.bookCont .right .down .comments .inputField {
+    position: relative;
+}
+
+.bookCont .right .down .comments .icon {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    width: 40px;
+    border-radius: 50%;
+    padding: 1px;
+    border: 2px solid var(--secondary-color);
+    cursor: pointer;
+}
+
+[data-lang='Arabic'] .bookCont .right .down .comments .icon {
+    right: calc(100% - 50px);
+}
+
+.bookCont .right .down .comments .input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bookCont .right .down .comments .input input {
+    width: 100%;
+}
+
+.bookCont .right .down .comments .commentsList {
+    margin-top: 20px;
+}
+
+.bookCont .right .down .comments .commentsList .boxCont {
+    display: none;
+}
+
+.bookCont .right .down .comments .commentsList .boxCont:first-child,
+.bookCont .right .down .comments .commentsList .boxCont:nth-child(2) {
+    display: block;
+}
+
+.bookCont .right .down .comments .commentsList.active .boxCont {
+    display: block;
+}
+
+
+.bookCont .right .down .comments .commentsList .box {
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 0 10px 1px var(--secondary-color);
+    margin-top: 10px;
+    padding: 20px;
+}
+
+.bookCont .right .down .comments .commentsList .box .commenter,
+.bookCont .right .down .comments .replyList .replyBox .replyer {
+    display: flex;
+    align-items: center;
+}
+
+.bookCont .right .down .comments .commentsList .box .commenter .pic,
+.bookCont .right .down .comments .replyList .replyBox .replyer .pic {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+
+.bookCont .right .down .comments .commentsList .box .commenter .pic img,
+.bookCont .right .down .comments .replyList .replyBox .replyer .pic img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.bookCont .right .down .comments .commentsList .box .commenter .commenterName,
+.bookCont .right .down .comments .replyList .replyBox .replyer .replyerName {
+    color: gray;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.bookCont .right .down .comments .commentsList .box .text p span,
+.bookCont .right .down .comments .replyList .replyBox .text p span {
+    color: #f35151;
+    cursor: pointer;
+
+}
+
+.bookCont .right .down .comments .commentsList .buttn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.bookCont .right .down .comments .commentsList .buttn button {
+    width: 80%;
+    background-color: transparent;
+    color: var(--main-color);
+    transition: .3s;
+    border: 2px solid var(--main-color);
+}
+
+.bookCont .right .down .comments .commentsList .buttn button:hover {
+    background-color: var(--main-color);
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.bookCont .right .down .comments .commentsList.active .buttn {
+    display: none;
+}
+
+.bookCont .right .down .comments .commentsList .reply {
+    color: var(--main-color);
+    font-size: 22px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    font-family: binko2eng;
+}
+
+.bookCont .right .down .comments .commentsList .reply.active,
+.bookCont .right .down .comments .commentsList span.active,
+.bookCont .right .down .comments .commentsList .inputField,
+.bookCont .right .down .comments .replyList span.active,
+.bookCont .right .down .comments .replyList .inputField {
+    display: none;
+}
+
+.bookCont .right .down .comments .replyList .inputField.active,
+.bookCont .right .down .comments .commentsList .inputField.active {
+    display: block;
+}
+
+[data-lang='Arabic'] .bookCont .right .down .comments .commentsList .reply {
+    font-family: binkoara;
+}
+
+.bookCont .right .down .comments .replyList {
+    display: none;
+    width: calc(100% - 100px);
+
+}
+
+.bookCont .right .down .comments .replyList .replyBox {
+    border: 1px solid #f35151;
+    box-shadow: 0 0 10px 1px #f35151;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+.bookCont .right .down .comments .replyList.active {
+    display: block;
+}
+
+.commentBtns {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    .bookCont .left {
+        width: 46%;
+    }
+
+    .bookCont .right {
+        width: 50%;
+    }
+}
+
+@media (max-width:767px) {
+    .bookCont {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bookCont .left,
+    .bookCont .right {
+        width: 100%;
+    }
+
+    .bookCont .left .author {
+        width: 100%;
+        text-align: center;
+    }
+
+    .bookCont .left .author .authInfo {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .bookCont .left .author .authInfo .photo {
+        margin-bottom: 10px;
+    }
+
+    .bookCont .right .up {
+        text-align: center;
+    }
+
+    .bookCont .right .up .cate {
+        justify-content: center;
+    }
+
+}
+
+.bookCont .ratings {
+    color: yellow
+}

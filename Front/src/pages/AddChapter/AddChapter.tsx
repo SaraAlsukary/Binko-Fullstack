@@ -17,17 +17,42 @@ const modules = {
             header: [1, 2, 3, 4, 5, 6, false],
 
         }],
+
         [{ font: [] }],
+        [{ color: [] }, { background: [] }],
         [{ size: [] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
+        ["bold", "italic", "underline", "strike"],
+        ['blockquote', 'code-block'],
         [
             { list: "ordered" },
             { list: "bullet" },
             { indent: "-1" },
             { indent: "+1" },
         ],
+        [{ align: [] }],
+        ["link", "image"],
     ]
 }
+// const modules = [
+//     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+//     ['blockquote', 'code-block'],
+//     ['link', 'image', 'video', 'formula'],
+
+//     [{ header: 1 }, { header: 2 }],               // custom button values
+//     [{ list: 'ordered' }, { list: 'bullet' }, { 'list': 'check' }],
+//     [{ script: 'sub' }, { script: 'super' }],      // superscript/subscript
+//     [{ indent: '-1' }, { indent: '+1' }],          // outdent/indent
+//     [{ direction: 'var(--dir)' }],                         // text direction
+
+//     [{ size: ['small', false, 'large', 'huge'] }],  // custom dropdown
+//     [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+//     [{ color: [] }, { background: [] }],          // dropdown with defaults from theme
+//     [{ font: [] }],
+//     [{ align: [] }],
+
+//     ['clean']                                         // remove formatting button
+// ];
 const { addBooksContainer, cont, rows, audioInput, editors, editorInput, controlBtn, audio, input } = Styles;
 const AddChapter = () => {
     const [show, setShow] = useState(false);
@@ -89,7 +114,7 @@ const AddChapter = () => {
                 </div>
                 <Row className={rows}>
                     <Col className={editors}>
-                        <ReactQuill className={editorInput} modules={modules}
+                        <ReactQuill className={editorInput} modules={modules!}
                             theme="snow" value={value} onChange={setValue} />
                         {/* <div className={'contentText'} dangerouslySetInnerHTML={{ __html: value }} /> */}
                     </Col>

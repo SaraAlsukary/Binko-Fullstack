@@ -1,6 +1,7 @@
 .stars li {
     width: inherit !important;
     border: none !important;
+    padding: initial !important;
     font-size: 2rem !important;
     color: var(--secondary-color) !important;
 }

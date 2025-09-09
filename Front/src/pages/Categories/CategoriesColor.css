@@ -41,6 +41,7 @@
     color: #fff;
     border: 3px solid #fff;
 }
+
 .Psychology {
     color: rgb(243, 10, 212);
     border: 3px solid rgb(243, 10, 212);
@@ -161,6 +162,42 @@
 
 .Classic:hover {
     background-color: rgb(89, 89, 87);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Crime {
+    color: rgb(158, 109, 109);
+    border: 3px solid rgb(158, 109, 109);
+
+}
+
+.Crime:hover {
+    background-color: rgb(89, 89, 87);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.Mystery {
+    color: rgb(52, 124, 240);
+    border: 3px solid rgb(52, 124, 240);
+
+}
+
+.Mystery:hover {
+    background-color: rgb(240, 240, 68);
+    ;
+    color: #fff;
+    border: 3px solid #fff;
+}
+.Novel{
+    color: rgb(81, 1, 156);
+    border: 3px solid rgb(81, 1, 156);
+}
+.Novel:hover {
+    background-color: rgb(75, 3, 93);
     ;
     color: #fff;
     border: 3px solid #fff;

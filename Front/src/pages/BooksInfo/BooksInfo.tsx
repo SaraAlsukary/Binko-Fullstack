@@ -117,7 +117,7 @@ const BooksInfo = () => {
         (btn as Element).classList.remove(active)
       });
       (e.target as Element).classList.toggle(active);
-      if ((e.target as Element).classList.contains(active) && is_dislike) {
+      if ((e.target as Element).classList.contains(active) && is_liked) {
 
         dispatch(actAddLikes(indx));
       } else {
@@ -163,7 +163,7 @@ const BooksInfo = () => {
     el?.classList.add(active);
   }
   const activeReplyHandler = (commentId: number,) => {
-    navigate(`comments/${commentId}/replies`)
+    navigate(`/Binko/Books/${id}/comments/${commentId}/replies`)
 
   }
 
@@ -653,7 +653,7 @@ const BooksInfo = () => {
 
 
       </div>
-      <CategoriesRecommendationsBooks id={indx} />
+      <CategoriesRecommendationsBooks path={`/Binko/Books/${bookInfo?.id}/more/`} id={indx} />
     </Container >
   )
 }
