@@ -14,8 +14,8 @@ import actDeleteBook from '@store/booksSlice/act/actDeleteBooks';
 import toast from 'react-hot-toast';
 import Loading from '@pages/Loading/Loading';
 import Error from '@pages/Error/Error';
-import actGetBooksByCategory from '@store/booksSlice/act/actGetBooksByCate';
 import { Localhost } from '@utils/localhost';
+import actGetBooksBySuperCate from '@store/booksSlice/act/actGetBooksBySuperCate';
 type TBooks = {
     id: number,
     name: string | null,
@@ -42,7 +42,7 @@ function Book() {
 
 
     useEffect(() => {
-        dispatch(actGetBooksByCategory(userData?.user.id!))
+        dispatch(actGetBooksBySuperCate(userData?.user.id!))
     }, [language]);
     useEffect(() => {
         if (books) {
@@ -119,7 +119,7 @@ function Book() {
             <div className='users-page'>
                 <div className='container'>
                     <h1>
-                        {language === 'English' ? `The Books in the System with Supervisor ${userData?.user.category} Category ` : `الكتب في النظام بتصنيف ${userData?.user} المشرف`}
+                        {language === 'English' ? `The Books in the System with Supervisor ${userData?.user.category} Category ` : `الكتب في النظام بتصنيف ${userData?.user?.category} المشرف`}
                     </h1>
                     <h3>
                         {language === 'English' ? 'Operations on Books' : ' العمليات على الكتب '}

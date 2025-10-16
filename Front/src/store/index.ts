@@ -17,6 +17,7 @@ import favorite from "./Favorite/favoriteSlice";
 import theme from "./themeSlice/themeSlice";
 import notifications from "./notifications/notificationsSlice";
 import chapters from "./chaptersSlice/chaptersSlice";
+import checkpoint from "./checkpoint/checkpoint";
 import comments from "./commentsSlice/commentsSlice";
 import categories from "./categorySlice/categorySlice";
 import replies from "./repliesSlice/repliesSlice";
@@ -38,7 +39,11 @@ const authPersistConfig = {
     storage,
     whitelist: ["userData",'createdAccount'],
 };
-
+const checkpointPersistConfig = {
+    key: "checkpoint",
+    storage,
+    whitelist: ["book", "chapter", "checkpoint"],
+};
 // const cartPersistConfig = {
 //     key: "cart",
 //     storage,
@@ -59,6 +64,7 @@ const rootReducer = combineReducers({
     theme: theme,
     categories,
     auth: persistReducer(authPersistConfig, auth),
+    checkpoint: persistReducer(checkpointPersistConfig, checkpoint),
     books,
     favorite,
     chapters,

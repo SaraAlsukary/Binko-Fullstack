@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/app';
 import { changeLanguageToArabic, changeLanguageToEnglish } from '@store/languageSlice/languageSlice';
 import { Container } from 'react-bootstrap';
 import actGetUsers from '@store/usersSlice/act/actGetUsers';
-const { headerContainer, closeIcon, searchIcon, navStyle, icon,  burger, show } = Styles;
+const { headerContainer, closeIcon, searchIcon, navStyle, icon, burger, show } = Styles;
 const Header = () => {
     const [toggle, setToggle] = useState(false);
     const dispatch = useAppDispatch();
@@ -77,6 +77,7 @@ const Header = () => {
                         <li ><NavLink to='news'   >{language === 'English' ? 'News' : 'الأخبار'}</NavLink></li>
                         <li ><NavLink to='categories' >{language === 'English' ? 'Categories' : 'التصنيفات'}</NavLink></li>
                         <li  ><NavLink to='about'  >{language === 'English' ? 'About' : 'عنا'}</NavLink></li>
+                        <li  ><NavLink to='sub'  >{language === 'English' ? 'Subscription' : 'الاشنراك'}</NavLink></li>
 
 
                         <li >
@@ -89,7 +90,7 @@ const Header = () => {
                             <li><NavLink to='profile' >
                                 {/* <div className={theme === 'Dark' ? `${prof} ${dark}` : `${prof}`}>
                                 </div> */}
-                                <ProfileIcon style={{ width: "35px", height:"35px" }} />
+                                <ProfileIcon style={{ width: "35px", height: "35px" }} />
                             </NavLink></li>
 
                             : <li><Button ><NavLink to='Login' style={{ color: 'black' }}>{language === 'Arabic' ? 'تسجبل الدخول' : "login"}</NavLink></Button></li>

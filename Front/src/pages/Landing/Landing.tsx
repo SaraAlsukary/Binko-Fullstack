@@ -1,6 +1,5 @@
 import LottieHandler from '@components/feedback/lottieHandler/lottieHandler';
 import Style from './Landing.module.css';
-
 import { Button } from '@components/feedback';
 import { Container } from 'react-bootstrap';
 import { useAppSelector } from '@hooks/app';

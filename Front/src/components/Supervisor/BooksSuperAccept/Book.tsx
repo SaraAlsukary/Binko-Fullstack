@@ -114,7 +114,7 @@ function Book() {
             <div className='users-page'>
                 <div className='container'>
                     <h1>
-                        {language === 'English' ? `The Books in the System with Supervisor ${userData?.user.category} Category ` : `الكتب في النظام بتصنيف ${userData?.user} المشرف`}
+                        {language === 'English' ? `The Books in the System with Supervisor ${userData?.user.category} Category ` : `الكتب في النظام بتصنيف ${userData?.user.category} المشرف`}
                     </h1>
                     <h3>
                         {language === 'English' ? 'Operations on Books' : ' العمليات على الكتب '}

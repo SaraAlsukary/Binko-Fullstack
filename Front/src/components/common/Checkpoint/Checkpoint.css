@@ -1,0 +1,54 @@
+.checkpoint {
+    position: fixed;
+    bottom: -70px;
+    width: calc(100% - 200px);
+    background-color: var(--background);
+    z-index: 1000;
+    margin: 100px;
+    cursor: pointer;
+    transition: all .3s linear;
+    padding: 10px;
+    border-right: 4px solid var(--secondary-color);
+    box-shadow: 0 0 23px -9px black;
+}
+
+.checkpoint .content {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.checkpoint .image {
+    transition: all .3s linear;
+}
+
+.checkpoint h2 {
+    color: var(--main-color);
+}
+
+.checkpoint p {
+    color: var(--secondary-color);
+}
+
+.checkpoint h2:first-of-type {
+    color: var(--red);
+}
+
+.checkpoint:hover {
+    transform: translateY(5px);
+    box-shadow: 0 0 23px -5px var(--color);
+    border-bottom: 2px solid var(--red);
+    /* border-left: 2px solid var(--red); */
+    /* border-top: 2px solid var(--red); */
+}
+
+.checkpoint:hover .image {
+    border: 2px solid var(--color);
+}
+
+.checkpoint .icon {
+    position: absolute;
+    left: -10px;
+    font-size: 35px;
+    top: -10px;
+}

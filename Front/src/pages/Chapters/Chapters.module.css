@@ -1,5 +1,6 @@
 .chapterCont {
     position: relative;
+
 }
 
 .warnings {
@@ -27,6 +28,13 @@
 
 .chapterCont .down {
     padding: 100px 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: none;
+    user-select: none;
 }
 
 .chapterCont .down .buttn {

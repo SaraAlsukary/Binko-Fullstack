@@ -304,10 +304,8 @@ const BooksInfo = () => {
       const promiseFavorite = dispatch(actGetfavorite(userData?.user.id!))
 
       return () => {
-        // promiseLikes.abort();
         promiseDislike.abort();
         promiseRating.abort();
-        // promiseDisLikes.abort();
         promiseLike.abort();
         promiseAcceptedChapter.abort();
         promiseAcceptedBooks.abort();

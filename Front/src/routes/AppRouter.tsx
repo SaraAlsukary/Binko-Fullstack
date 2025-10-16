@@ -1,11 +1,13 @@
 import SuspendPage from '@components/feedback/SuspendPage/SuspendPage';
 import { useAppSelector } from '@hooks/app';
+import Subscription from '@pages/Subscription/Subscription';
 import { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 const HomePage = lazy(() => import('src/HomePage'));
 const Categories = lazy(() => import('@pages/Categories/Categories'));
 // const ChatsHomepage = lazy(() => import('@pages/Chats/ChatsHomepage'));
 const UserInfo = lazy(() => import('@pages/UserInfo/UserInfo'));
+const Payment = lazy(() => import('@pages/Payment/Payment'));
 const About = lazy(() => import('@pages/About/About'));
 const Login = lazy(() => import('@pages/Login/Login'));
 const Waiting = lazy(() => import('@pages/Waiting/Waiting'));
@@ -61,6 +63,10 @@ const AppRouter = () => {
             element: <SuspendPage><BooksInfo /></SuspendPage>
         },
         {
+            path: 'booksSearch/:id/:idChapter',
+            element: <SuspendPage><Chapters /></SuspendPage>
+        },
+        {
             path: 'categories',
             element: <SuspendPage><Categories /></SuspendPage>,
 
@@ -81,6 +87,10 @@ const AppRouter = () => {
         }, {
             path: 'about',
             element: <SuspendPage><About /></SuspendPage>
+        },
+        {
+            path: 'sub',
+            element: <SuspendPage><Subscription /></SuspendPage>
         }, {
             path: 'profile',
             element: <SuspendPage><Profile /></SuspendPage>
@@ -88,6 +98,10 @@ const AppRouter = () => {
         {
             path: 'settings',
             element: <SuspendPage><Profile /></SuspendPage>
+        },
+        {
+            path: 'payment',
+            element: <SuspendPage><Payment /></SuspendPage>
         },
         {
             path: 'addBook',
